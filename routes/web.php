@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/index', function () {
+Route::get('/youtube', function () {
     return view('index');
 });
 
@@ -42,5 +42,17 @@ Route::get('/foto', function () {
 });
 
 Route::get('/fotott', function () {
+    return view('fotott');
+});
+
+Route::get('/index', function () {
+    return view('fotott');
+});
+
+Route::get('/user', function () {
+    return view('fotott');
+});
+
+Route::get('/payment', function () {
     return view('fotott');
 });

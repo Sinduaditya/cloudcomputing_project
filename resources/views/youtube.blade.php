@@ -9,14 +9,14 @@
     <header>
         <h1>Selamat Datang di Video Downloader</h1>
         <nav>
-            <a href="/youtube"><button>Youtube</button></a>
+            <a href="/youtube"><button class="active">Youtube</button></a>
             <a href="/instagram"><button>Instagram</button></a>
-            <a href="/tiktok"><button class="active">Tiktok</button></a>
+            <a href="/tiktok"><button>Tiktok</button></a>
         </nav>
     </header>
     <div class="content-type">
-      <a href="/tiktok"><button class="active">Video</button></a>
-      <a href="/fotott"><button>Foto</button></a>
+      <a href="/index"><button class="active">Video</button></a>
+      <a href="/short"><button>Short</button></a>
     </div>
     <main>
         <h2>Masukkan URL video kamu</h2>

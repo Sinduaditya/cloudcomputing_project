@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Video Downloader - Home</title>
-    <link rel="stylesheet" href="{{ asset('css/styleku.css') }}">
+    <link rel="stylesheet" href="{{ asset('resources/css/styleku.css') }}">
 </head>
 <body>
     <header>
         <h1>Selamat Datang di Video Downloader</h1>
         <nav>
-            <a href="/index"><button>Youtube</button></a>
+            <a href="/youtube"><button>Youtube</button></a>
             <a href="/instagram"><button class="active">Instagram</button></a>
             <a href="/tiktok"><button>Tiktok</button></a>
         </nav>
@@ -28,6 +28,6 @@
             <button onclick="downloadmp4()">Download Mp4</button>
         </div>
     </main>
-    <script src="{{ asset('js/scriptku.js') }}"></script>
+    <script src="{{ asset('resources/js/scriptku.js') }}"></script>
 </body>
 </html>
