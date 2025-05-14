@@ -15,7 +15,6 @@
         </nav>
     </header>
     <div class="content-type">
-      <a href="/index"><button class="active">Video</button></a>
       <a href="/short"><button>Short</button></a>
     </div>
     <main>
@@ -23,7 +22,6 @@
         <input type="text" id="videoUrl" placeholder="Tempel URL video di sini">
         <button>📋 Tempel</button>
         <div class="download-buttons">
-            <button onclick="downloadmp3()">Download Mp3</button>
             <button onclick="downloadmp4()">Download Mp4</button>
         </div>
     </main>

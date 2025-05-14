@@ -16,14 +16,12 @@
     </header>
     <div class="content-type">
       <a href="/tiktok"><button class="active">Video</button></a>
-      <a href="/fotott"><button>Foto</button></a>
     </div>
     <main>
         <h2>Masukkan URL video kamu</h2>
         <input type="text" id="videoUrl" placeholder="Tempel URL video di sini">
         <button>📋 Tempel</button>
         <div class="download-buttons">
-            <button onclick="downloadmp3()">Download Mp3</button>
             <button onclick="downloadmp4()">Download Mp4</button>
         </div>
     </main>
