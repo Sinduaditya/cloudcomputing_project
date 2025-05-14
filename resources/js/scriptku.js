@@ -8,18 +8,6 @@ document.querySelector("button").addEventListener("click", async function () {
     }
 });
 
-// Fungsi Download MP3
-function downloadmp3() {
-    const url = document.getElementById("videoUrl").value;
-    if (!url) {
-        alert("Silakan masukkan URL terlebih dahulu.");
-        return;
-    }
-
-    // Ganti ini dengan request ke backend Laravel-mu nanti
-    alert("Proses download MP3 untuk URL:\n" + url);
-}
-
 // Fungsi Download MP4
 function downloadmp4() {
     const url = document.getElementById("videoUrl").value;
