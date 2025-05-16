@@ -55,7 +55,7 @@
       <div class="navbar-content">
         <ul class="pc-navbar">
           <li class="pc-item">
-            <a href="/index" class="pc-link">
+            <a href="../dashboard/index.html" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
               <span class="pc-mtext">Dashboard</span>
             </a>
@@ -145,6 +145,8 @@
   </header>
   <!-- [ Header ] end -->
 
+
+
   <!-- [ Main Content ] start -->
   <div class="pc-container">
     <div class="pc-content">
@@ -154,7 +156,7 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Home</h5>
+                <h5 class="m-b-10">index</h5>
               </div>
             </div>
           </div>
@@ -163,50 +165,58 @@
       <!-- [ breadcrumb ] end -->
       <!-- [ Main Content ] start -->
       <div class="row">
-        <!-- [ sample-page ] start -->
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Page Views</h6>
-              <h4 class="mb-3">4,42,236 <span class="badge bg-light-primary border border-primary"><i
-                    class="ti ti-trending-up"></i> 59.3%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-primary">35,000</span> this year
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Users</h6>
-              <h4 class="mb-3">78,250 <span class="badge bg-light-success border border-success"><i
-                    class="ti ti-trending-up"></i> 70.5%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-success">8,900</span> this year</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Order</h6>
-              <h4 class="mb-3">18,800 <span class="badge bg-light-warning border border-warning"><i
-                    class="ti ti-trending-down"></i> 27.4%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-warning">1,943</span> this year</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Sales</h6>
-              <h4 class="mb-3">$35,078 <span class="badge bg-light-danger border border-danger"><i
-                    class="ti ti-trending-down"></i> 27.4%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-danger">$20,395</span> this year
-              </p>
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                  <tr class="text-start">
+                    <th class="text-end">ID</th>
+                    <th class="text-end">User ID</th>
+                    <th>Platform</th>
+                    <th>Format</th>
+                    <th>URL Video</th>
+                    <th>Status</th>
+                    <th class="text-end">Jadwal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-end">1</td>
+                    <td class="text-end">201</td>
+                    <td><i class="fab fa-instagram text-danger me-1"></i>Instagram</td>
+                    <td>mp4</td>
+                    <td><a href="#" target="_blank">https://instagram.com/reel1</a></td>
+                    <td><span class="badge bg-warning text-dark">Scheduled</span></td>
+                    <td class="text-end">2025-05-20 09:00</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">2</td>
+                    <td class="text-end">202</td>
+                    <td><i class="fab fa-instagram text-danger me-1"></i>Instagram</td>
+                    <td>mp4</td>
+                    <td><a href="#" target="_blank">https://instagram.com/reel2</a></td>
+                    <td><span class="badge bg-success">Completed</span></td>
+                    <td class="text-end">2025-05-19 15:30</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">3</td>
+                    <td class="text-end">203</td>
+                    <td><i class="fab fa-instagram text-danger me-1"></i>Instagram</td>
+                    <td>mp4</td>
+                    <td><a href="#" target="_blank">https://instagram.com/reel3</a></td>
+                    <td><span class="badge bg-danger">Failed</span></td>
+                    <td class="text-end">2025-05-18 20:15</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
     </div>
   </div>
   <!-- [ Main Content ] end -->

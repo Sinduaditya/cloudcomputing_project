@@ -55,7 +55,7 @@
       <div class="navbar-content">
         <ul class="pc-navbar">
           <li class="pc-item">
-            <a href="/index" class="pc-link">
+            <a href="../dashboard/index.html" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
               <span class="pc-mtext">Dashboard</span>
             </a>
@@ -67,14 +67,38 @@
           </li>
           <li class="pc-item">
             <a href="/user" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-typography"></i></span>
+              <span class="pc-micon"><i class="ti ti-user"></i></span>
               <span class="pc-mtext">User</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="/payment" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
+              <span class="pc-micon"><i class="ti ti-receipt"></i></span>
               <span class="pc-mtext">Payment</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/download" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-history"></i></span>
+              <span class="pc-mtext">Download</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/scheduled" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-access-point"></i></span>
+              <span class="pc-mtext">Scheduled</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/activity" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-calendar-time"></i></span>
+              <span class="pc-mtext">Activity</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/billing" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-sport-billard"></i></span>
+              <span class="pc-mtext">Billing</span>
             </a>
           </li>
         </ul>
@@ -121,6 +145,8 @@
   </header>
   <!-- [ Header ] end -->
 
+
+
   <!-- [ Main Content ] start -->
   <div class="pc-container">
     <div class="pc-content">
@@ -152,6 +178,7 @@
                           <th>Nama</th>
                           <th>Email</th>
                           <th>Role</th>
+                          <th>Saldo Token</th>
                           <th>Status</th>
                           <th>Aksi</th>
                         </tr>
@@ -161,10 +188,13 @@
                           <td>1</td>
                           <td>Ari Nugroho</td>
                           <td>ari@example.com</td>
-                          <td>Admin</td>
+                          <td><span class="badge bg-info">Admin</span></td>
+                          <td>500</td>
                           <td><span class="badge bg-success">Aktif</span></td>
                           <td>
-                            <button class="btn btn-primary btn-sm">Edit</button>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                              Edit
+                            </button>
                             <button class="btn btn-danger btn-sm">Hapus</button>
                           </td>
                         </tr>
@@ -172,10 +202,13 @@
                           <td>2</td>
                           <td>Sinta Dewi</td>
                           <td>sinta@example.com</td>
-                          <td>User</td>
+                          <td><span class="badge bg-primary">User</span></td>
+                          <td>100</td>
                           <td><span class="badge bg-secondary">Nonaktif</span></td>
                           <td>
-                            <button class="btn btn-primary btn-sm">Edit</button>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                              Edit
+                            </button>
                             <button class="btn btn-danger btn-sm">Hapus</button>
                           </td>
                         </tr>
@@ -190,6 +223,34 @@
       </div>
     </div>
   </div>
+  <!-- Modal Edit User -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Edit Pengguna</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm">
+          <div class="mb-3">
+            <label for="editToken" class="form-label">Saldo Token</label>
+            <input type="number" class="form-control" id="editToken" min="0" required>
+          </div>
+          <div class="mb-3">
+            <label for="editStatus" class="form-label">Status</label>
+            <select class="form-select" id="editStatus" required>
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- [ Main Content ] end -->
   <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
