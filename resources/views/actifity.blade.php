@@ -55,7 +55,7 @@
       <div class="navbar-content">
         <ul class="pc-navbar">
           <li class="pc-item">
-            <a href="/index" class="pc-link">
+            <a href="../dashboard/index.html" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
               <span class="pc-mtext">Dashboard</span>
             </a>
@@ -145,6 +145,8 @@
   </header>
   <!-- [ Header ] end -->
 
+
+
   <!-- [ Main Content ] start -->
   <div class="pc-container">
     <div class="pc-content">
@@ -154,7 +156,7 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Home</h5>
+                <h5 class="m-b-10">index</h5>
               </div>
             </div>
           </div>
@@ -163,50 +165,58 @@
       <!-- [ breadcrumb ] end -->
       <!-- [ Main Content ] start -->
       <div class="row">
-        <!-- [ sample-page ] start -->
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Page Views</h6>
-              <h4 class="mb-3">4,42,236 <span class="badge bg-light-primary border border-primary"><i
-                    class="ti ti-trending-up"></i> 59.3%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-primary">35,000</span> this year
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Users</h6>
-              <h4 class="mb-3">78,250 <span class="badge bg-light-success border border-success"><i
-                    class="ti ti-trending-up"></i> 70.5%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-success">8,900</span> this year</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Order</h6>
-              <h4 class="mb-3">18,800 <span class="badge bg-light-warning border border-warning"><i
-                    class="ti ti-trending-down"></i> 27.4%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-warning">1,943</span> this year</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="mb-2 f-w-400 text-muted">Total Sales</h6>
-              <h4 class="mb-3">$35,078 <span class="badge bg-light-danger border border-danger"><i
-                    class="ti ti-trending-down"></i> 27.4%</span></h4>
-              <p class="mb-0 text-muted text-sm">You made an extra <span class="text-danger">$20,395</span> this year
-              </p>
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-end">ID</th>
+                    <th class="text-end">User ID</th>
+                    <th>Aksi</th>
+                    <th class="text-end">Instance ID</th>
+                    <th class="text-end">Waktu</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-end">1</td>
+                    <td class="text-end">101</td>
+                    <td><span class="badge bg-primary">Create</span></td>
+                    <td class="text-end">9001</td>
+                    <td class="text-end">2025-05-16 09:30:25</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">2</td>
+                    <td class="text-end">102</td>
+                    <td><span class="badge bg-success">Start</span></td>
+                    <td class="text-end">9002</td>
+                    <td class="text-end">2025-05-16 09:45:00</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">3</td>
+                    <td class="text-end">103</td>
+                    <td><span class="badge bg-warning text-dark">Stop</span></td>
+                    <td class="text-end">9003</td>
+                    <td class="text-end">2025-05-16 10:05:42</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">4</td>
+                    <td class="text-end">101</td>
+                    <td><span class="badge bg-danger">Terminate</span></td>
+                    <td class="text-end">9004</td>
+                    <td class="text-end">2025-05-16 10:10:12</td>
+                  </tr>
+                  <!-- Tambahkan baris lain jika perlu -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
     </div>
   </div>
   <!-- [ Main Content ] end -->
@@ -245,5 +255,4 @@
   <script>font_change("Public-Sans");</script>
 </body>
 <!-- [Body] end -->
-
 </html>
