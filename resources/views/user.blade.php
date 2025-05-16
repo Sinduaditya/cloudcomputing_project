@@ -61,7 +61,7 @@
           <label>Management</label>
           <i class="ti ti-dashboard"></i>
         </li>
-        <li class="pc-item">
+       <li class="pc-item">
           <a href="/user" class="pc-link">
             <span class="pc-micon"><i class="ti ti-typography"></i></span>
             <span class="pc-mtext">User</span>
@@ -136,12 +136,22 @@
   <div class="pc-container">
     <div class="pc-content">
       <!-- [ breadcrumb ] start -->
+       <div class="page-header">
+        <div class="page-block">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <div class="page-header-title">
+                <h5 class="m-b-10">User</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- [ breadcrumb ] end -->
       <!-- [ Main Content ] start -->
       <div class="row">
         <!-- [ sample-page ] start -->
         <div class="container my-5">
-  <h2 class="mb-4">User Management</h2>
   <table class="table table-bordered table-hover">
     <thead class="table-dark">
       <tr>
