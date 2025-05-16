@@ -132,6 +132,12 @@
       <!-- [Mobile Media Block end] -->
       <div class="ms-auto">
         <ul class="list-unstyled">
+          <li class="pc-h-item d-none d-md-inline-flex">
+            <form class="header-search">
+              <i data-feather="search" class="icon-search"></i>
+              <input type="search" class="form-control" placeholder="Search here. . .">
+            </form>
+          </li>
           <li class="dropdown pc-h-item header-user-profile">
             <a class="pc-head-link arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button"
               aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false" x>
@@ -144,8 +150,6 @@
     </div>
   </header>
   <!-- [ Header ] end -->
-
-
 
   <!-- [ Main Content ] start -->
   <div class="pc-container">
@@ -163,85 +167,98 @@
         </div>
       </div>
       <!-- [ breadcrumb ] end -->
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
       <!-- [ Main Content ] start -->
       <div class="container-fluid mt-4">
-    <div class="row mb-3">
-      <div class="col">
-        <h4>Downloads</h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-striped table-hover mb-0">
-                <thead class="table-light">
-                  <tr class="text-start">
-                    <th class="text-end">ID</th>
-                    <th class="text-end">User ID</th>
-                    <th>Platform</th>
-                    <th>URL Video</th>
-                    <th>Format</th>
-                    <th>Status</th>
-                    <th class="text-end">Ukuran File (MB)</th>
-                    <th class="text-end">Token Cost</th>
-                    <th class="text-end">Tanggal Download</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-end">1</td>
-                    <td class="text-end">101</td>
-                    <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
-                    <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video1</a></td>
-                    <td>mp4</td>
-                    <td><span class="badge bg-warning text-dark">Pending</span></td>
-                    <td class="text-end">12.5</td>
-                    <td class="text-end">3</td>
-                    <td class="text-end">2025-05-15 14:32:10</td>
-                  </tr>
-                  <tr>
-                    <td class="text-end">2</td>
-                    <td class="text-end">102</td>
-                    <td><i><ion-icon name="logo-tiktok"></ion-icon> </i>TikTok</td>
-                    <td><a href="#" target="_blank" class="text-decoration-none">https://tiktok.com/@user/video2</a></td>
-                    <td>mp4</td>
-                    <td><span class="badge bg-info">Processing</span></td>
-                    <td class="text-end">8.7</td>
-                    <td class="text-end">2</td>
-                    <td class="text-end">2025-05-14 09:15:42</td>
-                  </tr>
-                  <tr>
-                    <td class="text-end">3</td>
-                    <td class="text-end">103</td>
-                    <td><i class="fab fa-instagram text-primary me-1"></i>instagram</td>
-                    <td><a href="#" target="_blank" class="text-decoration-none">https://instagram.com/video3</a></td>
-                    <td>mp4</td>
-                    <td><span class="badge bg-success">Done</span></td>
-                    <td class="text-end">20.0</td>
-                    <td class="text-end">5</td>
-                    <td class="text-end">2025-05-13 17:20:55</td>
-                  </tr>
-                  <tr>
-                    <td class="text-end">4</td>
-                    <td class="text-end">104</td>
-                    <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
-                    <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video4</a></td>
-                    <td>mp4</td>
-                    <td><span class="badge bg-danger">Failed</span></td>
-                    <td class="text-end">15.2</td>
-                    <td class="text-end">4</td>
-                    <td class="text-end">2025-05-12 22:47:01</td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="row mb-3">
+          <div class="col">
+            <h4>Downloads</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light">
+                      <tr class="text-start">
+                        <th class="text-end">ID</th>
+                        <th class="text-end">User ID</th>
+                        <th>Platform</th>
+                        <th>URL Video</th>
+                        <th>Format</th>
+                        <th>Status</th>
+                        <th class="text-end">Ukuran File (MB)</th>
+                        <th class="text-end">Token Cost</th>
+                        <th class="text-end">Tanggal Download</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-end">1</td>
+                        <td class="text-end">101</td>
+                        <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
+                        <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video1</a></td>
+                        <td>mp4</td>
+                        <td><span class="badge bg-warning text-dark">Pending</span></td>
+                        <td class="text-end">12.5</td>
+                        <td class="text-end">3</td>
+                        <td class="text-end">2025-05-15 14:32:10</td>
+                      </tr>
+                      <tr>
+                        <td class="text-end">2</td>
+                        <td class="text-end">102</td>
+                        <td><i><ion-icon name="logo-tiktok"></ion-icon> </i>TikTok</td>
+                        <td><a href="#" target="_blank" class="text-decoration-none">https://tiktok.com/@user/video2</a></td>
+                        <td>mp4</td>
+                        <td><span class="badge bg-info">Processing</span></td>
+                        <td class="text-end">8.7</td>
+                        <td class="text-end">2</td>
+                        <td class="text-end">2025-05-14 09:15:42</td>
+                      </tr>
+                      <tr>
+                        <td class="text-end">3</td>
+                        <td class="text-end">103</td>
+                        <td><i class="fab fa-instagram text-primary me-1"></i>instagram</td>
+                        <td><a href="#" target="_blank" class="text-decoration-none">https://instagram.com/video3</a></td>
+                        <td>mp4</td>
+                        <td><span class="badge bg-success">Done</span></td>
+                        <td class="text-end">20.0</td>
+                        <td class="text-end">5</td>
+                        <td class="text-end">2025-05-13 17:20:55</td>
+                      </tr>
+                      <tr>
+                        <td class="text-end">4</td>
+                        <td class="text-end">104</td>
+                        <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
+                        <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video4</a></td>
+                        <td>mp4</td>
+                        <td><span class="badge bg-danger">Failed</span></td>
+                        <td class="text-end">15.2</td>
+                        <td class="text-end">4</td>
+                        <td class="text-end">2025-05-12 22:47:01</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
     </div>
   </div>
   <!-- [ Main Content ] end -->
