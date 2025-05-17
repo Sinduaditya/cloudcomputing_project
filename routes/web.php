@@ -56,3 +56,4 @@ Route::get('/actifity', function () {
 Route::get('/billing', function () {
     return view('billing');
 });
+
