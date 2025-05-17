@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('billing_logs', function (Blueprint $table) {
+        Schema::create('token_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('period_start');
-            $table->date('period_end');
-            $table->integer('total_token');
-            $table->integer('total_mb');
+            $table->integer('amount');
+            $table->string('transaction_type');
+            $table->bigInteger('reference_id')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('billing_logs');
+        Schema::dropIfExists('token_transactions');
     }
 };
