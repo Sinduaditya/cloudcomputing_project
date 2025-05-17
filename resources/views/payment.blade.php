@@ -55,26 +55,49 @@
       <div class="navbar-content">
         <ul class="pc-navbar">
           <li class="pc-item">
-            <a href="/index" class="pc-link">
+            <a href="../dashboard/index.html" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
               <span class="pc-mtext">Dashboard</span>
             </a>
           </li>
-
           <li class="pc-item pc-caption">
             <label>Management</label>
             <i class="ti ti-dashboard"></i>
           </li>
           <li class="pc-item">
             <a href="/user" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-typography"></i></span>
+              <span class="pc-micon"><i class="ti ti-user"></i></span>
               <span class="pc-mtext">User</span>
             </a>
           </li>
           <li class="pc-item">
-            <a href="/user" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
+            <a href="/payment" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-receipt"></i></span>
               <span class="pc-mtext">Payment</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/download" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-history"></i></span>
+              <span class="pc-mtext">Download</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/scheduled" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-access-point"></i></span>
+              <span class="pc-mtext">Scheduled</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/activity" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-calendar-time"></i></span>
+              <span class="pc-mtext">Activity</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="/billing" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-sport-billard"></i></span>
+              <span class="pc-mtext">Billing</span>
             </a>
           </li>
         </ul>
@@ -137,7 +160,19 @@
         </div>
       </div>
       <!-- [ breadcrumb ] end -->
-
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
       <!-- Main content -->
       <div class="d-flex justify-content-between align-items-center mb-4">
       </div>
@@ -147,7 +182,7 @@
             <table class="table table-hover align-middle">
               <thead class="table-light">
                 <tr>
-                  <th>#</th>
+                  <th>No</th>
                   <th>ID Pembayaran</th>
                   <th>Nama Pengguna</th>
                   <th>Jumlah</th>
@@ -204,6 +239,7 @@
   </div>
   </div>
   </div>
+
   <!-- [ Main Content ] end -->
   <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
@@ -240,4 +276,5 @@
   <script>font_change("Public-Sans");</script>
 </body>
 <!-- [Body] end -->
+
 </html>
