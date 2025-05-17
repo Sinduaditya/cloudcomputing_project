@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/youtube', function () {
-    return view('index');
+    return view('youtube');
 });
 
 Route::get('/instagram', function () {
@@ -29,30 +29,31 @@ Route::get('/tiktok', function () {
     return view('tiktok');
 });
 
-Route::get('/short', function () {
-    return view('short');
-});
-
-Route::get('/reels', function () {
-    return view('reels');
-});
-
-Route::get('/foto', function () {
-    return view('foto');
-});
-
-Route::get('/fotott', function () {
-    return view('fotott');
-});
-
 Route::get('/index', function () {
-    return view('fotott');
+    return view('index');
 });
 
 Route::get('/user', function () {
-    return view('fotott');
+    return view('user');
 });
 
 Route::get('/payment', function () {
-    return view('fotott');
+    return view('payment');
 });
+
+Route::get('/download', function () {
+    return view('download');
+});
+
+Route::get('/scheduled', function () {
+    return view('scheduled');
+});
+
+Route::get('/actifity', function () {
+    return view('activity');
+});
+
+Route::get('/billing', function () {
+    return view('billing');
+});
+

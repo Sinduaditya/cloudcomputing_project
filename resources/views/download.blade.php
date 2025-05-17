@@ -156,114 +156,94 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">User Management</h5>
+                <h5 class="m-b-10">Download</h5>
               </div>
             </div>
           </div>
         </div>
       </div>
       <!-- [ breadcrumb ] end -->
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
       <!-- [ Main Content ] start -->
-      <div class="page-wrapper">
-        <div class="page-content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-body">
-                    <table class="table table-bordered">
-                      <thead class="thead-dark">
-                        <tr>
-                          <th>No</th>
-                          <th>Nama</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Saldo Token</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Ari Nugroho</td>
-                          <td>ari@example.com</td>
-                          <td><span class="badge bg-info">Admin</span></td>
-                          <td>500</td>
-                          <td><span class="badge bg-success">Aktif</span></td>
-                          <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                              Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Sinta Dewi</td>
-                          <td>sinta@example.com</td>
-                          <td><span class="badge bg-primary">User</span></td>
-                          <td>100</td>
-                          <td><span class="badge bg-secondary">Nonaktif</span></td>
-                          <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                              Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+      <div class="container-fluid mt-4">
+    <div class="row mb-3">
+      <div class="col">
+        <h4>Downloads</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                  <tr class="text-start">
+                    <th class="text-end">ID</th>
+                    <th class="text-end">User ID</th>
+                    <th>Platform</th>
+                    <th>URL Video</th>
+                    <th>Format</th>
+                    <th>Status</th>
+                    <th class="text-end">Ukuran File (MB)</th>
+                    <th class="text-end">Token Cost</th>
+                    <th class="text-end">Tanggal Download</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-end">1</td>
+                    <td class="text-end">101</td>
+                    <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
+                    <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video1</a></td>
+                    <td>mp4</td>
+                    <td><span class="badge bg-warning text-dark">Pending</span></td>
+                    <td class="text-end">12.5</td>
+                    <td class="text-end">3</td>
+                    <td class="text-end">2025-05-15 14:32:10</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">2</td>
+                    <td class="text-end">102</td>
+                    <td><i><ion-icon name="logo-tiktok"></ion-icon> </i>TikTok</td>
+                    <td><a href="#" target="_blank" class="text-decoration-none">https://tiktok.com/@user/video2</a></td>
+                    <td>mp4</td>
+                    <td><span class="badge bg-info">Processing</span></td>
+                    <td class="text-end">8.7</td>
+                    <td class="text-end">2</td>
+                    <td class="text-end">2025-05-14 09:15:42</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">3</td>
+                    <td class="text-end">103</td>
+                    <td><i class="fab fa-instagram text-primary me-1"></i>instagram</td>
+                    <td><a href="#" target="_blank" class="text-decoration-none">https://instagram.com/video3</a></td>
+                    <td>mp4</td>
+                    <td><span class="badge bg-success">Done</span></td>
+                    <td class="text-end">20.0</td>
+                    <td class="text-end">5</td>
+                    <td class="text-end">2025-05-13 17:20:55</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">4</td>
+                    <td class="text-end">104</td>
+                    <td><i class="fab fa-youtube text-danger me-1"></i>YouTube</td>
+                    <td><a href="#" target="_blank" class="text-decoration-none">https://youtube.com/video4</a></td>
+                    <td>mp4</td>
+                    <td><span class="badge bg-danger">Failed</span></td>
+                    <td class="text-end">15.2</td>
+                    <td class="text-end">4</td>
+                    <td class="text-end">2025-05-12 22:47:01</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Modal Edit User -->
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editUserModalLabel">Edit Pengguna</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editUserForm">
-          <div class="mb-3">
-            <label for="editToken" class="form-label">Saldo Token</label>
-            <input type="number" class="form-control" id="editToken" min="0" required>
-          </div>
-          <div class="mb-3">
-            <label for="editStatus" class="form-label">Status</label>
-            <select class="form-select" id="editStatus" required>
-              <option value="true">Aktif</option>
-              <option value="false">Nonaktif</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-        </form>
-      </div>
     </div>
   </div>
-</div>
-
   <!-- [ Main Content ] end -->
   <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
@@ -293,11 +273,16 @@
   <script src="../assets/js/pcoded.js"></script>
   <script src="../assets/js/plugins/feather.min.js"></script>
 
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
   <script>layout_change('light');</script>
   <script>change_box_container('false');</script>
   <script>layout_rtl_change('false');</script>
   <script>preset_change("preset-1");</script>
   <script>font_change("Public-Sans");</script>
+
 </body>
 <!-- [Body] end -->
+
 </html>

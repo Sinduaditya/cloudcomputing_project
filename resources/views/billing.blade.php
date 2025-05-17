@@ -156,7 +156,7 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">User Management</h5>
+                <h5 class="m-b-10">Billing</h5>
               </div>
             </div>
           </div>
@@ -177,93 +177,58 @@
         </ul>
       </nav>
       <!-- [ Main Content ] start -->
-      <div class="page-wrapper">
-        <div class="page-content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-body">
-                    <table class="table table-bordered">
-                      <thead class="thead-dark">
-                        <tr>
-                          <th>No</th>
-                          <th>Nama</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Saldo Token</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Ari Nugroho</td>
-                          <td>ari@example.com</td>
-                          <td><span class="badge bg-info">Admin</span></td>
-                          <td>500</td>
-                          <td><span class="badge bg-success">Aktif</span></td>
-                          <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                              Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Sinta Dewi</td>
-                          <td>sinta@example.com</td>
-                          <td><span class="badge bg-primary">User</span></td>
-                          <td>100</td>
-                          <td><span class="badge bg-secondary">Nonaktif</span></td>
-                          <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                              Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+      <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-end">ID</th>
+                    <th class="text-end">User ID</th>
+                    <th class="text-center">Periode</th>
+                    <th class="text-end">Total Token</th>
+                    <th class="text-end">Total MB</th>
+                    <th class="text-end">Dibuat Pada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-end">1</td>
+                    <td class="text-end">301</td>
+                    <td class="text-center">2025-05-01 → 2025-05-07</td>
+                    <td class="text-end">520</td>
+                    <td class="text-end">104.0</td>
+                    <td class="text-end">2025-05-07 23:59:00</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">2</td>
+                    <td class="text-end">302</td>
+                    <td class="text-center">2025-05-01 → 2025-05-07</td>
+                    <td class="text-end">300</td>
+                    <td class="text-end">60.0</td>
+                    <td class="text-end">2025-05-07 22:10:34</td>
+                  </tr>
+                  <tr>
+                    <td class="text-end">3</td>
+                    <td class="text-end">301</td>
+                    <td class="text-center">2025-05-08 → 2025-05-14</td>
+                    <td class="text-end">470</td>
+                    <td class="text-end">94.0</td>
+                    <td class="text-end">2025-05-14 23:59:00</td>
+                  </tr>
+                  <!-- Tambah baris lain jika diperlukan -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Modal Edit User -->
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editUserModalLabel">Edit Pengguna</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editUserForm">
-          <div class="mb-3">
-            <label for="editToken" class="form-label">Saldo Token</label>
-            <input type="number" class="form-control" id="editToken" min="0" required>
-          </div>
-          <div class="mb-3">
-            <label for="editStatus" class="form-label">Status</label>
-            <select class="form-select" id="editStatus" required>
-              <option value="true">Aktif</option>
-              <option value="false">Nonaktif</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-        </form>
-      </div>
     </div>
   </div>
-</div>
-
   <!-- [ Main Content ] end -->
   <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
@@ -300,4 +265,5 @@
   <script>font_change("Public-Sans");</script>
 </body>
 <!-- [Body] end -->
+
 </html>
