@@ -15,6 +15,16 @@ return new class extends Migration
     {
         Schema::create('downloads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('platform');
+            $table->text('url');
+            $table->string('format');
+            $table->string('status')->default('pending');
+            $table->integer('file_size_mb')->nullable();
+            $table->integer('token_cost')->nullable();
+            $table->string('cloudinary_id')->nullable();
+            $table->text('file_url')->nullable();
+            $table->timestamp('downloaded_at')->nullable();
             $table->timestamps();
         });
     }

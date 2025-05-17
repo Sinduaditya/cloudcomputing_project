@@ -5,27 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Download extends Model
+class ScheduledTask extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'platform',
         'url',
+        'platform',
         'format',
+        'scheduled_for',
         'status',
-        'file_size_mb',
-        'token_cost',
-        'cloudinary_id',
-        'file_url',
-        'downloaded_at',
     ];
 
-
-
     /**
-     * Get the user that owns the download.
+     * Get the user that owns the scheduled task.
      */
     public function user()
     {
@@ -33,7 +27,7 @@ class Download extends Model
     }
 
     /**
-     * Get the activity logs associated with the download.
+     * Get the activity logs for the scheduled task.
      */
     public function activityLogs()
     {

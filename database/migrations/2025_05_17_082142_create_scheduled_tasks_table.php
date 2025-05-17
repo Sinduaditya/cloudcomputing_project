@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('billing_logs', function (Blueprint $table) {
+        Schema::create('scheduled_tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('period_start');
-            $table->date('period_end');
-            $table->integer('total_token');
-            $table->integer('total_mb');
+            $table->text('url');
+            $table->string('platform');
+            $table->string('format');
+            $table->timestamp('scheduled_for');
+            $table->string('status')->default('scheduled');
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('billing_logs');
+        Schema::dropIfExists('scheduled_tasks');
     }
 };
