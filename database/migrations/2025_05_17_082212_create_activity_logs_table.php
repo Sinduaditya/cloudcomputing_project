@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,11 +15,11 @@ return new class extends Migration
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('action');
-            $table->bigInteger('instance_id');
-            $table->string('instance_type');
-            $table->text('description')->nullable();
-            $table->timestamp('timestamp');
+            $table->string('action'); // download, schedule, login, token_added, etc.
+            $table->bigInteger('resource_id')->nullable(); // download_id, schedule_id, etc.
+            $table->string('resource_type')->nullable(); // Download, ScheduledTask, etc.
+            $table->text('details')->nullable();
+            $table->ipAddress('ip_address')->nullable();
             $table->timestamps();
         });
     }

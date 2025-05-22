@@ -1,4 +1,5 @@
 <?php
+// filepath: f:\UGM\cloudcomputing\cloudcomputing_project\app\Console\Kernel.php
 
 namespace App\Console;
 
@@ -9,21 +10,20 @@ class Kernel extends ConsoleKernel
 {
     /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Jalankan command setiap menit untuk mendeteksi jadwal download yang harus diproses
+        $schedule->command('downloads:process-scheduled')
+                 ->everyMinute()
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/scheduler.log'));
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
 

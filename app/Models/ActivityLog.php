@@ -1,5 +1,5 @@
 <?php
-
+// filepath: f:\UGM\cloudcomputing\cloudcomputing_project\app\Models\ActivityLog.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,25 +12,18 @@ class ActivityLog extends Model
     protected $fillable = [
         'user_id',
         'action',
-        'instance_id',
-        'instance_type',
-        'description',
-        'timestamp'
+        'resource_id',
+        'resource_type',
+        'details',
+        'ip_address'
     ];
 
-    /**
-     * Get the user that performed the activity.
-     */
+    protected $casts = [
+        'details' => 'json',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the owning instance model.
-     */
-    public function instance()
-    {
-        return $this->morphTo();
     }
 }
