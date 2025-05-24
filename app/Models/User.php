@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -15,27 +17,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'token_balance',
-        'is_admin',
-        'is_active',
-        'provider',
-        'provider_id',
-        'avatar',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'token_balance', 'is_admin', 'is_active', 'provider', 'provider_id', 'avatar'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * The attributes that should be cast.
@@ -102,44 +91,63 @@ class User extends Authenticatable
      */
     public static function findOrCreateByOAuth($oauthUser, $provider)
     {
-        $user = self::where('provider', $provider)
-            ->where('provider_id', $oauthUser->getId())
-            ->first();
+        try {
+            // Get provider ID
+            $providerId = $oauthUser->getId();
+            if (empty($providerId)) {
+                throw new Exception('Provider ID is missing');
+            }
 
-        if (!$user) {
-            // Check if user with same email exists
-            $user = self::where('email', $oauthUser->getEmail())->first();
+            // Get email
+            $email = $oauthUser->getEmail();
+            if (empty($email)) {
+                throw new Exception('Email is missing from OAuth provider');
+            }
+
+            // Try to find by provider ID first
+            $user = self::where('provider', $provider)->where('provider_id', $providerId)->first();
 
             if (!$user) {
-                // Create new user
-                $user = self::create([
-                    'name' => $oauthUser->getName(),
-                    'email' => $oauthUser->getEmail(),
-                    'provider' => $provider,
-                    'provider_id' => $oauthUser->getId(),
-                    'avatar' => $oauthUser->getAvatar(),
-                    'token_balance' => 100, // Default token balance
-                    'is_active' => true,
-                ]);
+                // Then try to find by email
+                $user = self::where('email', $email)->first();
 
-                // Record initial token transaction
-                TokenTransaction::create([
-                    'user_id' => $user->id,
-                    'amount' => 100,
-                    'balance_after' => 100,
-                    'type' => 'initial',
-                    'description' => 'Initial token allocation',
-                ]);
-            } else {
-                // Update existing user with OAuth info
-                $user->update([
-                    'provider' => $provider,
-                    'provider_id' => $oauthUser->getId(),
-                    'avatar' => $oauthUser->getAvatar()
-                ]);
+                if (!$user) {
+                    // Create new user
+                    $user = self::create([
+                        'name' => $oauthUser->getName() ?? 'User',
+                        'email' => $email,
+                        'provider' => $provider,
+                        'provider_id' => $providerId,
+                        'avatar' => $oauthUser->getAvatar(),
+                        'token_balance' => config('app.default_token_balance', 100),
+                        'is_active' => true,
+                    ]);
+
+                    // Record initial token transaction
+                    \App\Models\TokenTransaction::create([
+                        'user_id' => $user->id,
+                        'amount' => config('app.default_token_balance', 100),
+                        'balance_after' => config('app.default_token_balance', 100),
+                        'type' => 'initial',
+                        'description' => 'Initial token allocation',
+                    ]);
+                } else {
+                    // Update existing user with OAuth info
+                    $user->update([
+                        'provider' => $provider,
+                        'provider_id' => $providerId,
+                        'avatar' => $oauthUser->getAvatar(),
+                    ]);
+                }
             }
-        }
 
-        return $user;
+            return $user;
+        } catch (Exception $e) {
+            Log::error('Error in findOrCreateByOAuth: ' . $e->getMessage(), [
+                'provider' => $provider,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e; // Re-throw to be handled by the controller
+        }
     }
 }

@@ -85,15 +85,16 @@ class ScheduleController extends Controller
                 $metadata = $this->downloadService->analyze($url);
                 $platform = $metadata['platform'];
             } catch (\Exception $e) {
-                Log::warning("Could not analyze URL for scheduled download: " . $e->getMessage(), [
-                    'url' => $url
+                Log::warning('Could not analyze URL for scheduled download: ' . $e->getMessage(), [
+                    'url' => $url,
                 ]);
 
                 // Try to determine platform from URL
                 $platform = $this->downloadService->determinePlatform($url);
 
                 if (!$platform) {
-                    return back()->withErrors(['url' => 'URL tidak valid atau platform tidak didukung. Kami mendukung YouTube, Instagram, TikTok, dan Facebook.'])
+                    return back()
+                        ->withErrors(['url' => 'URL tidak valid atau platform tidak didukung. Kami mendukung YouTube, Instagram, TikTok, dan Facebook.'])
                         ->withInput();
                 }
 
@@ -107,24 +108,19 @@ class ScheduleController extends Controller
             // Estimate token cost
             $estimatedTokens = 0;
             try {
-                $estimatedTokens = $this->downloadService->calculateTokenCost(
-                    $platform,
-                    $metadata['duration'] ?? 0,
-                    $request->format,
-                    $request->quality ?? '720p'
-                );
+                $estimatedTokens = $this->downloadService->calculateTokenCost($platform, $metadata['duration'] ?? 0, $request->format, $request->quality ?? '720p');
 
-                Log::info("Estimated tokens for scheduled download", [
+                Log::info('Estimated tokens for scheduled download', [
                     'url' => $url,
                     'platform' => $platform,
                     'title' => $metadata['title'] ?? 'Unknown',
                     'duration' => $metadata['duration'] ?? 0,
-                    'estimated_tokens' => $estimatedTokens
+                    'estimated_tokens' => $estimatedTokens,
                 ]);
             } catch (\Exception $e) {
-                Log::warning("Could not estimate tokens for scheduled download: " . $e->getMessage(), [
+                Log::warning('Could not estimate tokens for scheduled download: ' . $e->getMessage(), [
                     'url' => $url,
-                    'platform' => $platform
+                    'platform' => $platform,
                 ]);
                 // Set minimum token estimate
                 $estimatedTokens = 5;
@@ -138,7 +134,7 @@ class ScheduleController extends Controller
                 'quality' => $request->format === 'mp3' ? null : $request->quality,
                 'platform' => $platform,
                 'scheduled_for' => $request->scheduled_for,
-                'status' => ScheduledTask::STATUS_SCHEDULED
+                'status' => ScheduledTask::STATUS_SCHEDULED,
             ]);
 
             // Log activity
@@ -153,9 +149,9 @@ class ScheduleController extends Controller
                     'quality' => $request->quality ?? null,
                     'scheduled_for' => $request->scheduled_for,
                     'estimated_tokens' => $estimatedTokens,
-                    'title' => $metadata['title'] ?? 'Unknown'
+                    'title' => $metadata['title'] ?? 'Unknown',
                 ]),
-                'ip_address' => $request->ip()
+                'ip_address' => $request->ip(),
             ]);
 
             // Format date for display
@@ -167,16 +163,15 @@ class ScheduleController extends Controller
                 $successMessage .= " (estimasi: {$estimatedTokens} token)";
             }
 
-            return redirect()->route('schedules.index')
-                ->with('success', $successMessage);
-
+            return redirect()->route('schedules.index')->with('success', $successMessage);
         } catch (\Exception $e) {
-            Log::error("Schedule creation error: " . $e->getMessage(), [
+            Log::error('Schedule creation error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
-                'input' => $request->all()
+                'input' => $request->all(),
             ]);
 
-            return back()->withErrors(['url' => 'Gagal menjadwalkan download: ' . $e->getMessage()])
+            return back()
+                ->withErrors(['url' => 'Gagal menjadwalkan download: ' . $e->getMessage()])
                 ->withInput();
         }
     }
@@ -232,10 +227,7 @@ class ScheduleController extends Controller
                 ->firstOrFail();
 
             // Check if we're only updating the schedule time
-            if ($request->has('scheduled_for') &&
-                $request->scheduled_for != $schedule->scheduled_for &&
-                !$schedule->scheduled_for->isPast()) {
-
+            if ($request->has('scheduled_for') && $request->scheduled_for != $schedule->scheduled_for && !$schedule->scheduled_for->isPast()) {
                 // Update scheduled time
                 $oldTime = $schedule->scheduled_for->format('d M Y H:i');
                 $schedule->scheduled_for = $request->scheduled_for;
@@ -249,22 +241,19 @@ class ScheduleController extends Controller
                     'resource_type' => 'ScheduledTask',
                     'details' => json_encode([
                         'old_time' => $oldTime,
-                        'new_time' => Carbon::parse($request->scheduled_for)->format('d M Y H:i')
+                        'new_time' => Carbon::parse($request->scheduled_for)->format('d M Y H:i'),
                     ]),
-                    'ip_address' => $request->ip()
+                    'ip_address' => $request->ip(),
                 ]);
 
-                return redirect()->route('schedules.index')
-                    ->with('success', 'Jadwal berhasil diperbarui.');
+                return redirect()->route('schedules.index')->with('success', 'Jadwal berhasil diperbarui.');
             }
 
-            return redirect()->route('schedules.index')
-                ->with('error', 'Tidak dapat mengubah jadwal yang sudah lewat waktu atau sedang diproses.');
-
+            return redirect()->route('schedules.index')->with('error', 'Tidak dapat mengubah jadwal yang sudah lewat waktu atau sedang diproses.');
         } catch (\Exception $e) {
-            Log::error("Schedule update error: " . $e->getMessage(), [
+            Log::error('Schedule update error: ' . $e->getMessage(), [
                 'schedule_id' => $id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return back()->withErrors(['scheduled_for' => 'Gagal mengubah jadwal: ' . $e->getMessage()]);
@@ -284,8 +273,7 @@ class ScheduleController extends Controller
 
             // Check if it can be cancelled (must be in the future)
             if ($scheduledTask->scheduled_for->isPast()) {
-                return redirect()->route('schedules.index')
-                    ->with('error', 'Jadwal tidak dapat dibatalkan karena waktunya telah lewat.');
+                return redirect()->route('schedules.index')->with('error', 'Jadwal tidak dapat dibatalkan karena waktunya telah lewat.');
             }
 
             // Log activity before updating
@@ -298,22 +286,21 @@ class ScheduleController extends Controller
                     'url' => $scheduledTask->url,
                     'platform' => $scheduledTask->platform,
                     'format' => $scheduledTask->format,
-                    'scheduled_for' => $scheduledTask->scheduled_for->format('Y-m-d H:i:s')
+                    'scheduled_for' => $scheduledTask->scheduled_for->format('Y-m-d H:i:s'),
                 ]),
-                'ip_address' => request()->ip()
+                'ip_address' => request()->ip(),
             ]);
 
             // Update status rather than delete for better record keeping
             $scheduledTask->status = ScheduledTask::STATUS_CANCELLED;
             $scheduledTask->save();
 
-            return redirect()->route('schedules.index')
-                ->with('success', 'Jadwal download berhasil dibatalkan.');
-
+            return redirect()->route('schedules.index')->with('success', 'Jadwal download berhasil dibatalkan.');
         } catch (\Exception $e) {
-            Log::error("Error cancelling scheduled task: " . $e->getMessage());
+            Log::error('Error cancelling scheduled task: ' . $e->getMessage());
 
-            return redirect()->route('schedules.index')
+            return redirect()
+                ->route('schedules.index')
                 ->with('error', 'Gagal membatalkan jadwal: ' . $e->getMessage());
         }
     }
@@ -331,5 +318,46 @@ class ScheduleController extends Controller
         ];
 
         return $titles[$platform] ?? 'Media Content';
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('schedules', []);
+        if (empty($ids)) {
+            return redirect()->route('schedules.index')->with('error', 'No schedules selected.');
+        }
+
+        $deleted = 0;
+        foreach ($ids as $id) {
+            $schedule = \App\Models\ScheduledTask::where('id', $id)
+                ->where('user_id', auth()->id())
+                ->where('status', \App\Models\ScheduledTask::STATUS_SCHEDULED)
+                ->first();
+
+            if ($schedule) {
+                // Log activity before updating
+                \App\Models\ActivityLog::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'schedule_bulk_deleted',
+                    'resource_id' => $schedule->id,
+                    'resource_type' => 'ScheduledTask',
+                    'details' => json_encode([
+                        'url' => $schedule->url,
+                        'platform' => $schedule->platform,
+                        'format' => $schedule->format,
+                        'scheduled_for' => $schedule->scheduled_for->format('Y-m-d H:i:s'),
+                    ]),
+                    'ip_address' => $request->ip(),
+                ]);
+                // Mark as cancelled instead of deleting
+                $schedule->status = \App\Models\ScheduledTask::STATUS_CANCELLED;
+                $schedule->save();
+                $deleted++;
+            }
+        }
+
+        return redirect()
+            ->route('schedules.index')
+            ->with('success', "$deleted schedule(s) cancelled successfully.");
     }
 }

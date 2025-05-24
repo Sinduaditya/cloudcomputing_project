@@ -248,7 +248,7 @@
 
             if(confirm('Are you sure you want to delete the selected schedules? This action cannot be undone.')) {
                 // Here we would submit the form to delete selected schedules
-                // $('#bulkActionForm').attr('action', '{{ route("schedules.bulk-delete") }}').submit();
+                $('#bulkActionForm').attr('action', '{{ route("schedules.bulk-delete") }}').submit();
                 alert('Deleted ' + $('.schedule-checkbox:checked').length + ' schedules');
             }
         });
