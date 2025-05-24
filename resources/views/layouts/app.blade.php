@@ -164,7 +164,7 @@
             </div>
         </main>
 
-        {{-- <footer class="neo-footer mt-10">
+        <!-- <footer class="neo-footer mt-10">
             <div class="container text-center">
                 <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'ClipRush') }} | All Rights Reserved</p>
                 <div class="mt-2">
@@ -174,7 +174,7 @@
                     <a href="#" class="text-decoration-none">Contact</a>
                 </div>
             </div>
-        </footer> --}}
+        </footer>  -->
     </div>
 
     <!-- Bootstrap JS -->

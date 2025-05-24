@@ -56,13 +56,13 @@
     <!-- Filter Card -->
     <div class="neo-card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Filter Activity Logs</h5>
+            <h5 class="mb-0" style="padding: 12px;">Filter Activity Logs</h5>
             <button class="neo-btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse" aria-expanded="false" aria-controls="filtersCollapse">
                 <i class="fas fa-filter me-1"></i> Toggle Filters
             </button>
         </div>
         <div class="collapse show" id="filtersCollapse">
-            <div class="card-body">
+            <div class="card-body" style="padding: 12px;">
                 <form action="{{ route('admin.activities.index') }}" method="GET" class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Action Type</label>
@@ -140,7 +140,7 @@
     <!-- Activity Logs List -->
     <div class="neo-card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
+            <h5 class="mb-0" style="padding: 12px;">
                 Activity Logs
                 @if(request()->has('action') || request()->has('user') || request()->has('resource_type') || request()->has('resource_id') || request()->has('ip_address') || request()->has('from_date') || request()->has('to_date'))
                     <span class="badge bg-primary" style="border: 2px solid #121212; font-size: 12px;">Filtered</span>
@@ -316,12 +316,6 @@
         overflow: hidden;
     }
 
-    .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
-        border-bottom: 2px solid #212529;
-        padding: 1rem;
-    }
-
     .neo-btn {
         display: inline-block;
         font-weight: 600;
@@ -333,12 +327,12 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+        background: linear-gradient(90deg, #2B7EC1   0%, #2B7EC1 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;
         text-decoration: none;
-        color: #212529;
+        color:rgb(255, 255, 255);
     }
 
     .neo-btn:hover {
@@ -360,8 +354,8 @@
         background: #f8f9fa;
     }
 
-    .neo-btn.btn-danger {
-        background: linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%);
+    .neo-btn.btn-primary {
+        background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%);
     }
 
     .table {

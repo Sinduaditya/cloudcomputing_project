@@ -15,10 +15,10 @@
         <div class="card-header">
             <h4 class="mb-0 fw-bold">Token Usage Calculator</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 12px;">
             <div class="row">
                 <div class="col-md-6 mb-4 mb-md-0">
-                    <div class="mb-3">
+                    <div class="mb-3" style="pad">
                         <label class="form-label fw-bold">Content Type</label>
                         <select id="contentType" class="form-select neo-form-control">
                             <option value="1">Video (YouTube, Vimeo, etc.)</option>
@@ -51,7 +51,7 @@
                             <label class="form-check-label" for="subtitleExtraction">Subtitle Extraction (+1 token)</label>
                         </div>
                     </div>
-                    <button id="calculateBtn" class="neo-btn w-100">Calculate Token Cost</button>
+                    <button id="calculateBtn" class="neo-btn w-100" style="color: #ffffff;">Calculate Token Cost</button>
                 </div>
                 <div class="col-md-6">
                     <div class="h-100 d-flex flex-column">
@@ -139,7 +139,7 @@
                                 <span>No priority processing</span>
                             </li>
                         </ul>
-                        <a href="{{ route('tokens.purchase') }}" class="neo-btn w-100">Purchase</a>
+                        <a href="{{ route('tokens.purchase') }}" class="neo-btn w-100" style="color: #ffffff;">Purchase</a>
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                                 <span>Normal priority processing</span>
                             </li>
                         </ul>
-                        <a href="{{ route('tokens.purchase') }}" class="neo-btn w-100">Purchase</a>
+                        <a href="{{ route('tokens.purchase') }}" class="neo-btn w-100" style="color: #ffffff;"  >Purchase</a>
                     </div>
                 </div>
             </div>
@@ -648,13 +648,12 @@
 @push('styles')
 <style>
     :root {
-        --primary: #ff6b6b;
         --secondary: #212529;
         --shadow-color: rgba(0, 0, 0, 0.2);
     }
 
     .text-primary-gradient {
-        background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+        background: linear-gradient(90deg,rgb(231, 177, 0),rgb(235, 180, 0));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -668,7 +667,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid var(--secondary);
         padding: 1rem;
     }
@@ -714,7 +712,6 @@
         line-height: 1.5;
         border: 2px solid var(--secondary);
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 var(--shadow-color);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

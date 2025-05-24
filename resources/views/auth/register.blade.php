@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="neo-card">
-                <div class="card-header">
+                <div class="card-header py-3 text-center bg-light">
                     <h4 class="mb-0">Create Account</h4>
                 </div>
                 <div class="card-body p-4">

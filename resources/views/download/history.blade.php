@@ -18,7 +18,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="neo-card mb-4">
+        <div class="neo-card mb-4" style="padding-left: 12px;">
             <div class="card-body">
                 <form action="{{ route('downloads.index') }}" method="GET" class="row g-3">
                     <div class="col-md-4">
@@ -55,10 +55,9 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">&nbsp;</label>
-                        <div class="d-grid">
-                            <button type="submit" class="neo-btn">
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="w-100">
+                            <button type="submit" class="neo-btn w-100">
                                 <i class="fas fa-filter me-2"></i> Filter Results
                             </button>
                         </div>
@@ -68,9 +67,9 @@
         </div>
 
         <!-- Downloads List -->
-        <div class="neo-card">
+        <div class="neo-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Your Downloads</h5>
+                <h5 class="mb-0" style="padding: 12px;">Your Downloads</h5>
                 <span class="badge bg-primary" style="border: 2px solid #212529; font-size: 14px;">
                     {{ $downloads->total() }} Downloads
                 </span>
@@ -161,7 +160,7 @@
                                                         title="Download">
                                                         <i class="fas fa-download"></i>
                                                     </a>
-                                                    <a href="{{ route('downloads.direct', $download->id) }}"
+                                                    <a href="{{ route('downloads.index', $download->id) }}"
                                                         class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip"
                                                         title="Direct Download">
                                                         <i class="fas fa-cloud-download-alt"></i>

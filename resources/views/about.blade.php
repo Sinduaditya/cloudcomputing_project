@@ -23,8 +23,8 @@
                 </div>
                 <div class="col-lg-6 mt-4 mt-lg-0">
                     <div class="position-relative">
-                        <img src="{{ asset('images/about-hero.svg') }}" alt="Cloud Computing" class="img-fluid" style="border: 3px solid var(--secondary); border-radius: 8px; box-shadow: 5px 5px 0 var(--shadow-color);">
-                        <div class="position-absolute" style="top: -20px; right: -20px; background: linear-gradient(45deg, #ff9a9e, #fad0c4); border: 3px solid var(--secondary); border-radius: 8px; padding: 10px 15px; box-shadow: 4px 4px 0 var(--shadow-color);">
+                        <img src="{{ asset('images/4743634.png') }}" alt="Cloud Computing" class="img-fluid" style="border: 3px solid var(--secondary); border-radius: 8px; box-shadow: 5px 5px 0 var(--shadow-color); width: 75%;">
+                        <div class="position-absolute" style="top: -20px; right: -20px; border: 3px solid var(--secondary); border-radius: 8px; padding: 10px 15px; box-shadow: 4px 4px 0 var(--shadow-color);">
                             <div class="fw-bold">Est. 2023</div>
                         </div>
                     </div>
@@ -399,7 +399,7 @@
 @endsection
 
 @push('styles')
-<style>
+<!-- <style>
     :root {
         --primary: #ff6b6b;
         --secondary: #212529;
@@ -478,5 +478,5 @@
         right: 0;
         bottom: 0;
     }
-</style>
+</style> -->
 @endpush

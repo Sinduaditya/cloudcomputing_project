@@ -17,7 +17,7 @@
             </div>
 
             <x-card>
-                <div class="token-info mb-4 p-3 bg-light" style="border: 2px dashed #ff4b2b; border-radius: 8px;">
+                <div class="token-info p-3 bg-light" style="border: 2px dashed #ff4b2b; border-radius: 8px;">
                     <div class="d-flex align-items-center">
                         <div class="token-icon me-3">
                             <i class="fas fa-coins fa-2x text-warning"></i>
@@ -29,46 +29,51 @@
                     </div>
                 </div>
 
-                <form action="{{ route('schedules.store') }}" method="POST" id="scheduleForm">
+                <for action="{{ route('schedules.store') }}" method="POST" id="scheduleForm">
                     @csrf
-
-                    <div class="mb-4">
-                        <x-form-input
-                            name="url"
-                            label="Video URL"
-                            placeholder="Paste YouTube, TikTok, or Instagram URL here"
-                            :value="old('url')"
-                            required
-                            autofocus
-                        />
-                        <div class="supported-platforms small text-muted mt-2">
-                            <span class="me-3"><i class="fab fa-youtube text-danger me-1"></i> YouTube</span>
-                            <span class="me-3"><i class="fab fa-tiktok me-1"></i> TikTok</span>
-                            <span><i class="fab fa-instagram text-purple me-1"></i> Instagram</span>
-                        </div>
-                    </div>
-
-                   <div class="row mb-4">
-                            <div class="col-md-6">
-                                <x-form-select name="format" label="Format" :options="[
-                                    'mp4' => 'Video (MP4)',
-                                    'mp3' => 'Audio (MP3)',
-                                ]" selected="mp4" required />
-                            </div>
-                            <div class="col-md-6" id="quality-container">
-                                <x-form-select name="quality" label="Quality" :options="[
-                                    '1080p' => '1080p (HD)',
-                                    '720p' => '720p (HD)',
-                                    '480p' => '480p (SD)',
-                                    '360p' => '360p (SD)',
-                                ]" selected="720p" required />
+                    <div class="options-container p-3" style="border: 2px solid #212529; border-radius: 8px;">
+                        <div class="mb-4">
+                            <x-form-input
+                                name="url"
+                                label="Video URL"
+                                placeholder="Paste YouTube, TikTok, or Instagram URL here"
+                                :value="old('url')"
+                                required
+                                autofocus
+                            />
+                            <div class="supported-platforms small text-muted mt-2">
+                                <span class="me-3"><i class="fab fa-youtube text-danger me-1"></i> YouTube</span>
+                                <span class="me-3"><i class="fab fa-tiktok me-1"></i> TikTok</span>
+                                <span><i class="fab fa-instagram text-purple me-1"></i> Instagram</span>
                             </div>
                         </div>
-
+                        <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <x-form-select name="format" label="Format" :options="[
+                                        'mp4' => 'Video (MP4)',
+                                        'mp3' => 'Audio (MP3)',
+                                    ]" selected="mp4" required />
+                                </div>
+                                <div class="col-md-6" id="quality-container">
+                                    <x-form-select name="quality" label="Quality" :options="[
+                                        '1080p' => '1080p (HD)',
+                                        '720p' => '720p (HD)',
+                                        '480p' => '480p (SD)',
+                                        '360p' => '360p (SD)',
+                                    ]" selected="720p" required />
+                                </div>
+                            </div>
+                        </div>
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Schedule Options</label>
+                        <div class="token-info p-3 bg-light" style="border: 2px dashed #ff4b2b; border-radius: 8px;">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Schedule Options</h5>
+                                </div>
+                            </div>
+                        </div>    
                         <div class="options-container p-3" style="border: 2px solid #212529; border-radius: 8px;">
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="scheduled_for" class="form-label">Schedule Date & Time <span class="text-danger">*</span></label>
                                 <input type="datetime-local" class="neo-form-control" name="scheduled_for" id="scheduled_for" required>
                                 <div class="form-text">Choose when you want the download to start</div>

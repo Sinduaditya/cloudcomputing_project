@@ -42,20 +42,20 @@
                         <option value="monthly" {{ request('type') == 'monthly' ? 'selected' : '' }}>Monthly</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <div class="d-grid">
-                        <button type="submit" class="neo-btn">Filter</button>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="w-100">
+                        <button type="submit" class="neo-btn w-100">
+                            <i></i> Filter
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
     <!-- Schedules Table Card -->
-    <div class="neo-card">
+    <div class="neo-card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Scheduled Tasks</h5>
+            <h5 class="mb-0" style="padding: 12px;">Scheduled Tasks</h5>
             <div class="dropdown">
                 <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" id="scheduleActions" data-bs-toggle="dropdown" aria-expanded="false">
                     Actions

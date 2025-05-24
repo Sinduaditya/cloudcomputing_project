@@ -57,7 +57,10 @@
     <div class="row">
         <!-- Recent Downloads -->
         <div class="col-lg-6 mb-4">
-            <x-card header="Recent Downloads">
+            <x-card>
+                <x-slot name="header">
+                    <h5 class="text-center w-100">Recent Downloads</h5>
+                </x-slot>
                 <x-slot name="headerActions">
                     <a href="{{ route('downloads.index') }}" class="btn btn-sm neo-btn">
                         View All
@@ -115,7 +118,7 @@
                         icon="fas fa-download"
                         action="true"
                         actionLink="{{ route('downloads.create') }}"
-                        actionText="New Download"
+                        actionText="New Download"x
                     />
                 @endif
             </x-card>
@@ -123,7 +126,10 @@
 
         <!-- Upcoming Tasks -->
         <div class="col-lg-6 mb-4">
-            <x-card header="Upcoming Scheduled Tasks">
+            <x-card>
+                <x-slot name="header">
+                    <h5 class="text-center w-100">Upcoming Scheduled Tasks</h5>
+                </x-slot>
                 <x-slot name="headerActions">
                     <a href="{{ route('schedules.index') }}" class="btn btn-sm neo-btn">
                         View All
@@ -166,7 +172,10 @@
     <div class="row">
         <!-- Recent Activity -->
         <div class="col-lg-8 mb-4">
-            <x-card header="Recent Activity">
+            <x-card>
+                <x-slot name="header">
+                    <h5 class="text-center w-100">Recent Activity</h5>
+                </x-slot>
                 <x-slot name="headerActions">
                     <a href="{{ route('dashboard.activity') }}" class="btn btn-sm neo-btn">
                         View All
@@ -229,12 +238,15 @@
         <!-- Platform Stats and Token Transactions -->
         <div class="col-lg-4">
             <!-- Platform Stats -->
-            <x-card header="Downloads by Platform" class="mb-4">
+            <x-card class="mb-4">
+                <x-slot name="header">
+                    <h5 class="text-center w-100">Downloads by Platform</h5>
+                </x-slot>
                 @if(count($platformStats) > 0)
                     <div class="platform-stats">
                         @foreach($platformStats as $platform => $count)
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="platform-icon">
+                                <div class="platform-icon ps-2">
                                     @if($platform == 'youtube')
                                         <i class="fab fa-youtube text-danger me-2"></i>
                                     @elseif($platform == 'tiktok')
@@ -267,7 +279,10 @@
             </x-card>
 
             <!-- Recent Token Transactions -->
-            <x-card header="Recent Tokens Activity">
+            <x-card>
+                <x-slot name="header">
+                    <h5 class="text-center w-100">Recent Tokens Activity</h5>
+                </x-slot>
                 @if($recentTransactions->count() > 0)
                     <div class="token-transactions">
                         @foreach($recentTransactions as $transaction)
