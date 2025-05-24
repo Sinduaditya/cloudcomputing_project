@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('quality')->nullable();
             $table->timestamp('scheduled_for');
             $table->string('status')->default('scheduled'); // scheduled, completed, failed
+            $table->string('platform');
             $table->foreignId('download_id')->nullable()->constrained()->nullOnDelete();
             $table->text('error_message')->nullable();
             $table->timestamps();

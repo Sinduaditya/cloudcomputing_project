@@ -4,9 +4,6 @@
 namespace App\Services;
 
 use App\Models\Download;
-use Cloudinary\Cloudinary;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -19,17 +16,18 @@ class DownloadService
     protected $youtubeService;
     protected $tiktokService;
     protected $instagramService;
-    protected $cloudinary;
 
     /**
      * Constructor
      */
-    public function __construct(YoutubeService $youtubeService, TiktokService $tiktokService, InstagramService $instagramService, Cloudinary $cloudinary)
-    {
+    public function __construct(
+        YoutubeService $youtubeService,
+        TiktokService $tiktokService,
+        InstagramService $instagramService
+    ) {
         $this->youtubeService = $youtubeService;
         $this->tiktokService = $tiktokService;
         $this->instagramService = $instagramService;
-        $this->cloudinary = $cloudinary;
     }
 
     /**
@@ -164,17 +162,16 @@ class DownloadService
     }
 
     /**
-     * Process download and upload to cloud storage
+     * Process download
      *
      * @param Download $download
      * @return array
      */
-
     public function processDownload(Download $download)
     {
         try {
             // Create temp directory if it doesn't exist
-            $tempDir = config('download.temp_path', storage_path('app/downloads/temp'));
+            $tempDir = storage_path('app/downloads/temp');
             if (!is_dir($tempDir)) {
                 mkdir($tempDir, 0777, true);
             }
@@ -188,25 +185,13 @@ class DownloadService
             ]);
 
             // Get service based on platform
-            switch ($download->platform) {
-                case 'youtube':
-                    $service = $this->youtubeService;
-                    break;
-                case 'tiktok':
-                    $service = $this->tiktokService;
-                    break;
-                case 'instagram':
-                    $service = $this->instagramService;
-                    break;
-                default:
-                    throw new Exception('Unsupported platform: ' . $download->platform);
-            }
+            $service = $this->getServiceForPlatform($download->platform);
 
             // Update download status
             $download->status = 'downloading';
             $download->save();
 
-            // Download the file locally
+            // Download the file locally using API-based methods
             $localFilePath = $service->download($download->url, $download->format, $download->quality, $tempDir);
 
             if (!file_exists($localFilePath)) {
@@ -216,23 +201,24 @@ class DownloadService
             // Get file size
             $fileSize = filesize($localFilePath);
             $download->file_size = $fileSize;
-            $download->status = 'completed';
-            $download->file_path = $localFilePath; // Simpan path lokal
-            $download->completed_at = now();
             $download->save();
+
+            // Save file directly to public storage
+            $result = $this->saveFileToPublicStorage($download, $localFilePath);
 
             Log::info('Download completed successfully', [
                 'download_id' => $download->id,
-                'file_path' => $localFilePath,
                 'file_size' => $fileSize,
+                'storage_path' => $result['path'],
+                'url' => $result['url']
             ]);
 
             return [
                 'status' => 'success',
-                'file_path' => $localFilePath,
                 'file_size' => $fileSize,
                 'format' => $download->format,
                 'title' => $download->title,
+                'url' => $result['url'],
             ];
         } catch (Exception $e) {
             Log::error('Download processing failed', [
@@ -240,6 +226,23 @@ class DownloadService
                 'download_id' => $download->id,
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            // Check if we already have a file despite the error
+            if (!empty($download->storage_url) && file_exists($download->file_path)) {
+                Log::info('File exists despite error, marking as completed', [
+                    'download_id' => $download->id
+                ]);
+
+                $download->status = 'completed';
+                $download->completed_at = now();
+                $download->save();
+
+                return [
+                    'status' => 'success',
+                    'file_size' => $download->file_size,
+                    'url' => $download->storage_url,
+                ];
+            }
 
             $download->status = 'failed';
             $download->error_message = $e->getMessage();
@@ -270,65 +273,116 @@ class DownloadService
     }
 
     /**
-     * Execute yt-dlp command with fallbacks and better error handling
-     * Helper method for platform services
+     * Save file directly to public storage (no storing status)
      *
-     * @param array $command
-     * @param string $workingDir
-     * @param int $timeout
-     * @return string
+     * @param Download $download
+     * @param string $tempFilePath
+     * @return array with path and url
      */
-    public function executeYtDlpCommand(array $command, string $workingDir, int $timeout = 60)
+    protected function saveFileToPublicStorage(Download $download, $tempFilePath)
     {
-        // Try with default config
-        $ytdlpPath = config('download.ytdlp_path', storage_path('app/bin/yt-dlp.exe'));
-
-        // Log debug info
-        Log::debug('Executing yt-dlp command', [
-            'command' => $ytdlpPath . ' ' . implode(' ', $command),
-            'working_dir' => $workingDir,
-        ]);
-
         try {
-            // First attempt - use configured path
-            if (strpos($ytdlpPath, ' ') !== false) {
-                $parts = explode(' ', $ytdlpPath);
-                $process = new Process(array_merge($parts, $command));
-            } else {
-                $process = new Process(array_merge([$ytdlpPath], $command));
-            }
-
-            $process->setWorkingDirectory($workingDir);
-            $process->setTimeout($timeout);
-            $process->run();
-
-            if ($process->isSuccessful()) {
-                return $process->getOutput();
-            }
-
-            // If first attempt failed, try fallback to executable directly
-            Log::warning('First yt-dlp attempt failed, trying standalone executable', [
-                'exit_code' => $process->getExitCode(),
-                'error_output' => $process->getErrorOutput(),
+            Log::info('Saving file to public storage', [
+                'download_id' => $download->id,
+                'tempFilePath' => $tempFilePath,
             ]);
 
-            $exePath = storage_path('app/bin/yt-dlp.exe');
-            $process = new Process(array_merge([$exePath], $command));
-            $process->setWorkingDirectory($workingDir);
-            $process->setTimeout($timeout);
-            $process->run();
-
-            if ($process->isSuccessful()) {
-                return $process->getOutput();
+            // Determine file extension
+            $extension = pathinfo($tempFilePath, PATHINFO_EXTENSION);
+            if (empty($extension)) {
+                $extension = $download->format; // Use format as fallback
             }
 
-            // All attempts failed, throw error with details
-            throw new Exception('yt-dlp execution failed: ' . $process->getErrorOutput());
+            // Create a simple filename
+            $filename = 'download_' . $download->id . '_' . time() . '.' . $extension;
+
+            // Store in public disk
+            $storagePath = 'downloads/' . $download->user_id;
+
+            // Create directory if it doesn't exist
+            if (!Storage::disk('public')->exists($storagePath)) {
+                Storage::disk('public')->makeDirectory($storagePath);
+            }
+
+            // Full relative path within the public disk
+            $relativePath = $storagePath . '/' . $filename;
+
+            // Copy file to storage
+            $fileContents = file_get_contents($tempFilePath);
+            Storage::disk('public')->put($relativePath, $fileContents);
+
+            // Verify storage was successful
+            if (!Storage::disk('public')->exists($relativePath)) {
+                throw new Exception("Failed to store file in public storage");
+            }
+
+            // Get the full system path for the file
+            $fullStoragePath = storage_path('app/public/' . $relativePath);
+
+            // Get public URL
+            $storageUrl = asset('storage/' . $relativePath);
+
+            Log::info('File saved successfully', [
+                'relativePath' => $relativePath,
+                'fullPath' => $fullStoragePath,
+                'publicUrl' => $storageUrl
+            ]);
+
+            // Update download record - directly to completed status
+            $download->file_path = $fullStoragePath;
+            $download->storage_path = 'public/' . $relativePath;
+            $download->storage_url = $storageUrl;
+            $download->storage_provider = 'local';
+            $download->status = 'completed';
+            $download->completed_at = now();
+            $download->save();
+
+            // Delete temporary file
+            try {
+                if (file_exists($tempFilePath)) {
+                    unlink($tempFilePath);
+                }
+            } catch (Exception $e) {
+                // Just log but don't fail if we can't delete temp file
+                Log::warning("Couldn't delete temp file but continuing", [
+                    'tempFile' => $tempFilePath,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            return [
+                'path' => $relativePath,
+                'url' => $storageUrl,
+            ];
         } catch (Exception $e) {
-            Log::error('Error executing yt-dlp', [
+            Log::error('Error saving file to public storage', [
+                'download_id' => $download->id,
                 'error' => $e->getMessage(),
-                'command' => $ytdlpPath . ' ' . implode(' ', $command),
+                'trace' => $e->getTraceAsString()
             ]);
+
+            // Check if file exists despite error
+            if (!empty($download->storage_url)) {
+                Log::info('File seems to exist despite error, using existing URL', [
+                    'download_id' => $download->id,
+                    'storage_url' => $download->storage_url
+                ]);
+
+                // If we have a storage URL, mark as completed
+                $download->status = 'completed';
+                $download->completed_at = now();
+                $download->save();
+
+                return [
+                    'path' => $download->storage_path ?? '',
+                    'url' => $download->storage_url,
+                ];
+            }
+
+            $download->status = 'failed';
+            $download->error_message = 'Failed to store file: ' . $e->getMessage();
+            $download->save();
+
             throw $e;
         }
     }

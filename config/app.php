@@ -193,6 +193,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\CloudinaryServiceProvider::class,
+
     ],
 
     /*
@@ -209,6 +210,7 @@ return [
     'aliases' => Facade::defaultAliases()
         ->merge([
             // 'ExampleClass' => App\Example\ExampleClass::class,
+            'Cloudinary' => Cloudinary\Cloudinary::class,
         ])
         ->toArray(),
 ];

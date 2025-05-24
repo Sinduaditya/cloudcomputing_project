@@ -7,16 +7,34 @@ use Cloudinary\Cloudinary;
 
 class CloudinaryServiceProvider extends ServiceProvider
 {
+    /**
+     * Register services.
+     *
+     * @return void
+     */
     public function register()
     {
-        $this->app->singleton(Cloudinary::class, function ($app) {
+        $this->app->singleton('cloudinary', function ($app) {
             return new Cloudinary([
                 'cloud' => [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key' => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ],
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                    'url' => [
+                        'secure' => config('cloudinary.url.secure', true)
+                    ]
+                ]
             ]);
         });
+    }
+
+    /**
+     * Bootstrap services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
     }
 }

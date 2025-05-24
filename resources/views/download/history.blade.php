@@ -1,167 +1,247 @@
-{{-- filepath: resources/views/download/history.blade.php --}}
+<!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\download\history.blade.php -->
 @extends('layouts.app')
 
+@section('title', 'Download History')
+
 @section('content')
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-primary">Riwayat Download</h2>
-                <a href="{{ route('downloads.create') }}" class="btn btn-primary rounded-pill shadow-sm">
-                    <i class="fas fa-plus-circle me-2"></i>Download Baru
+    <div class="container">
+       <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Download History</h1>
+            <div class="d-flex gap-2">
+                <a href="{{ route('downloads.fix-status') }}" class="neo-btn neo-btn-warning">
+                    <i class="fas fa-tools me-2"></i> Fix Stuck Downloads
+                </a>
+                <a href="{{ route('downloads.create') }}" class="neo-btn">
+                    <i class="fas fa-plus-circle me-2"></i> New Download
                 </a>
             </div>
+        </div>
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
-                <div class="card-header bg-white py-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" id="searchTable" class="form-control border-start-0 bg-light" placeholder="Cari download...">
-                            </div>
+        <!-- Filters -->
+        <div class="neo-card mb-4">
+            <div class="card-body">
+                <form action="{{ route('downloads.index') }}" method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Platform</label>
+                        <select name="platform" class="neo-form-control">
+                            <option value="">All Platforms</option>
+                            @foreach ($platforms as $platform)
+                                <option value="{{ $platform->platform }}"
+                                    {{ request('platform') == $platform->platform ? 'selected' : '' }}>
+                                    @if ($platform->platform == 'youtube')
+                                        YouTube ({{ $platform->count }})
+                                    @elseif($platform->platform == 'tiktok')
+                                        TikTok ({{ $platform->count }})
+                                    @elseif($platform->platform == 'instagram')
+                                        Instagram ({{ $platform->count }})
+                                    @else
+                                        {{ ucfirst($platform->platform) }} ({{ $platform->count }})
+                                    @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="neo-form-control">
+                            <option value="">All Statuses</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed
+                            </option>
+                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing
+                            </option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="neo-btn">
+                                <i class="fas fa-filter me-2"></i> Filter Results
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
+                </form>
+            </div>
+        </div>
+
+        <!-- Downloads List -->
+        <div class="neo-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Your Downloads</h5>
+                <span class="badge bg-primary" style="border: 2px solid #212529; font-size: 14px;">
+                    {{ $downloads->total() }} Downloads
+                </span>
+            </div>
+            <div class="card-body p-0">
+                @if ($downloads->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="downloadTable">
-                            <thead class="table-light">
+                        <table class="table table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <th class="py-3">#</th>
-                                    <th class="py-3">Platform</th>
-                                    <th class="py-3">Judul</th>
-                                    <th class="py-3">Format</th>
-                                    <th class="py-3">Kualitas</th>
-                                    <th class="py-3">Status</th>
-                                    <th class="py-3">Token</th>
-                                    <th class="py-3">Tanggal</th>
-                                    <th class="py-3 text-center">File</th>
+                                    <th style="width: 30%;">Title</th>
+                                    <th>Platform</th>
+                                    <th>Format</th>
+                                    <th>Size</th>
+                                    <th>Downloaded</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($downloads as $i => $download)
-                                <tr>
-                                    <td>{{ $downloads->firstItem() + $i }}</td>
-                                    <td>
-                                        @php
-                                            $platformColors = [
-                                                'youtube' => 'danger',
-                                                'instagram' => 'purple',
-                                                'tiktok' => 'dark',
-                                                'facebook' => 'primary',
-                                                'twitter' => 'info',
-                                                'default' => 'secondary'
-                                            ];
-                                            $color = $platformColors[$download->platform] ?? $platformColors['default'];
-                                        @endphp
-                                        <span class="badge bg-{{ $color }} text-uppercase">{{ $download->platform }}</span>
-                                    </td>
-                                    <td style="max-width:200px;">
-                                        <div class="text-truncate fw-medium">{{ $download->title ?? '-' }}</div>
-                                        <div class="text-muted small text-truncate">
-                                            <a href="{{ $download->url }}" target="_blank" class="text-decoration-none">{{ $download->url }}</a>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-light text-dark">{{ strtoupper($download->format) }}</span></td>
-                                    <td>{{ $download->quality ?? '-' }}</td>
-                                    <td>
-                                        @if($download->status == 'completed')
-                                            <span class="badge bg-success">
-                                                <i class="fas fa-check-circle me-1"></i>Selesai
-                                            </span>
-                                        @elseif($download->status == 'failed')
-                                            <span class="badge bg-danger">
-                                                <i class="fas fa-times-circle me-1"></i>Gagal
-                                            </span>
-                                        @else
-                                            <span class="badge bg-warning text-dark">
-                                                <i class="fas fa-spinner fa-spin me-1"></i>Proses
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td><span class="badge bg-info text-dark">{{ $download->token_cost }}</span></td>
-                                    <td>
-                                        <div class="small">
-                                            <i class="far fa-calendar-alt me-1"></i>{{ $download->created_at->format('d M Y') }}
-                                            <br>
-                                            <i class="far fa-clock me-1"></i>{{ $download->created_at->format('H:i') }}
-                                            @if($download->completed_at)
-                                                <div class="text-success small mt-1">
-                                                    <i class="fas fa-check-circle me-1"></i>Selesai: {{ $download->completed_at->format('d M Y H:i') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        @if($download->status == 'completed' && $download->file_path && file_exists($download->file_path))
-                                            <a href="{{ route('downloads.download', $download->id) }}" class="btn btn-sm btn-success">
-                                                <i class="fas fa-download me-1"></i>Download
-                                            </a>
-                                        @elseif($download->status == 'failed')
-                                            <span class="text-danger" data-bs-toggle="tooltip" title="{{ $download->error_message ?? 'Download gagal' }}">
-                                                <i class="fas fa-exclamation-circle me-1"></i>Gagal
-                                            </span>
-                                        @else
-                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                                <span class="visually-hidden">Loading...</span>
+                                @foreach ($downloads as $download)
+                                    <tr>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 300px;" data-bs-toggle="tooltip"
+                                                title="{{ $download->title ?? 'Untitled' }}">
+                                                {{ $download->title ?? 'Untitled' }}
                                             </div>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="9" class="text-center py-5">
-                                        <img src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png" alt="No data" width="80" class="mb-3 opacity-50">
-                                        <p class="text-muted">Belum ada riwayat download.</p>
-                                        <a href="{{ route('downloads.create') }}" class="btn btn-sm btn-primary">Mulai Download Pertama Anda</a>
-                                    </td>
-                                </tr>
-                                @endforelse
+                                        </td>
+                                        <td>
+                                            @if ($download->platform == 'youtube')
+                                                <i class="fab fa-youtube text-danger me-1"></i>
+                                            @elseif($download->platform == 'tiktok')
+                                                <i class="fab fa-tiktok me-1"></i>
+                                            @elseif($download->platform == 'instagram')
+                                                <i class="fab fa-instagram text-purple me-1"></i>
+                                            @else
+                                                <i class="fas fa-link me-1"></i>
+                                            @endif
+                                            {{ ucfirst($download->platform) }}
+                                        </td>
+                                        <td>
+                                            @if (strpos($download->format, 'mp4') !== false)
+                                                <span class="badge bg-primary" style="border: 1px solid #212529;">MP4</span>
+                                                <small>{{ $download->quality }}</small>
+                                            @elseif(strpos($download->format, 'mp3') !== false)
+                                                <span class="badge bg-success" style="border: 1px solid #212529;">MP3</span>
+                                            @else
+                                                <span class="badge bg-secondary"
+                                                    style="border: 1px solid #212529;">{{ strtoupper($download->format) }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($download->file_size)
+                                                {{ round($download->file_size / (1024 * 1024), 2) }} MB
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($download->completed_at)
+                                                <span data-bs-toggle="tooltip"
+                                                    title="{{ $download->completed_at->format('M d, Y H:i:s') }}">
+                                                    {{ $download->completed_at->diffForHumans() }}
+                                                </span>
+                                            @elseif($download->created_at)
+                                                <span data-bs-toggle="tooltip"
+                                                    title="Created {{ $download->created_at->format('M d, Y H:i:s') }}">
+                                                    {{ $download->created_at->diffForHumans() }}
+                                                </span>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <x-status-badge :status="$download->status" />
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('downloads.show', $download) }}"
+                                                    class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip"
+                                                    title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+
+                                                @if ($download->status == 'completed')
+                                                    <a href="{{ route('downloads.file', $download) }}"
+                                                        class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
+                                                        title="Download">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                    <a href="{{ route('downloads.direct', $download->id) }}"
+                                                        class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip"
+                                                        title="Direct Download">
+                                                        <i class="fas fa-cloud-download-alt"></i>
+                                                    </a>
+                                                    <a href="{{ route('instance.show', $download) }}"
+                                                        class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
+                                                        title="Play">
+                                                        <i class="fas fa-play"></i>
+                                                    </a>
+                                                @endif
+
+                                                @if ($download->status == 'failed')
+                                                    <form action="{{ route('downloads.retry', $download) }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning"
+                                                            data-bs-toggle="tooltip" title="Retry">
+                                                            <i class="fas fa-redo"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+
+                                                @if (in_array($download->status, ['pending', 'processing', 'downloading', 'uploading']))
+                                                    <form action="{{ route('downloads.cancel', $download) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            data-bs-toggle="tooltip" title="Cancel">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                </div>
-                @if($downloads->hasPages())
-                <div class="card-footer bg-white py-3">
-                    {{ $downloads->links('pagination::bootstrap-5') }}
-                </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center mt-4 mb-3">
+                        {{ $downloads->appends(request()->query())->links() }}
+                    </div>
+                @else
+                    <x-empty-state title="No Downloads Found"
+                        message="You haven't made any downloads yet, or none match your filter criteria."
+                        icon="fas fa-download" action="true" actionLink="{{ route('downloads.create') }}"
+                        actionText="New Download" />
                 @endif
             </div>
         </div>
+
+        <!-- Quick Stats -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <x-stats-card value="{{ $downloads->where('status', 'completed')->count() }}" label="Completed Downloads"
+                    icon="fas fa-check-circle" color="success" />
+            </div>
+            <div class="col-md-4">
+                <x-stats-card
+                    value="{{ $downloads->whereIn('status', ['pending', 'processing', 'downloading', 'uploading'])->count() }}"
+                    label="In Progress" icon="fas fa-spinner" color="warning" />
+            </div>
+            <div class="col-md-4">
+                <x-stats-card value="{{ $downloads->where('status', 'failed')->count() }}" label="Failed Downloads"
+                    icon="fas fa-exclamation-circle" color="danger" />
+            </div>
+        </div>
     </div>
-</div>
+@endsection
 
 @push('scripts')
-<script>
-    // Simple table search functionality
-    $(document).ready(function(){
-        $("#searchTable").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#downloadTable tbody tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    <script>
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
             });
         });
-        
-        // Initialize tooltips
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-    });
-</script>
+    </script>
 @endpush
-@endsection

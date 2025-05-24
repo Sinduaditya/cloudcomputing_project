@@ -1,163 +1,237 @@
-<!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\schedule\create.blade.php -->
+<!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\create.blade.php -->
 @extends('layouts.app')
 
+@section('title', 'Schedule Download')
+
 @section('content')
-<div class="container py-4">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="fw-bold text-primary"><i class="fas fa-calendar-alt me-2"></i>Jadwalkan Download</h2>
-                <a href="{{ route('schedules.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Kembali
-                </a>
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Schedule Download</h1>
+                <div>
+                    <a href="{{ route('dashboard') }}" class="btn neo-btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
             </div>
 
-            @if(isset($lowTokens) && $lowTokens)
-                <div class="alert alert-warning mb-4">
-                    <i class="fas fa-exclamation-triangle me-2"></i> Saldo token Anda rendah. Pastikan untuk mengisi token sebelum waktu jadwal tiba.
-                </div>
-            @endif
-
-            <div class="card border-0 shadow-sm rounded-lg">
-                <div class="card-header bg-primary text-white p-4">
-                    <h4 class="mb-0 fw-bold"><i class="fas fa-clock me-2"></i>Atur Jadwal</h4>
-                    <p class="mb-0 mt-2">Download akan diproses otomatis pada waktu yang ditentukan</p>
-                </div>
-                <div class="card-body p-4">
-                    @if($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+            <x-card>
+                <div class="token-info mb-4 p-3 bg-light" style="border: 2px dashed #ff4b2b; border-radius: 8px;">
+                    <div class="d-flex align-items-center">
+                        <div class="token-icon me-3">
+                            <i class="fas fa-coins fa-2x text-warning"></i>
                         </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('schedules.store') }}" id="schedule-form">
-                        @csrf
-                        <div class="mb-4">
-                            <label class="form-label fw-medium">URL Video <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-link text-primary"></i>
-                                </span>
-                                <input type="url" name="url" class="form-control"
-                                    placeholder="https://youtube.com/watch?v=..." required value="{{ old('url') }}">
-                            </div>
-                            <div class="form-text">
-                                <span class="text-muted">Masukkan URL dari:</span>
-                                <span class="badge bg-danger me-1"><i class="fab fa-youtube me-1"></i>YouTube</span>
-                                <span class="badge bg-purple me-1"><i class="fab fa-instagram me-1"></i>Instagram</span>
-                                <span class="badge bg-dark me-1"><i class="fab fa-tiktok me-1"></i>TikTok</span>
-                                <span class="badge bg-primary"><i class="fab fa-facebook me-1"></i>Facebook</span>
-                            </div>
+                        <div>
+                            <h5 class="mb-1">Token Balance: <span class="fw-bold">{{ auth()->user()->token_balance }}</span></h5>
+                            <p class="mb-0 text-muted">Scheduled downloads also require tokens. <a href="{{ route('tokens.purchase') }}" class="text-decoration-none fw-bold">Need more?</a></p>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-medium">Format <span class="text-danger">*</span></label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="format" id="format-mp4" value="mp4"
-                                            {{ old('format', 'mp4') == 'mp4' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="format-mp4">
-                                            <i class="fas fa-film me-1 text-danger"></i> MP4 (Video)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="format" id="format-mp3" value="mp3"
-                                            {{ old('format') == 'mp3' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="format-mp3">
-                                            <i class="fas fa-music me-1 text-info"></i> MP3 (Audio)
-                                        </label>
+                <form action="{{ route('schedules.store') }}" method="POST" id="scheduleForm">
+                    @csrf
+
+                    <div class="mb-4">
+                        <x-form-input
+                            name="url"
+                            label="Video URL"
+                            placeholder="Paste YouTube, TikTok, or Instagram URL here"
+                            :value="old('url')"
+                            required
+                            autofocus
+                        />
+                        <div class="supported-platforms small text-muted mt-2">
+                            <span class="me-3"><i class="fab fa-youtube text-danger me-1"></i> YouTube</span>
+                            <span class="me-3"><i class="fab fa-tiktok me-1"></i> TikTok</span>
+                            <span><i class="fab fa-instagram text-purple me-1"></i> Instagram</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <x-form-select
+                                name="format"
+                                label="Format"
+                                :options="[
+                                    'mp4_720p' => 'Video - MP4 (720p)',
+                                    'mp4_480p' => 'Video - MP4 (480p)',
+                                    'mp4_360p' => 'Video - MP4 (360p)',
+                                    'mp3_high' => 'Audio - MP3 (High Quality)',
+                                    'mp3_medium' => 'Audio - MP3 (Medium Quality)',
+                                ]"
+                                selected="mp4_720p"
+                                required
+                            />
+                        </div>
+                        <div class="col-md-6">
+                            <x-form-input
+                                name="custom_title"
+                                label="Custom Title (Optional)"
+                                placeholder="Enter custom title for your download"
+                                :value="old('custom_title')"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Schedule Options</label>
+                        <div class="options-container p-3" style="border: 2px solid #212529; border-radius: 8px;">
+                            <div class="mb-3">
+                                <label for="scheduled_for" class="form-label">Schedule Date & Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="neo-form-control" name="scheduled_for" id="scheduled_for" required>
+                                <div class="form-text">Choose when you want the download to start</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="schedule_type" class="form-label">Schedule Type</label>
+                                <select class="neo-form-control" name="schedule_type" id="schedule_type">
+                                    <option value="once">One Time</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+
+                            <div id="recurrenceOptions" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="end_after" class="form-label">End After</label>
+                                    <input type="number" class="neo-form-control" name="end_after" id="end_after" placeholder="Number of occurrences">
+                                </div>
+
+                                <div id="weeklyOptions" style="display: none;">
+                                    <label class="form-label">Repeat On</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="days[]" id="day_{{ $loop->index }}" value="{{ $loop->index }}" style="border: 2px solid #212529;">
+                                                <label class="form-check-label" for="day_{{ $loop->index }}">
+                                                    {{ $day }}
+                                                </label>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                                <div class="form-text">MP3 biasanya membutuhkan token lebih sedikit</div>
                             </div>
 
-                            <div class="col-md-6" id="quality-container">
-                                <label class="form-label fw-medium">Kualitas Video</label>
-                                <select name="quality" class="form-select" id="quality-select">
-                                    <option value="1080p" {{ old('quality') == '1080p' ? 'selected' : '' }}>1080p (Full HD)</option>
-                                    <option value="720p" {{ old('quality', '720p') == '720p' ? 'selected' : '' }}>720p (HD)</option>
-                                    <option value="480p" {{ old('quality') == '480p' ? 'selected' : '' }}>480p (SD)</option>
-                                    <option value="360p" {{ old('quality') == '360p' ? 'selected' : '' }}>360p (Low)</option>
-                                </select>
-                                <div class="form-text">Kualitas lebih rendah = token lebih sedikit</div>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" style="border: 2px solid #212529; width: 20px; height: 20px;" type="checkbox" name="notify_complete" id="notify_complete" value="1" checked>
+                                <label class="form-check-label ms-1" for="notify_complete">
+                                    Notify me when download completes
+                                </label>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-medium">Waktu Download <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-calendar-alt text-primary"></i>
-                                </span>
-                                <input type="datetime-local" name="scheduled_for" class="form-control" required
-                                    min="{{ now()->addMinutes(5)->format('Y-m-d\TH:i') }}"
-                                    value="{{ old('scheduled_for', now()->addHour()->format('Y-m-d\TH:i')) }}">
-                            </div>
-                            <div class="form-text">Pilih waktu untuk menjalankan download (minimal 5 menit dari sekarang)</div>
-                        </div>
+                    <div class="form-actions d-flex justify-content-between">
+                        <button type="button" id="checkUrlBtn" class="btn neo-btn btn-secondary">
+                            <i class="fas fa-search me-2"></i> Check URL
+                        </button>
+                        <button type="submit" class="btn neo-btn">
+                            <i class="fas fa-calendar-plus me-2"></i> Schedule Download
+                        </button>
+                    </div>
+                </form>
+            </x-card>
 
-                        <div class="alert alert-info d-flex align-items-center p-3 mb-4">
-                            <i class="fas fa-info-circle fa-lg me-3"></i>
-                            <div>
-                                <p class="mb-0 small">Token akan dipotong saat waktu download tiba. Pastikan saldo token Anda cukup pada waktu tersebut.</p>
-                            </div>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary py-2 text-white">
-                                <i class="fas fa-calendar-check me-2"></i>Jadwalkan Download
-                            </button>
-                        </div>
-                    </form>
+            <!-- URL Preview Card -->
+            <div class="neo-card mt-4" id="previewCard" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">URL Preview</h5>
                 </div>
-            </div>
-
-            <div class="card mt-4 border-0 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title fw-bold"><i class="fas fa-lightbulb text-warning me-2"></i>Tips</h5>
-                    <ul class="small mb-0">
-                        <li>Jadwalkan download pada waktu off-peak untuk performa lebih baik</li>
-                        <li>Video dengan durasi lebih panjang membutuhkan lebih banyak token</li>
-                        <li>Kualitas video lebih rendah menghasilkan file yang lebih kecil</li>
-                        <li>Hasil download tersedia di halaman "Download Saya" setelah selesai</li>
-                    </ul>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="" alt="Video Thumbnail" id="previewThumbnail" class="img-fluid" style="border: 3px solid #212529; border-radius: 8px;">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 id="previewTitle" class="mb-3"></h5>
+                            <div class="mb-2">
+                                <strong>Platform:</strong> <span id="previewPlatform"></span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Duration:</strong> <span id="previewDuration"></span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Estimated Tokens:</strong> <span id="previewTokens" class="badge bg-warning" style="border: 2px solid #121212;"></span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="alert alert-info" style="border: 2px solid #121212; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2);" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i> Choose your schedule settings and click "Schedule Download" when ready.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-    // Toggle quality field when format changes
-    document.addEventListener('DOMContentLoaded', function() {
-        const formatRadios = document.querySelectorAll('input[name="format"]');
-        const qualityContainer = document.getElementById('quality-container');
+    $(document).ready(function() {
+        // Set min datetime to now
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 5); // Minimum 5 minutes from now
+        const minDatetime = now.toISOString().slice(0, 16);
+        document.getElementById('scheduled_for').setAttribute('min', minDatetime);
 
-        function toggleQualityField() {
-            const selectedFormat = document.querySelector('input[name="format"]:checked').value;
-            if (selectedFormat === 'mp3') {
-                qualityContainer.style.opacity = '0.5';
-                qualityContainer.style.pointerEvents = 'none';
+        // Toggle recurrence options
+        $('#schedule_type').change(function() {
+            if(this.value === 'once') {
+                $('#recurrenceOptions').slideUp();
+                $('#weeklyOptions').slideUp();
             } else {
-                qualityContainer.style.opacity = '1';
-                qualityContainer.style.pointerEvents = 'auto';
+                $('#recurrenceOptions').slideDown();
+
+                if(this.value === 'weekly') {
+                    $('#weeklyOptions').slideDown();
+                } else {
+                    $('#weeklyOptions').slideUp();
+                }
             }
-        }
+        });
 
-        // Initial state
-        toggleQualityField();
+        // URL check button - Simulate this functionality
+        $('#checkUrlBtn').click(function() {
+            const url = $('input[name="url"]').val();
+            if(!url) {
+                alert('Please enter a URL to check');
+                return;
+            }
 
-        // Listen for changes
-        formatRadios.forEach(radio => {
-            radio.addEventListener('change', toggleQualityField);
+            // Show loading state
+            $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Checking...');
+
+            // Simulate AJAX request with timeout
+            setTimeout(function() {
+                // Reset button
+                $('#checkUrlBtn').html('<i class="fas fa-search me-2"></i> Check URL');
+
+                // Determine platform from URL (simplified)
+                let platform = 'unknown';
+                if(url.includes('youtube') || url.includes('youtu.be')) {
+                    platform = 'YouTube';
+                } else if(url.includes('tiktok')) {
+                    platform = 'TikTok';
+                } else if(url.includes('instagram')) {
+                    platform = 'Instagram';
+                }
+
+                // Display preview (mock data)
+                $('#previewThumbnail').attr('src', 'https://via.placeholder.com/400x225/f8f9fa/212529?text=Video+Thumbnail');
+                $('#previewTitle').text('Sample Video Title');
+                $('#previewPlatform').text(platform);
+                $('#previewDuration').text('3:45');
+                $('#previewTokens').text('15');
+
+                // Show preview card
+                $('#previewCard').slideDown();
+
+            }, 1500);
         });
     });
 </script>
 @endpush
-@endsection

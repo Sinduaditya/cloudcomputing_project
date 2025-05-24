@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // SystemSettingSeeder::class,
-            UserSeeder::class,
+            // UserSeeder::class,
+            AdminUserSeeder::class,
+            DemoUserSeeder::class,
             // Tambahkan seeder lain disini jika diperlukan
         ]);
     }

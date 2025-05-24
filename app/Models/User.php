@@ -1,5 +1,5 @@
 <?php
-// filepath: f:\UGM\cloudcomputing\cloudcomputing_project\app\Models\User.php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,6 +46,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_admin' => 'boolean',
         'is_active' => 'boolean',
+        'token_balance' => 'integer',
     ];
 
     /**
@@ -89,6 +90,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the avatar URL or default image
+     */
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ?: 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
      * Find or create user by OAuth provider
      */
     public static function findOrCreateByOAuth($oauthUser, $provider)
@@ -111,6 +120,15 @@ class User extends Authenticatable
                     'avatar' => $oauthUser->getAvatar(),
                     'token_balance' => 100, // Default token balance
                     'is_active' => true,
+                ]);
+
+                // Record initial token transaction
+                TokenTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => 100,
+                    'balance_after' => 100,
+                    'type' => 'initial',
+                    'description' => 'Initial token allocation',
                 ]);
             } else {
                 // Update existing user with OAuth info

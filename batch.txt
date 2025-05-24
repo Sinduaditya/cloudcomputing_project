@@ -1,0 +1,299 @@
+List Batch Implementasi Project SaaS Video/Audio Downloader
+Berikut adalah daftar batch untuk mengimplementasikan seluruh project secara terstruktur. Setiap batch dibuat dengan mempertimbangkan dependensi komponen untuk menghindari error:
+
+Batch 1: Konfigurasi Dasar dan Database (done)
+.env (konfigurasi aplikasi)
+app.php (konfigurasi aplikasi)
+queue.php (konfigurasi database queue)
+cloudinary.php (konfigurasi Cloudinary)
+Migrasi database (semua file di migrations)
+Seeders (file di seeders)
+
+Batch 2: Model Core (done)
+User.php
+Download.php
+ScheduledTask.php
+TokenTransaction.php
+ActivityLog.php
+
+Batch 3: Services Infrastructure (done)
+app/Services/CloudinaryService.php
+TokenService.php
+
+Batch 4: Platform Services (done)
+YouTubeService.php
+TiktokService.php
+InstagramService.php
+DownloadService.php (menggunakan platform services)
+
+Batch 5: Jobs dan Scheduler (done)
+ProcessDownloadJob.php
+ProcessScheduledDownloadJob.php
+ProcessScheduledDownloads.php
+Kernel.php (konfigurasi scheduler)
+
+Batch 6: Middleware (done)
+app/Http/Middleware/AdminAccess.php
+CheckTokenBalance.php
+app/Http/Middleware/TrackUserActivity.php
+Update Kernel.php untuk middleware baru
+
+Batch 7: Form Requests (done)
+DownloadRequest.php
+ScheduleRequest.php
+app/Http/Requests/TokenRequest.php
+app/Http/Requests/UserRequest.php (untuk admin)
+
+Batch 8: Controllers (User) (done)
+app/Http/Controllers/Auth/LoginController.php
+app/Http/Controllers/Auth/RegisterController.php
+DashboardController.php
+DownloadController.php
+ScheduleController.php
+TokenController.php
+app/Http/Controllers/InstanceController.php
+
+Batch 9: Controllers (Admin) (done)
+AdminController.php
+app/Http/Controllers/Admin/UserController.php
+app/Http/Controllers/Admin/ActivityController.php
+app/Http/Controllers/Admin/TokenManagementController.php
+app/Http/Controllers/Admin/SystemController.php
+
+Batch 10: Routes (done)
+web.php (semua routes aplikasi)
+api.php (jika ada API endpoints)
+
+Batch 11: Layout Templates dan Components (done)
+app.blade.php
+admin.blade.php
+resources/views/layouts/navigation.blade.php
+resources/views/components/ (semua komponen blade)
+
+Batch 12: Views (Auth) (done)
+login.blade.php
+register.blade.php
+resources/views/auth/passwords/ (reset password views)
+
+Batch 13: Views (User Dashboard) (done)
+index.blade.php
+create.blade.php
+resources/views/download/index.blade.php
+show.blade.php
+
+Batch 14: Views (Download Management)
+resources/views/instance/actions.blade.php
+create.blade.php
+index.blade.php
+history.blade.php
+resources/views/tokens/balance.blade.php
+
+Batch 15: Views (Admin Dashboard)
+dashboard.blade.php
+resources/views/admin/users/ (semua views manajemen user)
+resources/views/admin/activities/ (semua views log aktivitas)
+resources/views/admin/tokens/ (semua views manajemen token)
+resources/views/admin/system/ (semua views pengaturan sistem)
+
+Batch 16: Assets Frontend
+app.js
+resources/sass/app.scss (Bootstrap setup)
+public/js/app.js (setelah build)
+public/css/app.css (setelah build)
+Images dan icons
+
+Batch 17: Testing
+Feature (semua feature tests)
+Unit (semua unit tests)
+
+Batch 18: Dokumentasi
+README.md
+install.md (petunjuk instalasi)
+CHANGELOG.md (log perubahan)
+Instruksi Deployment
+Setup database dengan menjalankan migrasi:
+php artisan migrate --seed
+
+Setup queue worker untuk database queue:
+php artisan queue:table
+php artisan queue:failed-table
+php artisan migrate
+
+Menjalankan queue worker:
+php artisan queue:work database --queue=scheduled,default --tries=3 --sleep=3
+
+Menjalankan scheduler:
+php artisan schedule:work
+
+
+f:\UGM\cloudcomputing\cloudcomputing_project\
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/
+│   │   │   │   ├── LoginController.php
+│   │   │   │   ├── OAuthController.php
+│   │   │   │   └── RegisterController.php
+│   │   │   │
+│   │   │   ├── Admin/
+│   │   │   │   ├── ActivityController.php
+│   │   │   │   ├── SystemController.php
+│   │   │   │   ├── TokenManagementController.php
+│   │   │   │   └── UserController.php
+│   │   │   │
+│   │   │   ├── AdminController.php
+│   │   │   ├── DashboardController.php
+│   │   │   ├── DownloadController.php
+│   │   │   ├── InstanceController.php
+│   │   │   ├── ScheduleController.php
+│   │   │   └── TokenController.php
+│   │   │
+│   │   ├── Middleware/
+│   │   │   ├── AdminAccess.php
+│   │   │   ├── CheckTokenBalance.php
+│   │   │   └── TrackUserActivity.php
+│   │   │
+│   │   └── Requests/
+│   │       ├── DownloadRequest.php
+│   │       ├── ScheduleRequest.php
+│   │       ├── TokenRequest.php
+│   │       └── UserRequest.php
+│   │
+│   ├── Jobs/
+│   │   ├── ProcessDownloadJob.php
+│   │   └── ProcessScheduledDownloadJob.php
+│   │
+│   ├── Models/
+│   │   ├── ActivityLog.php
+│   │   ├── Download.php
+│   │   ├── ScheduledTask.php
+│   │   ├── TokenTransaction.php
+│   │   └── User.php
+│   │
+│   └── Services/
+│       ├── CloudinaryService.php
+│       ├── DownloadService.php
+│       ├── InstagramService.php
+│       ├── TiktokService.php
+│       ├── TokenService.php
+│       └── YouTubeService.php
+│
+├── config/
+│   ├── app.php
+│   ├── cloudinary.php
+│   └── queue.php
+│
+├── database/
+│   ├── migrations/
+│   └── seeders/
+│
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── images/
+
+
+├── resources/
+│   ├── views/
+│   │   ├── admin/
+│   │   │   ├── activities/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   └── show.blade.php
+│   │   │   ├── downloads/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   └── show.blade.php
+│   │   │   ├── schedules/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   └── show.blade.php
+│   │   │   ├── system/
+│   │   │   │   ├── info.blade.php
+│   │   │   │   ├── logs.blade.php
+│   │   │   │   ├── maintenance.blade.php
+│   │   │   │   └── settings.blade.php
+│   │   │   ├── tokens/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   ├── pricing.blade.php
+│   │   │   │   └── transactions.blade.php
+│   │   │   └── users/
+│   │   │       ├── activities.blade.php
+│   │   │       ├── create.blade.php
+│   │   │       ├── downloads.blade.php
+│   │   │       ├── edit.blade.php
+│   │   │       ├── index.blade.php
+│   │   │       └── show.blade.php
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── login.blade.php
+│   │   │   ├── register.blade.php
+│   │   │   └── passwords/
+│   │   │       ├── confirm.blade.php
+│   │   │       ├── email.blade.php
+│   │   │       └── reset.blade.php
+│   │   │
+│   │   ├── components/ (done)
+│   │   │   ├── alerts.blade.php
+│   │   │   ├── button.blade.php
+│   │   │   ├── card.blade.php
+│   │   │   ├── empty-state.blade.php
+│   │   │   ├── form-input.blade.php
+│   │   │   ├── form-select.blade.php
+│   │   │   ├── form-textarea.blade.php
+│   │   │   ├── loading-spinner.blade.php
+│   │   │   ├── modal.blade.php
+│   │   │   ├── progress-bar.blade.php
+│   │   │   ├── stats-card.blade.php
+│   │   │   └── status-badge.blade.php
+│   │   │
+│   │   ├── dashboard/
+│   │   │   ├── activity.blade.php
+│   │   │   ├── index.blade.php
+│   │   │   └── stats.blade.php
+│   │   │
+│   │   ├── download/
+│   │   │   ├── create.blade.php
+│   │   │   ├── history.blade.php
+│   │   │   ├── index.blade.php
+│   │   │   └── show.blade.php
+│   │   │
+│   │   ├── instance/
+│   │   │   └── actions.blade.php
+│   │   │
+│   │   ├── layouts/
+│   │   │   ├── app.blade.php
+│   │   │   ├── admin.blade.php
+│   │   │   └── navigation.blade.php
+│   │   │
+│   │   ├── schedule/
+│   │   │   ├── create.blade.php
+│   │   │   ├── edit.blade.php
+│   │   │   ├── index.blade.php
+│   │   │   └── show.blade.php
+│   │   │
+│   │   ├── tokens/
+│   │   │   ├── balance.blade.php
+│   │   │   ├── history.blade.php
+│   │   │   └── purchase.blade.php
+│   │   │
+│   │   ├── errors/
+│   │   │   ├── 403.blade.php
+│   │   │   ├── 404.blade.php
+│   │   │   └── 500.blade.php
+│   │   │
+│   │   ├── about.blade.php
+│   │   ├── features.blade.php
+│   │   ├── home.blade.php
+│   │   ├── pricing.blade.php
+│   │   └── welcome.blade.php
+
+
+│   ├── js/
+│   └── sass/
+│       └── app.scss
+│
+├── routes/
+│   ├── api.php
+│   └── web.php
+│
+├── .env
+└── batch.txt

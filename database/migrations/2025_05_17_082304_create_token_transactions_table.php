@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->foreignId('download_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('admin_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('resource_id')->nullable();
+            $table->string('resource_type')->nullable();
             $table->timestamps();
         });
     }

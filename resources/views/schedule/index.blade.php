@@ -1,253 +1,296 @@
-<!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\schedule\index.blade.php -->
+<!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\index.blade.php -->
 @extends('layouts.app')
 
+@section('title', 'Scheduled Downloads')
+
 @section('content')
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fw-bold text-primary"><i class="fas fa-calendar-alt me-2"></i>Jadwal Download</h2>
-                    <a href="{{ route('schedules.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus-circle me-2"></i>Jadwalkan Baru
-                    </a>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Scheduled Downloads</h1>
+        <div>
+            <a href="{{ route('schedules.create') }}" class="neo-btn">
+                <i class="fas fa-plus-circle me-2"></i> Schedule New
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="neo-card mb-4">
+        <div class="card-body">
+            <form action="{{ route('schedules.index') }}" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Search</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title or URL" class="neo-form-control">
                 </div>
-
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Status</label>
+                    <select name="status" class="neo-form-control">
+                        <option value="">All Statuses</option>
+                        <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Type</label>
+                    <select name="type" class="neo-form-control">
+                        <option value="">All Types</option>
+                        <option value="once" {{ request('type') == 'once' ? 'selected' : '' }}>One Time</option>
+                        <option value="daily" {{ request('type') == 'daily' ? 'selected' : '' }}>Daily</option>
+                        <option value="weekly" {{ request('type') == 'weekly' ? 'selected' : '' }}>Weekly</option>
+                        <option value="monthly" {{ request('type') == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="neo-btn">Filter</button>
                     </div>
-                @endif
+                </div>
+            </form>
+        </div>
+    </div>
 
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show">
-                        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                @php
-                    // Define platform icons here before they're used
-$platformIcons = [
-    'youtube' => '<i class="fab fa-youtube text-danger fa-lg"></i>',
-    'instagram' => '<i class="fab fa-instagram text-purple fa-lg"></i>',
-    'tiktok' => '<i class="fab fa-tiktok text-dark fa-lg"></i>',
-    'facebook' => '<i class="fab fa-facebook text-primary fa-lg"></i>',
-    'other' => '<i class="fas fa-link text-secondary fa-lg"></i>',
-];
-
-$upcomingSchedules = $schedules
-    ->where('status', 'scheduled')
-    ->where('scheduled_for', '>', now())
-                        ->take(3);
-                    $hasUpcoming = $upcomingSchedules->isNotEmpty();
-                @endphp
-
-                <!-- Upcoming Schedules Quick View -->
-                @if ($hasUpcoming)
-                    <div class="card border-0 shadow-sm mb-4 bg-primary bg-opacity-10">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-3"><i class="fas fa-hourglass-half me-2 text-primary"></i>Jadwal Mendatang
-                            </h5>
-                            <div class="row">
-                                @foreach ($upcomingSchedules as $upcoming)
-                                    <div class="col-md-4 mb-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="me-3 fs-4">
-                                                {!! $platformIcons[$upcoming->platform] ?? $platformIcons['other'] !!}
+    <!-- Schedules Table Card -->
+    <div class="neo-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Scheduled Tasks</h5>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" id="scheduleActions" data-bs-toggle="dropdown" aria-expanded="false">
+                    Actions
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="scheduleActions">
+                    <li><button class="dropdown-item" id="selectAllBtn">Select All</button></li>
+                    <li><button class="dropdown-item" id="deselectAllBtn">Deselect All</button></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button class="dropdown-item text-danger" id="deleteSelectedBtn">Delete Selected</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            @if(isset($schedules) && $schedules->count() > 0)
+                <form id="bulkActionForm" method="POST">
+                    @csrf
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" class="form-check-input" id="selectAll" style="border: 2px solid #212529; width: 20px; height: 20px;">
+                                    </th>
+                                    <th>Title</th>
+                                    <th>Schedule</th>
+                                    <th>Next Run</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($schedules as $schedule)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input schedule-checkbox" name="schedules[]" value="{{ $schedule->id }}" style="border: 2px solid #212529; width: 20px; height: 20px;">
+                                        </td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 200px;">
+                                                {{ $schedule->title ?? 'Untitled' }}
                                             </div>
-                                            <div>
-                                                <div class="small text-truncate" style="max-width: 200px;">
-                                                    {{ $upcoming->url }}</div>
-                                                <div class="small text-muted">
-                                                    <i
-                                                        class="far fa-clock me-1"></i>{{ $upcoming->scheduled_for->format('d M Y H:i') }}
-                                                    <div class="small text-primary mt-1">
-                                                        ({{ $upcoming->scheduled_for->diffForHumans() }})
-                                                    </div>
-                                                </div>
+                                        </td>
+                                        <td>
+                                            @if($schedule->schedule_type == 'once')
+                                                <span class="badge bg-secondary" style="border: 2px solid #212529;">One Time</span>
+                                            @elseif($schedule->schedule_type == 'daily')
+                                                <span class="badge bg-primary" style="border: 2px solid #212529;">Daily</span>
+                                            @elseif($schedule->schedule_type == 'weekly')
+                                                <span class="badge bg-info" style="border: 2px solid #212529;">Weekly</span>
+                                            @elseif($schedule->schedule_type == 'monthly')
+                                                <span class="badge bg-warning" style="border: 2px solid #212529;">Monthly</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $schedule->next_run_at ? $schedule->next_run_at->format('M d, Y h:i A') : 'Not scheduled' }}
+                                        </td>
+                                        <td>{{ strtoupper($schedule->format) }}</td>
+                                        <td>
+                                            <x-status-badge :status="$schedule->status" />
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ route('schedules.show', $schedule) }}" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('schedules.edit', $schedule) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('schedules.destroy', $schedule) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this schedule?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                @endif
+                </form>
 
-                <div class="card shadow-sm">
-                    <div class="card-body p-0">
-                        @if ($schedules->isEmpty())
-                            <div class="text-center py-5">
-                                <div class="mb-3">
-                                    <i class="fas fa-calendar-alt fa-4x text-muted opacity-25"></i>
-                                </div>
-                                <h5 class="text-muted">Belum ada jadwal download</h5>
-                                <p class="text-muted small mb-4">Jadwalkan download video atau audio untuk diproses nanti
-                                </p>
-                                <a href="{{ route('schedules.create') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-plus-circle me-2"></i>Buat Jadwal Baru
-                                </a>
-                            </div>
-                        @else
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Platform</th>
-                                            <th>URL</th>
-                                            <th>Format</th>
-                                            <th>Dijadwalkan</th>
-                                            <th>Status</th>
-                                            <th class="text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($schedules as $schedule)
-                                            <tr @if ($schedule->status == 'failed') class="table-danger bg-opacity-10" @endif>
-                                                <td>
-                                                    {!! $platformIcons[$schedule->platform] ?? $platformIcons['other'] !!}
-                                                </td>
-                                                <td style="max-width:220px;">
-                                                    <div class="text-truncate">
-                                                        <a href="{{ $schedule->url }}" target="_blank"
-                                                            class="text-decoration-none">
-                                                            {{ $schedule->url }}
-                                                        </a>
-                                                    </div>
-                                                    @if ($schedule->download_id)
-                                                        <div class="mt-1">
-                                                            <a href="{{ route('downloads.show', $schedule->download_id) }}"
-                                                                class="badge bg-info text-white text-decoration-none">
-                                                                <i class="fas fa-file-download me-1"></i>Lihat Hasil
-                                                            </a>
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($schedule->format == 'mp4')
-                                                        <span class="badge bg-danger">
-                                                            <i class="fas fa-video me-1"></i>MP4
-                                                        </span>
-                                                        @if ($schedule->quality)
-                                                            <span
-                                                                class="badge bg-secondary ms-1">{{ $schedule->quality }}</span>
-                                                        @endif
-                                                    @else
-                                                        <span class="badge bg-info">
-                                                            <i class="fas fa-music me-1"></i>MP3
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <i
-                                                            class="far fa-calendar-alt me-1"></i>{{ $schedule->scheduled_for->format('d M Y') }}
-                                                    </div>
-                                                    <div class="small text-muted">
-                                                        <i
-                                                            class="far fa-clock me-1"></i>{{ $schedule->scheduled_for->format('H:i') }}
-                                                    </div>
-                                                    @if ($schedule->status == 'scheduled' && $schedule->scheduled_for->isFuture())
-                                                        <div class="small text-primary mt-1">
-                                                            ({{ $schedule->scheduled_for->diffForHumans() }})
-                                                        </div>
-                                                    @elseif($schedule->status == 'scheduled' && $schedule->scheduled_for->isPast())
-                                                        <div class="small text-warning mt-1">
-                                                            <i class="fas fa-exclamation-circle me-1"></i>Sedang menunggu
-                                                            proses
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <span class="badge {{ $schedule->status_badge }}">
-                                                        @switch($schedule->status)
-                                                            @case('scheduled')
-                                                                <i class="fas fa-clock me-1"></i>Menunggu
-                                                            @break
-
-                                                            @case('processing')
-                                                                <i class="fas fa-spinner fa-spin me-1"></i>Diproses
-                                                            @break
-
-                                                            @case('completed')
-                                                                <i class="fas fa-check-circle me-1"></i>Selesai
-                                                            @break
-
-                                                            @default
-                                                                <i class="fas fa-times-circle me-1"></i>Gagal
-                                                        @endswitch
-                                                    </span>
-
-                                                    @if ($schedule->error_message)
-                                                        <div class="small text-danger mt-1" data-bs-toggle="tooltip"
-                                                            title="{{ $schedule->error_message }}">
-                                                            <i
-                                                                class="fas fa-exclamation-circle me-1"></i>{{ \Illuminate\Support\Str::limit($schedule->error_message, 30) }}
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($schedule->status == 'scheduled' && $schedule->scheduled_for->isFuture())
-                                                        <form action="{{ route('schedules.destroy', $schedule->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                                onclick="return confirm('Anda yakin ingin membatalkan jadwal download ini?')">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
-                                                    @elseif($schedule->status == 'failed')
-                                                        <a href="{{ route('schedules.create') }}?retry={{ $schedule->id }}"
-                                                            class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-redo"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @endif
-                    </div>
-                    @if ($schedules->hasPages())
-                        <div class="card-footer bg-white py-3">
-                            {{ $schedules->links() }}
-                        </div>
-                    @endif
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $schedules->appends(request()->query())->links() }}
                 </div>
+            @else
+                <x-empty-state
+                    title="No Scheduled Downloads"
+                    message="You don't have any scheduled downloads yet."
+                    icon="fas fa-calendar-alt"
+                    action="true"
+                    actionLink="{{ route('schedules.create') }}"
+                    actionText="Schedule New"
+                />
+            @endif
+        </div>
+    </div>
 
-                <!-- Tips panel -->
-                <div class="card mt-4 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h6 class="fw-bold d-flex align-items-center">
-                            <i class="fas fa-info-circle text-primary me-2"></i>Tentang Jadwal Download
-                        </h6>
-                        <p class="small mb-0">
-                            Fitur jadwal download memungkinkan Anda menyiapkan download untuk diproses secara otomatis pada
-                            waktu yang ditentukan.
-                            Token akan dipotong saat proses download dimulai, bukan saat Anda membuat jadwal.
-                            Jadwal yang telah diproses tidak dapat dibatalkan.
-                        </p>
-                    </div>
+    <!-- Calendar View Toggle Button -->
+    <div class="text-center mt-4">
+        <button class="neo-btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#calendarView" aria-expanded="false" aria-controls="calendarView">
+            <i class="fas fa-calendar-alt me-2"></i> Toggle Calendar View
+        </button>
+    </div>
+
+    <!-- Calendar View (Collapsed by Default) -->
+    <div class="collapse mt-4" id="calendarView">
+        <div class="neo-card">
+            <div class="card-header">
+                <h5 class="mb-0">Calendar View</h5>
+            </div>
+            <div class="card-body">
+                <div id="schedulesCalendar"></div>
+                <div class="text-center mt-3 text-muted">
+                    <p><i class="fas fa-info-circle me-2"></i> Calendar view shows your scheduled downloads by date</p>
                 </div>
             </div>
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            // Enable tooltips
-            document.addEventListener('DOMContentLoaded', function() {
-                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                tooltipTriggerList.map(function(tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            });
-        </script>
-    @endpush
+</div>
 @endsection
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css" rel="stylesheet">
+<style>
+    .fc-event {
+        border: 2px solid #212529 !important;
+        padding: 2px 4px !important;
+        cursor: pointer;
+    }
+    .fc-day-today {
+        background-color: rgba(255, 75, 43, 0.1) !important;
+    }
+    .fc-button {
+        background-color: #ff4b2b !important;
+        border-color: #212529 !important;
+        border-width: 2px !important;
+        box-shadow: 3px 3px 0 rgba(0,0,0,0.2) !important;
+    }
+    .fc-button:hover {
+        background-color: #ff6b4b !important;
+        transform: translate(1px, 1px);
+        box-shadow: 2px 2px 0 rgba(0,0,0,0.2) !important;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Select all checkbox functionality
+        $('#selectAll').change(function() {
+            $('.schedule-checkbox').prop('checked', this.checked);
+        });
+
+        $('.schedule-checkbox').change(function() {
+            if ($('.schedule-checkbox:checked').length == $('.schedule-checkbox').length) {
+                $('#selectAll').prop('checked', true);
+            } else {
+                $('#selectAll').prop('checked', false);
+            }
+        });
+
+        // Bulk action buttons
+        $('#selectAllBtn').click(function() {
+            $('.schedule-checkbox').prop('checked', true);
+            $('#selectAll').prop('checked', true);
+        });
+
+        $('#deselectAllBtn').click(function() {
+            $('.schedule-checkbox').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+        });
+
+        $('#deleteSelectedBtn').click(function() {
+            if($('.schedule-checkbox:checked').length === 0) {
+                alert('Please select at least one schedule to delete');
+                return;
+            }
+
+            if(confirm('Are you sure you want to delete the selected schedules? This action cannot be undone.')) {
+                // Here we would submit the form to delete selected schedules
+                // $('#bulkActionForm').attr('action', '{{ route("schedules.bulk-delete") }}').submit();
+                alert('Deleted ' + $('.schedule-checkbox:checked').length + ' schedules');
+            }
+        });
+
+        // Initialize calendar when view is toggled
+        $('#calendarView').on('shown.bs.collapse', function () {
+            initializeCalendar();
+        });
+
+        function initializeCalendar() {
+            const calendarEl = document.getElementById('schedulesCalendar');
+            if (!calendarEl) return;
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: [
+                    // Mock events - this would be loaded from backend in production
+                    @foreach($schedules as $schedule)
+                    {
+                        title: '{{ $schedule->title ?? "Scheduled Download" }}',
+                        start: '{{ $schedule->next_run_at ? $schedule->next_run_at->format('Y-m-d H:i:s') : '' }}',
+                        url: '{{ route("schedules.show", $schedule) }}',
+                        backgroundColor: '{{ $schedule->status == "scheduled" ? "#ff4b2b" : ($schedule->status == "completed" ? "#28a745" : "#6c757d") }}',
+                        borderColor: '#212529'
+                    },
+                    @endforeach
+                ],
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault(); // prevent browser navigation
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+
+            calendar.render();
+        }
+    });
+</script>
+@endpush
