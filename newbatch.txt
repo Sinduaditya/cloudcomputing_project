@@ -1,0 +1,140 @@
+Laravel Views Structure by Controller Batches
+I'll outline the views needed for Batch 14 and Batch 15 based on your controllers, showing controller relationships, view files needed, and their proper paths.
+
+Batch 14: Views (Download Management)
+1. InstanceController
+Path: actions.blade.php
+Purpose: Component for action buttons (download, share, delete) on media instances
+Used in: Media player and sharing pages
+
+2. DownloadController (Additional Views)
+Path: create.blade.php (Already in Batch 13)
+Path: index.blade.php (Already in Batch 13)
+Path: show.blade.php (Already in Batch 13)
+Path: resources/views/download/history.blade.php
+Purpose: For displaying download history with filters
+3. TokenController
+Path: balance.blade.php
+Purpose: View for token balance, purchasing, and transaction history
+Path: purchase.blade.php
+Purpose: Page for purchasing token packages
+Path: history.blade.php
+Purpose: Transaction history listing
+4. ScheduleController
+Path: index.blade.php
+Purpose: List all scheduled downloads
+Path: create.blade.php
+Purpose: Create a scheduled download form
+Path: resources/views/schedule/edit.blade.php
+Purpose: Edit a scheduled download
+Path: show.blade.php
+Purpose: View details of a scheduled download
+Batch 15: Views (Admin Dashboard)
+
+1. AdminController
+Path: dashboard.blade.php
+Purpose: Main admin dashboard with statistics
+Path: resources/views/admin/downloads/index.blade.php
+Purpose: Admin view of all downloads
+Path: resources/views/admin/downloads/show.blade.php
+Purpose: Admin detailed view of a download
+Path: resources/views/admin/schedules/index.blade.php
+Purpose: Admin view of all scheduled downloads
+Path: resources/views/admin/schedules/show.blade.php
+Purpose: Admin detailed view of a scheduled task
+
+2. UserController (Admin)
+Path: index.blade.php
+Purpose: List all users with management options
+Path: show.blade.php
+Purpose: View user details
+Path: create.blade.php
+Purpose: Create new user form
+Path: edit.blade.php
+Purpose: Edit user form
+Path: downloads.blade.php
+Purpose: View specific user's downloads
+Path: activities.blade.php
+Purpose: View specific user's activity logs
+
+3. ActivityController (Admin)
+Path: index.blade.php
+Purpose: List all system activity logs with filters
+Path: show.blade.php
+Purpose: Detailed view of an activity log entry
+
+4. TokenManagementController (Admin)
+Path: index.blade.php
+Purpose: Token administration page
+Path: transactions.blade.php
+Purpose: All token transactions across users
+Path: pricing.blade.php
+Purpose: Manage token packages and pricing
+
+5. SystemController (Admin)
+Path: settings.blade.php
+Purpose: System configuration settings
+Path: maintenance.blade.php
+Purpose: System maintenance tools
+Path: info.blade.php
+Purpose: System information and health status
+Path: logs.blade.php
+Purpose: View and manage system logs
+Folder Structure Summary
+resources/views/
+│
+├── instance/
+│   ├── actions.blade.php
+│   └── show.blade.php
+│
+├── download/
+│   ├── create.blade.php
+│   ├── index.blade.php
+│   ├── show.blade.php
+│   └── history.blade.php
+│
+├── tokens/
+│   ├── balance.blade.php
+│   ├── purchase.blade.php
+│   └── history.blade.php
+│
+├── schedule/
+│   ├── index.blade.php
+│   ├── create.blade.php
+│   ├── edit.blade.php
+│   └── show.blade.php
+│
+├── admin/
+│   ├── dashboard.blade.php
+│   │
+│   ├── downloads/
+│   │   ├── index.blade.php
+│   │   └── show.blade.php
+│   │
+│   ├── schedules/
+│   │   ├── index.blade.php
+│   │   └── show.blade.php
+│   │
+│   ├── users/
+│   │   ├── index.blade.php
+│   │   ├── show.blade.php
+│   │   ├── create.blade.php
+│   │   ├── edit.blade.php
+│   │   ├── downloads.blade.php
+│   │   └── activities.blade.php
+│   │
+│   ├── activities/
+│   │   ├── index.blade.php
+│   │   └── show.blade.php
+│   │
+│   ├── tokens/
+│   │   ├── index.blade.php
+│   │   ├── transactions.blade.php
+│   │   └── pricing.blade.php
+│   │
+│   └── system/
+│       ├── settings.blade.php
+│       ├── maintenance.blade.php
+│       ├── info.blade.php
+│       └── logs.blade.php
+Would you like me to implement any specific views from these batches first?
