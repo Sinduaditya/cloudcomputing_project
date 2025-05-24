@@ -48,31 +48,22 @@
                         </div>
                     </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <x-form-select
-                                name="format"
-                                label="Format"
-                                :options="[
-                                    'mp4_720p' => 'Video - MP4 (720p)',
-                                    'mp4_480p' => 'Video - MP4 (480p)',
-                                    'mp4_360p' => 'Video - MP4 (360p)',
-                                    'mp3_high' => 'Audio - MP3 (High Quality)',
-                                    'mp3_medium' => 'Audio - MP3 (Medium Quality)',
-                                ]"
-                                selected="mp4_720p"
-                                required
-                            />
+                   <div class="row mb-4">
+                            <div class="col-md-6">
+                                <x-form-select name="format" label="Format" :options="[
+                                    'mp4' => 'Video (MP4)',
+                                    'mp3' => 'Audio (MP3)',
+                                ]" selected="mp4" required />
+                            </div>
+                            <div class="col-md-6" id="quality-container">
+                                <x-form-select name="quality" label="Quality" :options="[
+                                    '1080p' => '1080p (HD)',
+                                    '720p' => '720p (HD)',
+                                    '480p' => '480p (SD)',
+                                    '360p' => '360p (SD)',
+                                ]" selected="720p" required />
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <x-form-input
-                                name="custom_title"
-                                label="Custom Title (Optional)"
-                                placeholder="Enter custom title for your download"
-                                :value="old('custom_title')"
-                            />
-                        </div>
-                    </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Schedule Options</label>

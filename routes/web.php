@@ -67,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/activity', [DashboardController::class, 'activity'])->name('dashboard.activity');
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
 
+    Route::post('/schedules/bulk-delete', [\App\Http\Controllers\ScheduleController::class, 'bulkDelete'])->name('schedules.bulk-delete');
+
     // Downloads
     Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
     Route::get('/downloads/create', [DownloadController::class, 'create'])->name('downloads.create');
@@ -111,11 +113,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/downloads/file/{id}', [DownloadController::class, 'downloadFile'])->name('downloads.file');
 
     // Fix downloads that are stuck in "storing" status
-    Route::get('/downloads/fix-status', function() {
+    Route::get('/downloads/fix-status', function () {
         $fixed = 0;
-        $downloads = Download::where('status', 'storing')
-            ->whereNotNull('storage_url')
-            ->get();
+        $downloads = Download::where('status', 'storing')->whereNotNull('storage_url')->get();
 
         foreach ($downloads as $download) {
             $download->status = 'completed';
@@ -124,9 +124,10 @@ Route::middleware(['auth'])->group(function () {
             $fixed++;
         }
 
-        return redirect()->back()->with('success', "Fixed $fixed downloads");
+        return redirect()
+            ->back()
+            ->with('success', "Fixed $fixed downloads");
     })->name('downloads.fix-status');
-
 });
 
 // Admin routes
@@ -183,5 +184,3 @@ Route::middleware(['auth', 'admin'])
         Route::get('/schedules/{schedule}', [AdminController::class, 'showSchedule'])->name('schedules.show');
         Route::delete('/schedules/{schedule}', [AdminController::class, 'deleteSchedule'])->name('schedules.delete');
     });
-
-
