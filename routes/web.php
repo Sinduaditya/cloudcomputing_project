@@ -49,7 +49,7 @@ Route::post('/api/url/check', [DownloadController::class, 'checkUrl'])->name('ap
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
 

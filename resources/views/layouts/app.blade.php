@@ -25,17 +25,17 @@
     <!-- Neobrutalism Style -->
     <style>
         :root {
-            --primary: #ff4b2b;
-            --primary-gradient-start: #ff4b2b;
-            --primary-gradient-end: #ff9a55;
-            --secondary: #121212;
-            --light: #f8f9fa;
-            --dark: #212529;
+            --primary: #2B7EC1;
+            --primary-gradient-start: #2B7EC1;
+            --primary-gradient-end: #58A7E6;
+            --secondary: #0B2B42;
+            --light: #f0f9ff;
+            --dark: #0f172a;
             --success: #25b865;
             --danger: #ff2c55;
             --warning: #ffca28;
             --info: #56c5ed;
-            --shadow-color: rgba(0, 0, 0, 0.35);
+            --shadow-color: rgba(0, 0, 0, 0.25);
         }
 
         body {

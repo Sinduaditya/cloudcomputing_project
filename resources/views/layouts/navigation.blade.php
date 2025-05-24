@@ -1,9 +1,9 @@
 <!-- filepath: f:\UGM\cloudcomputing\cloudcomputing_project\resources\views\layouts\navigation.blade.php -->
 <nav class="neo-navbar navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="me-2">
-            <span class="fw-bold ms-2">{{ config('app.name') }}</span>
+        <a href="{{ url('/') }}" class="navbar-brand d-flex align-items-center">
+            <img src="{{ asset('images/logo.png') }}" alt="SkyGrab Logo" class="me-2" style="height: 40px;">
+            <span class="fw-bold fs-4 text-primary">SkyGrab</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
