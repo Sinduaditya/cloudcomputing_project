@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Facade;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -69,7 +68,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -155,7 +154,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -194,6 +192,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\CloudinaryServiceProvider::class,
 
     ],
 
@@ -208,8 +207,10 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
-    ])->toArray(),
-
+    'aliases' => Facade::defaultAliases()
+        ->merge([
+            // 'ExampleClass' => App\Example\ExampleClass::class,
+            'Cloudinary' => Cloudinary\Cloudinary::class,
+        ])
+        ->toArray(),
 ];

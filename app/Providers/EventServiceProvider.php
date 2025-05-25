@@ -6,6 +6,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\DownloadCompleted;
+use App\Events\TokenLow;
+use App\Listeners\SendDownloadNotification;
+use App\Listeners\NotifyLowTokenBalance;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +19,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        // Anda bisa menghapus ini jika tidak menggunakan email verification
+        // Registered::class => [
+        //     SendEmailVerificationNotification::class,
+        // ],
+
+        // Tetap daftarkan event dan listener untuk log
+        DownloadCompleted::class => [
+            SendDownloadNotification::class,
+        ],
+        TokenLow::class => [
+            NotifyLowTokenBalance::class,
         ],
     ];
 

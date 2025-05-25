@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,10 +15,14 @@ return new class extends Migration
         Schema::create('token_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('amount');
-            $table->string('transaction_type');
-            $table->bigInteger('reference_id')->nullable();
+            $table->integer('amount'); // positive for additions, negative for deductions
+            $table->integer('balance_after');
+            $table->string('type'); // admin_adjustment, download_cost, refund
             $table->text('description')->nullable();
+            $table->foreignId('download_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('admin_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('resource_id')->nullable();
+            $table->string('resource_type')->nullable();
             $table->timestamps();
         });
     }

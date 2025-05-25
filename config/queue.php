@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Queue Connection Name
@@ -13,7 +12,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    'default' => env('QUEUE_CONNECTION', 'database'), // Ubah default ke database
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +28,6 @@ return [
     */
 
     'connections' => [
-
         'sync' => [
             'driver' => 'sync',
         ],
@@ -38,6 +36,15 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
+            'retry_after' => 90,
+            'after_commit' => false,
+        ],
+
+        // Tambahkan konfigurasi untuk queue 'scheduled'
+        'scheduled_db' => [ // Renamed to avoid confusion with redis version
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'scheduled',
             'retry_after' => 90,
             'after_commit' => false,
         ],
@@ -62,6 +69,7 @@ return [
             'after_commit' => false,
         ],
 
+        // Keep Redis configuration for reference, but it won't be used
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
@@ -71,6 +79,14 @@ return [
             'after_commit' => false,
         ],
 
+        'scheduled' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'scheduled',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
     ],
 
     /*
@@ -89,5 +105,4 @@ return [
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
-
 ];
