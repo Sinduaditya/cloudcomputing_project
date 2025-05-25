@@ -65,11 +65,7 @@ class TokenManagementController extends Controller
         $transactions = $query->paginate(50)->withQueryString();
 
         // Get transaction types for filter
-        $transactionTypes = TokenTransaction::select('type')
-            ->distinct()
-            ->pluck('type')
-            ->sort()
-            ->toArray();
+        $transactionTypes = TokenTransaction::select('type')->distinct()->pluck('type')->sort()->toArray();
 
         // Get users for filter
         $users = User::orderBy('name')->get(['id', 'name']);
@@ -82,12 +78,7 @@ class TokenManagementController extends Controller
             'total_tokens_issued' => TokenTransaction::where('amount', '>', 0)->sum('amount'),
         ];
 
-        return view('admin.tokens.index', compact(
-            'transactions',
-            'transactionTypes',
-            'users',
-            'stats'
-        ));
+        return view('admin.tokens.index', compact('transactions', 'transactionTypes', 'users', 'stats'));
     }
 
     /**
@@ -123,24 +114,10 @@ class TokenManagementController extends Controller
             // Perform token adjustment
             if ($amount > 0) {
                 // Add tokens
-                $this->tokenService->addTokens(
-                    $user,
-                    $amount,
-                    $type,
-                    $description,
-                    null,
-                    auth()->id()
-                );
+                $this->tokenService->addTokens($user, $amount, $type, $description, null, auth()->id());
             } else {
                 // Deduct tokens
-                $success = $this->tokenService->deductTokens(
-                    $user,
-                    abs($amount),
-                    $type,
-                    $description,
-                    null,
-                    auth()->id()
-                );
+                $success = $this->tokenService->deductTokens($user, abs($amount), $type, $description, null, auth()->id());
 
                 if (!$success) {
                     return back()->with('error', 'User does not have enough tokens for this deduction.');
@@ -159,15 +136,15 @@ class TokenManagementController extends Controller
                     'amount' => $amount,
                     'type' => $type,
                     'description' => $description,
-                    'new_balance' => $user->token_balance,
+                    'new_balance' => $user->fresh()->token_balance,
                 ]),
                 'ip_address' => $request->ip(),
             ]);
 
             $actionType = $amount > 0 ? 'added to' : 'deducted from';
-            return redirect()->route('admin.tokens.index')
+            return redirect()
+                ->route('admin.tokens.index')
                 ->with('success', abs($amount) . " tokens {$actionType} {$user->name}'s account.");
-
         } catch (\Exception $e) {
             Log::error('Error adjusting tokens', [
                 'error' => $e->getMessage(),
@@ -175,7 +152,8 @@ class TokenManagementController extends Controller
                 'input' => $request->except('_token'),
             ]);
 
-            return back()->withInput()
+            return back()
+                ->withInput()
                 ->with('error', 'Failed to adjust tokens: ' . $e->getMessage());
         }
     }
@@ -225,14 +203,14 @@ class TokenManagementController extends Controller
             ]);
 
             return back()->with('success', 'Token settings updated successfully.');
-
         } catch (\Exception $e) {
             Log::error('Error updating token settings', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->withInput()
+            return back()
+                ->withInput()
                 ->with('error', 'Failed to update token settings: ' . $e->getMessage());
         }
     }
@@ -276,7 +254,9 @@ class TokenManagementController extends Controller
         $amounts = [];
         $counts = [];
         for ($i = 0; $i < 30; $i++) {
-            $date = Carbon::now()->subDays(29 - $i)->format('Y-m-d');
+            $date = Carbon::now()
+                ->subDays(29 - $i)
+                ->format('Y-m-d');
             $dates[] = Carbon::parse($date)->format('d M');
 
             $dayData = $transactionsByDay->firstWhere('date', $date);
@@ -285,23 +265,13 @@ class TokenManagementController extends Controller
         }
 
         // Transactions by type
-        $transactionsByType = TokenTransaction::select('type', DB::raw('SUM(amount) as total_amount'), DB::raw('COUNT(*) as count'))
-            ->groupBy('type')
-            ->get();
+        $transactionsByType = TokenTransaction::select('type', DB::raw('SUM(amount) as total_amount'), DB::raw('COUNT(*) as count'))->groupBy('type')->get();
 
         // Users with most tokens
-        $usersWithMostTokens = User::select('id', 'name', 'email', 'token_balance')
-            ->orderBy('token_balance', 'desc')
-            ->limit(10)
-            ->get();
+        $usersWithMostTokens = User::select('id', 'name', 'email', 'token_balance')->orderBy('token_balance', 'desc')->limit(10)->get();
 
         // Users with most token consumption
-        $usersWithMostConsumption = TokenTransaction::select('user_id', DB::raw('SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END) as consumption'))
-            ->with('user:id,name,email')
-            ->groupBy('user_id')
-            ->orderBy('consumption', 'desc')
-            ->limit(10)
-            ->get();
+        $usersWithMostConsumption = TokenTransaction::select('user_id', DB::raw('SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END) as consumption'))->with('user:id,name,email')->groupBy('user_id')->orderBy('consumption', 'desc')->limit(10)->get();
 
         // Overall statistics
         $stats = [
@@ -314,14 +284,6 @@ class TokenManagementController extends Controller
             'total_refunds' => TokenTransaction::where('type', 'refund')->sum('amount'),
         ];
 
-        return view('admin.tokens.statistics', compact(
-            'dates',
-            'amounts',
-            'counts',
-            'transactionsByType',
-            'usersWithMostTokens',
-            'usersWithMostConsumption',
-            'stats'
-        ));
+        return view('admin.tokens.statistics', compact('dates', 'amounts', 'counts', 'transactionsByType', 'usersWithMostTokens', 'usersWithMostConsumption', 'stats'));
     }
 }

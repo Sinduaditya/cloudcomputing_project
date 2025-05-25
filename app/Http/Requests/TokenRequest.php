@@ -7,64 +7,29 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TokenRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function authorize()
     {
-        // Ensure only admins can adjust tokens unless it's self-service
-        if ($this->route('user') && $this->user()->id !== $this->route('user')->id) {
-            return $this->user()->is_admin;
-        }
-
-        return true;
+        return auth()->check() && auth()->user()->is_admin;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
+            'user_id' => 'required|exists:users,id',
             'amount' => 'required|integer|not_in:0',
-            'type' => 'required|in:admin_adjustment,refund',
-            'description' => 'required|string|max:255',
+            'type' => 'required|string|in:admin_adjustment,bonus,refund,penalty,reward,correction',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
-    /**
-     * Get custom messages for validator errors.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
+    public function messages()
     {
         return [
-            'amount.required' => 'Please enter the token amount.',
-            'amount.integer' => 'The token amount must be a whole number.',
-            'amount.not_in' => 'The token amount cannot be zero.',
+            'amount.not_in' => 'Amount cannot be zero.',
+            'user_id.exists' => 'Selected user does not exist.',
+            'user_id.required' => 'Please select a user.',
+            'amount.required' => 'Please enter an amount.',
             'type.required' => 'Please select a transaction type.',
-            'type.in' => 'Please select a valid transaction type.',
-            'description.required' => 'Please provide a description for this transaction.',
-            'description.max' => 'The description cannot exceed 255 characters.',
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        // If negative amounts are provided with a minus sign, convert to positive
-        // and prepend a minus sign for display purposes only
-        if ($this->has('amount') && is_string($this->amount) && str_starts_with($this->amount, '-')) {
-            $this->merge([
-                'amount' => -1 * abs((int)$this->amount),
-            ]);
-        }
     }
 }

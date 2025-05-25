@@ -48,7 +48,7 @@
                     </li>
                     @if(Auth::user()->is_admin)
                     <li class="nav-item ms-lg-2">
-                        <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.index') }}">
+                        <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                             <i class="fas fa-user-shield me-1"></i> Admin
                         </a>
                     </li>
@@ -59,7 +59,6 @@
                             {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('account') }}"><i class="fas fa-user-circle me-2"></i> My Account</a></li>
                             <li><a class="dropdown-item" href="{{ route('dashboard.activity') }}"><i class="fas fa-history me-2"></i> My Activity</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
