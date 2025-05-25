@@ -284,4 +284,19 @@ class AdminController extends Controller
             ];
         }
     }
+
+    public function schedules()
+    {
+        $schedules = \App\Models\ScheduledTask::orderBy('scheduled_for', 'desc')->get();
+        return view('admin.schedules', compact('schedules'));
+    }
+
+    public function downloads()
+    {
+        $downloads = \App\Models\Download::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.downloads', compact('downloads'));
+    }
 }
