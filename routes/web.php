@@ -136,8 +136,7 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
         // Admin dashboard
-        Route::get('/', [AdminController::class, 'index'])->name('index');
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
         // User management
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -161,7 +160,7 @@ Route::middleware(['auth', 'admin'])
         // Token management
         Route::get('/tokens', [TokenManagementController::class, 'index'])->name('tokens.index');
         Route::get('/tokens/transactions', [TokenManagementController::class, 'transactions'])->name('tokens.transactions');
-        Route::post('/tokens/adjust/{user}', [TokenManagementController::class, 'adjustTokens'])->name('tokens.adjust');
+        Route::post('/tokens/adjust/', [TokenManagementController::class, 'adjustTokens'])->name('tokens.adjust');
         Route::get('/tokens/pricing', [TokenManagementController::class, 'pricing'])->name('tokens.pricing');
         Route::post('/tokens/pricing', [TokenManagementController::class, 'updatePricing'])->name('tokens.update-pricing');
 
