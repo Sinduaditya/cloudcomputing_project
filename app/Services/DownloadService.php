@@ -109,6 +109,32 @@ class DownloadService
     }
 
     /**
+     * Calculate metered usage in MB for a download
+     *
+     * @param int $fileSizeBytes
+     * @return float
+     */
+    public function calculateUsageMB($fileSizeBytes)
+    {
+        return round($fileSizeBytes / (1024 * 1024), 2);
+    }
+
+    /**
+     * Calculate token cost based on MB and pricing model
+     *
+     * @param float $usageMB
+     * @return int
+     */
+    public function calculateTokenCostByMB($usageMB)
+    {
+        $mbPerToken = config('download.mb_per_token', 10);
+        $minTokens = config('download.min_tokens', 1);
+
+        $tokens = ceil($usageMB / $mbPerToken);
+        return max($tokens, $minTokens);
+    }
+
+    /**
      * Calculate token cost based on platform, duration, format and quality
      *
      * @param string $platform

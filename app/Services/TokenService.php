@@ -80,6 +80,38 @@ class TokenService
     }
 
     /**
+     * Add tokens to user balance (for purchase, admin adjustment, etc)
+     */
+    public function addTokens(User $user, int $amount, string $type, string $description = null, $resourceId = null, $adminId = null)
+    {
+        try {
+            $user->token_balance += $amount;
+            $user->save();
+
+            TokenTransaction::create([
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'type' => $type,
+                'description' => $description,
+                'resource_id' => $resourceId,
+                'admin_id' => $adminId,
+                'balance_after' => $user->token_balance
+            ]);
+
+            $this->cacheUserBalance($user);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Error adding tokens', [
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
      * Cache user token balance using Laravel's file cache
      */
     private function cacheUserBalance(User $user)

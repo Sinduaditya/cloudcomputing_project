@@ -30,6 +30,8 @@ class TokenTransaction extends Model
     const TYPE_ADMIN_ADJUSTMENT = 'admin_adjustment';
     const TYPE_DOWNLOAD_COST = 'download_cost';
     const TYPE_REFUND = 'refund';
+    const TYPE_PURCHASE = 'purchase';
+    const TYPE_AUDIT_LOG = 'audit_log';
 
     /**
      * Get the user that owns the transaction
@@ -65,6 +67,8 @@ class TokenTransaction extends Model
             self::TYPE_ADMIN_ADJUSTMENT => 'Admin adjustment',
             self::TYPE_DOWNLOAD_COST => 'Download cost',
             self::TYPE_REFUND => 'Refund',
+            self::TYPE_PURCHASE => 'Token purchase',
+            self::TYPE_AUDIT_LOG => 'Audit log entry',
         ];
 
         return $descriptions[$this->type] ?? $this->type;
@@ -96,6 +100,8 @@ class TokenTransaction extends Model
             self::TYPE_ADMIN_ADJUSTMENT => 'fa-user-shield',
             self::TYPE_DOWNLOAD_COST => 'fa-download',
             self::TYPE_REFUND => 'fa-undo',
+            self::TYPE_PURCHASE => 'fa-coins',
+            self::TYPE_AUDIT_LOG => 'fa-clipboard-list',
         ];
 
         return 'fas ' . ($icons[$this->type] ?? 'fa-exchange-alt');
