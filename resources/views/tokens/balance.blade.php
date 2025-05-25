@@ -67,10 +67,6 @@
                             <div>Last 7 Days:</div>
                             <div class="fw-bold">{{ $stats['last_7_days'] }} tokens</div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>Est. Days Remaining:</div>
-                            <div class="fw-bold">{{ $stats['estimated_days'] > 0 ? $stats['estimated_days'] . ' days' : 'Less than a day' }}</div>
-                        </div>
                     </div>
                 </div>
             </div>

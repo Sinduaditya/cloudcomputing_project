@@ -43,14 +43,30 @@ class TokenController extends Controller
     public function balance()
     {
         $user = auth()->user();
-        $tokenBalance = $user->token_balance;
+        $tokenBalance = $user->token_balance ?? 0;
 
         // Get statistics
+        $totalSpent = abs($user->tokenTransactions()->where('amount', '<', 0)->sum('amount')) ?? 0;
+        $totalReceived = $user->tokenTransactions()->where('amount', '>', 0)->sum('amount') ?? 0;
+        $monthlyUsage = abs($user->tokenTransactions()
+            ->where('created_at', '>=', now()->subMonths(1))
+            ->where('amount', '<', 0)
+            ->sum('amount')) ?? 0;
+
         $stats = [
-            'total_spent' => abs($user->tokenTransactions()->where('amount', '<', 0)->sum('amount')),
-            'total_received' => $user->tokenTransactions()->where('amount', '>', 0)->sum('amount'),
-            'download_costs' => abs($user->tokenTransactions()->where('type', 'download_cost')->sum('amount')),
-            'refunds' => $user->tokenTransactions()->where('type', 'refund')->sum('amount'),
+            'total_spent' => $totalSpent,
+            'total_received' => $totalReceived,
+            'download_costs' => abs($user->tokenTransactions()->where('type', 'download_cost')->sum('amount')) ?? 0,
+            'refunds' => $user->tokenTransactions()->where('type', 'refund')->sum('amount') ?? 0,
+            'purchased_tokens' => $user->tokenTransactions()->where('type', 'purchase')->sum('amount') ?? 0,
+            'bonus_tokens' => $user->tokenTransactions()->where('type', 'bonus')->sum('amount') ?? 0,
+            'used_tokens' => $totalSpent,
+            'monthly_avg' => $monthlyUsage > 0 ? round($monthlyUsage / 30, 1) : 0,
+            'last_7_days' => abs($user->tokenTransactions()
+                ->where('created_at', '>=', now()->subDays(7))
+                ->where('amount', '<', 0)
+                ->sum('amount')) ?? 0,
+            //estimated_days' => $this->calculateEstimatedDays($user),
         ];
 
         // Get recent transactions
@@ -59,7 +75,37 @@ class TokenController extends Controller
             ->limit(5)
             ->get();
 
-        return view('tokens.balance', compact('tokenBalance', 'stats', 'recentTransactions'));
+        $packages = [
+            [
+                'id' => 'basic', 
+                'amount' => 100,  // Changed from 'tokens' to 'amount' to match blade template
+                'tokens' => 100,  // Keep both for compatibility
+                'price' => 1000, // Price in Rupiah
+                'description' => 'Basic package',
+                'discount' => 0,
+                'best_value' => false
+            ],
+            [
+                'id' => 'standard', 
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => 4500,
+                'description' => 'Standard package - 10% savings',
+                'discount' => 10,
+                'best_value' => false  // Mark as best value
+            ],
+            [
+                'id' => 'premium', 
+                'amount' => 1000,
+                'tokens' => 1000,
+                'price' => 8000,
+                'description' => 'Premium package - 20% savings',
+                'discount' => 20,
+                'best_value' => true
+            ],
+        ];
+
+        return view('tokens.balance', compact('tokenBalance', 'stats', 'recentTransactions', 'packages'));
     }
 
     /**
@@ -69,9 +115,33 @@ class TokenController extends Controller
     {
         // You could set up different token package options here
         $packages = [
-            ['id' => 'basic', 'tokens' => 100, 'price' => 10, 'description' => 'Basic package'],
-            ['id' => 'standard', 'tokens' => 500, 'price' => 40, 'description' => 'Standard package - 20% savings'],
-            ['id' => 'premium', 'tokens' => 1200, 'price' => 80, 'description' => 'Premium package - 30% savings'],
+            [
+                'id' => 'basic', 
+                'amount' => 100,
+                'tokens' => 100,
+                'price' => 1000,
+                'description' => 'Basic package',
+                'discount' => 0,
+                'best_value' => false
+            ],
+            [
+                'id' => 'standard', 
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => 4000,
+                'description' => 'Standard package - 10% savings',
+                'discount' => 10,
+                'best_value' => false
+            ],
+            [
+                'id' => 'premium', 
+                'amount' => 1000,
+                'tokens' => 1000,
+                'price' => 8000,
+                'description' => 'Premium package - 20% savings',
+                'discount' => 20,
+                'best_value' => true
+            ],
         ];
 
         return view('tokens.purchase', compact('packages'));
