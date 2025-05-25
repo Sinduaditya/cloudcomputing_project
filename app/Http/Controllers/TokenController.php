@@ -78,29 +78,29 @@ class TokenController extends Controller
         $packages = [
             [
                 'id' => 'basic', 
-                'amount' => 100,  // Changed from 'tokens' to 'amount' to match blade template
-                'tokens' => 100,  // Keep both for compatibility
-                'price' => 1000, // Price in Rupiah
-                'description' => 'Basic package',
+                'amount' => 50,
+                'tokens' => 50,
+                'price' => '$5.99',
+                'description' => 'Starter',
                 'discount' => 0,
                 'best_value' => false
             ],
             [
                 'id' => 'standard', 
-                'amount' => 500,
-                'tokens' => 500,
-                'price' => 4500,
-                'description' => 'Standard package - 10% savings',
-                'discount' => 10,
-                'best_value' => false  // Mark as best value
+                'amount' => 200,
+                'tokens' => 200,
+                'price' => '$15.99',
+                'description' => 'Plus',
+                'discount' => 0,
+                'best_value' => false
             ],
             [
                 'id' => 'premium', 
-                'amount' => 1000,
-                'tokens' => 1000,
-                'price' => 8000,
-                'description' => 'Premium package - 20% savings',
-                'discount' => 20,
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => '$29',
+                'description' => 'Pro',
+                'discount' => 0,
                 'best_value' => true
             ],
         ];
@@ -117,29 +117,29 @@ class TokenController extends Controller
         $packages = [
             [
                 'id' => 'basic', 
-                'amount' => 100,
-                'tokens' => 100,
-                'price' => 1000,
-                'description' => 'Basic package',
+                'amount' => 50,
+                'tokens' => 50,
+                'price' => '$5.99',
+                'description' => 'Starter',
                 'discount' => 0,
                 'best_value' => false
             ],
             [
                 'id' => 'standard', 
-                'amount' => 500,
-                'tokens' => 500,
-                'price' => 4000,
-                'description' => 'Standard package - 10% savings',
-                'discount' => 10,
+                'amount' => 200,
+                'tokens' => 200,
+                'price' => '$15.99',
+                'description' => 'Plus',
+                'discount' => 0,
                 'best_value' => false
             ],
             [
                 'id' => 'premium', 
-                'amount' => 1000,
-                'tokens' => 1000,
-                'price' => 8000,
-                'description' => 'Premium package - 20% savings',
-                'discount' => 20,
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => '$29',
+                'description' => 'Pro',
+                'discount' => 0,
                 'best_value' => true
             ],
         ];

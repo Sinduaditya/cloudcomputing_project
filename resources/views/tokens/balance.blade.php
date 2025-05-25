@@ -106,7 +106,8 @@
                                         <h3 class="mb-1">{{ $package['amount'] }}</h3>
                                         <p class="text-muted mb-3">tokens</p>
                                         <div class="package-price mb-3">
-                                            <h5 class="fw-bold">Rp {{ number_format($package['price'], 0, ',', '.') }}</h5>
+                                            <h5 class="fw-bold">{{ $package['price'] }}</h5>
+
                                             @if($package['discount'] > 0)
                                                 <span class="badge bg-success" style="border: 2px solid #212529;">{{ $package['discount'] }}% OFF</span>
                                             @endif
