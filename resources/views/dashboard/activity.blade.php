@@ -255,8 +255,8 @@
 <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-labelledby="clearLogsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="border: 3px solid #212529; border-radius: 8px;">
-            <div class="modal-header" style="background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%); border-bottom: 2px solid #212529;">
-                <h5 class="modal-title" id="clearLogsModalLabel">Clear Activity Logs</h5>
+            <div class="modal-header" style="background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%); border-bottom: 2px solid #212529;">
+                <h5 class="modal-title" id="clearLogsModalLabel" style="color: #ffffff;">Clear Activity Logs</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
