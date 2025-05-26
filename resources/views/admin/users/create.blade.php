@@ -18,7 +18,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">User Information</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <form action="{{ route('admin.users.store') }}" method="POST">
                         @csrf
 

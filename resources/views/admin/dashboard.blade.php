@@ -6,7 +6,7 @@
 @section('content')
 <div class="container-fluid">
     <!-- Key Metrics -->
-    <div class="row g-3 mb-4">
+    <div class="row g-4 mb-4">
         <div class="col-xl-3 col-md-6">
             <x-stats-card
                 value="{{ $metrics['total_users'] }}"
@@ -75,7 +75,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">System Status</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span>Storage Usage</span>
@@ -135,7 +135,7 @@
             <div class="neo-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Activity</h5>
-                    <a href="{{ route('admin.activities.index') }}" class="neo-btn btn-sm">View All</a>
+                    <a href="{{ route('admin.activities.index') }}" class="neo-btn btn-sm" style="color: #ffffff;">View All</a>
                 </div>
                 <div class="card-body p-0">
                     @if(count($recentActivity) > 0)
@@ -200,7 +200,7 @@
             <div class="neo-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">New Users</h5>
-                    <a href="{{ route('admin.users.index') }}" class="neo-btn btn-sm">View All</a>
+                    <a href="{{ route('admin.users.index') }}" class="neo-btn btn-sm" style="color: #ffffff;">View All</a>
                 </div>
                 <div class="card-body p-0">
                     @if(count($newUsers) > 0)
@@ -261,7 +261,7 @@
                     </div>
 
                     <div class="platform-stats mt-4">
-                        <div class="row">
+                        <div class="row" style="padding: 24px;">
                             <div class="col-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div style="width:14px; height:14px; background-color:#ff4b2b; border-radius:4px; margin-right:8px; border: 1px solid #212529;"></div>
@@ -302,7 +302,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Platform Status</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="platform-status mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>YouTube API</span>
@@ -544,7 +544,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -560,7 +559,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

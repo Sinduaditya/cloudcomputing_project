@@ -25,9 +25,9 @@
     <!-- Neobrutalism Style -->
     <style>
         :root {
-            --primary: #ff4b2b;
-            --primary-gradient-start: #ff4b2b;
-            --primary-gradient-end: #ff9a55;
+            --primary: #2B7EC1;
+            --primary-gradient-start: #2B7EC1;
+            --primary-gradient-end: #58A7E6;
             --secondary: #121212;
             --light: #f8f9fa;
             --light-gray: #e9ecef;
@@ -218,12 +218,13 @@
             letter-spacing: 1px;
         }
 
-        /* Helpers */
         .text-primary-gradient {
-            background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         }
+
 
         .bg-primary-gradient {
             background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));

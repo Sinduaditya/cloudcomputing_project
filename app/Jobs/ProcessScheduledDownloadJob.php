@@ -35,6 +35,12 @@ class ProcessScheduledDownloadJob implements ShouldQueue
 
     public function handle(DownloadService $downloadService, TokenService $tokenService)
     {
+        if ($this->task->status !== 'scheduled') {
+            return;
+        }
+
+        $this->task->update(['status' => 'running']);
+
         $task = $this->scheduledTask;
         $user = User::find($task->user_id);
 
@@ -137,6 +143,7 @@ class ProcessScheduledDownloadJob implements ShouldQueue
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+        $this->task->update(['status' => 'completed']);
     }
 
     /**

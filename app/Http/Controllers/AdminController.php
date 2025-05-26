@@ -25,7 +25,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // Key metrics
+        // Key metrics - add missing 'active_now'
         $metrics = [
             'total_users' => User::where('is_admin', false)->count(),
             'active_users' => User::where('is_admin', false)->where('is_active', true)->count(),
@@ -34,6 +34,37 @@ class AdminController extends Controller
             'failed_downloads' => Download::where('status', 'failed')->count(),
             'total_tokens' => User::sum('token_balance'),
             'pending_tasks' => ScheduledTask::where('status', 'scheduled')->count(),
+            // Add this missing key:
+            'active_now' => User::where('is_admin', false)
+                ->where('updated_at', '>=', now()->subMinutes(5))
+                ->count(),
+        ];
+
+        // Get system health data (required by dashboard)
+        $health = [
+            'storage' => [
+                'free_space' => disk_free_space(storage_path()) / (1024 * 1024 * 1024), // GB
+                'total_space' => disk_total_space(storage_path()) / (1024 * 1024 * 1024), // GB
+                'usage_percent' => 100 - (disk_free_space(storage_path()) / disk_total_space(storage_path()) * 100),
+            ],
+            'queue' => [
+                'default_queue_size' => DB::table('jobs')->where('queue', 'default')->count(),
+                'scheduled_queue_size' => DB::table('jobs')->where('queue', 'scheduled')->count(),
+                'failed_jobs' => DB::table('failed_jobs')->count(),
+            ],
+            'database' => [
+                'users_count' => User::count(),
+                'downloads_count' => Download::count(),
+                'activity_logs_count' => ActivityLog::count(),
+            ],
+        ];
+
+        // Get service status (required by dashboard)
+        $services = [
+            'youtube' => $this->checkServiceHealth('youtube'),
+            'tiktok' => $this->checkServiceHealth('tiktok'),
+            'instagram' => $this->checkServiceHealth('instagram'),
+            'cloudinary' => $this->checkCloudinaryHealth(),
         ];
 
         // Recent activity
@@ -42,12 +73,20 @@ class AdminController extends Controller
             ->limit(10)
             ->get();
 
-        // Downloads by platform (for chart)
-        $downloadsByPlatform = Download::select('platform', DB::raw('count(*) as count'))
+        // Downloads by platform (for chart) - rename variable to match dashboard
+        $platformStats = Download::select('platform', DB::raw('count(*) as count'))
             ->groupBy('platform')
             ->get()
             ->pluck('count', 'platform')
             ->toArray();
+
+        // Add missing platforms with 0 count
+        $platformStats = array_merge([
+            'youtube' => 0,
+            'tiktok' => 0,
+            'instagram' => 0,
+            'other' => 0
+        ], $platformStats);
 
         // Downloads by day for last 14 days (for chart)
         $downloadsByDay = Download::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
@@ -67,8 +106,8 @@ class AdminController extends Controller
             $counts[] = $downloadsByDay[$date] ?? 0;
         }
 
-        // Recent registrations
-        $recentUsers = User::where('is_admin', false)
+        // Recent registrations - rename to match dashboard
+        $newUsers = User::where('is_admin', false)
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -82,13 +121,48 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'metrics',
+            'health',
+            'services',
             'recentActivity',
-            'downloadsByPlatform',
+            'platformStats',
             'dates',
             'counts',
-            'recentUsers',
+            'newUsers',
             'failedDownloads'
         ));
+    }
+
+    /**
+     * Check service health
+     */
+    private function checkServiceHealth($service)
+    {
+        // This is a placeholder - in a real app, you'd have more sophisticated checks
+        $serviceClass = 'App\\Services\\' . ucfirst($service) . 'Service';
+
+        if (!class_exists($serviceClass)) {
+            return false;
+        }
+
+        try {
+            $serviceInstance = app($serviceClass);
+            $isConfigured = method_exists($serviceInstance, 'isConfigured')
+                ? $serviceInstance->isConfigured()
+                : true;
+
+            return $isConfigured;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check Cloudinary health
+     */
+    private function checkCloudinaryHealth()
+    {
+        // Since you're not using Cloudinary, return false
+        return false;
     }
 
     /**
@@ -154,75 +228,10 @@ class AdminController extends Controller
     }
 
     /**
-     * Check service health
-     */
-    private function checkServiceHealth($service)
-    {
-        // This is a placeholder - in a real app, you'd have more sophisticated checks
-        $serviceClass = 'App\\Services\\' . ucfirst($service) . 'Service';
-
-        if (!class_exists($serviceClass)) {
-            return [
-                'status' => 'unknown',
-                'message' => 'Service class not found',
-            ];
-        }
-
-        try {
-            $serviceInstance = app($serviceClass);
-            $isConfigured = method_exists($serviceInstance, 'isConfigured')
-                ? $serviceInstance->isConfigured()
-                : true;
-
-            return [
-                'status' => $isConfigured ? 'operational' : 'misconfigured',
-                'message' => $isConfigured ? 'Service appears to be operational' : 'Service is misconfigured',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => 'Error checking service: ' . $e->getMessage(),
-            ];
-        }
-    }
-
-    /**
-     * Check Cloudinary health
-     */
-    private function checkCloudinaryHealth()
-    {
-        try {
-            $cloudinaryService = app('App\\Services\\CloudinaryService');
-
-            if (!$cloudinaryService->isConfigured()) {
-                return [
-                    'status' => 'misconfigured',
-                    'message' => 'Cloudinary credentials are missing',
-                ];
-            }
-
-            // Additional checks could be performed here
-
-            return [
-                'status' => 'operational',
-                'message' => 'Cloudinary appears to be operational',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => 'Error checking Cloudinary: ' . $e->getMessage(),
-            ];
-        }
-    }
-
-    /**
      * Check if queue is running
      */
     private function isQueueRunning()
     {
-        // In a production environment, you'd need a more robust check
-        // This is just a placeholder
-
         try {
             $lastJob = DB::table('jobs')->orderBy('id', 'desc')->first();
             $lastRun = $lastJob ? Carbon::parse($lastJob->created_at) : null;
@@ -251,9 +260,6 @@ class AdminController extends Controller
      */
     private function isSchedulerRunning()
     {
-        // In a production environment, you'd need a more robust check
-        // This is just a placeholder
-
         try {
             // Check if there are any scheduled tasks that should have run
             $missedTasks = ScheduledTask::where('status', 'scheduled')
@@ -277,5 +283,20 @@ class AdminController extends Controller
                 'message' => 'Error checking scheduler: ' . $e->getMessage(),
             ];
         }
+    }
+
+    public function schedules()
+    {
+        $schedules = \App\Models\ScheduledTask::orderBy('scheduled_for', 'desc')->get();
+        return view('admin.schedules', compact('schedules'));
+    }
+
+    public function downloads()
+    {
+        $downloads = \App\Models\Download::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.downloads', compact('downloads'));
     }
 }

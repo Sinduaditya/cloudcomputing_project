@@ -136,16 +136,27 @@
                 </div>
 
                 <div class="share-buttons d-flex justify-content-center gap-2 mt-4">
-                    <a href="#" class="btn neo-btn" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('instance.show', $download)) }}', '', 'width=600,height=400'); return false;">
-                        <i class="fab fa-facebook-f me-2"></i> Facebook
-                    </a>
-                    <a href="#" class="btn neo-btn" onclick="window.open('https://twitter.com/intent/tweet?url={{ urlencode(route('instance.show', $download)) }}&text={{ urlencode($download->title ?? 'Check out this media!') }}', '', 'width=600,height=400'); return false;">
-                        <i class="fab fa-twitter me-2"></i> Twitter
-                    </a>
-                    <a href="https://wa.me/?text={{ urlencode($download->title ?? 'Check out this media!') }}%20{{ urlencode(route('instance.show', $download)) }}" target="_blank" class="btn neo-btn">
-                        <i class="fab fa-whatsapp me-2"></i> WhatsApp
-                    </a>
-                </div>
+                @php
+                    $shareUrl = route('instance.show', $download);
+                    $shareText = $download->title ?? 'Check out this media!';
+                @endphp
+
+                <a href="#" class="btn neo-btn"
+                    onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}', '', 'width=600,height=400'); return false;">
+                    <i class="fab fa-facebook-f me-2"></i> Facebook
+                </a>
+
+                <a href="#" class="btn neo-btn"
+                    onclick="window.open('https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text={{ urlencode($shareText) }}', '', 'width=600,height=400'); return false;">
+                 <i class="fab fa-twitter me-2"></i> Twitter
+                 </a>
+
+                <a href="https://wa.me/?text={{ urlencode($shareText . ' ' . $shareUrl) }}"
+                target="_blank" class="btn neo-btn">
+                    <i class="fab fa-whatsapp me-2"></i> WhatsApp
+                </a>
+            </div>
+
             </div>
             <div class="modal-footer" style="border-top: 2px solid #121212;">
                 <button type="button" class="neo-btn btn-secondary" data-bs-dismiss="modal">Close</button>

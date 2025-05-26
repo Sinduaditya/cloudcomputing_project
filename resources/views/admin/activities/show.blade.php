@@ -382,7 +382,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -397,8 +396,7 @@
         font-size: 1rem;
         line-height: 1.5;
         border: 2px solid #212529;
-        border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+        border-radius: 0.375rem;    
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

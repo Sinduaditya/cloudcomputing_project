@@ -140,12 +140,13 @@
             padding-bottom: 80px; /* Footer height */
         }
 
-        /* Helpers */
         .text-primary-gradient {
-            background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         }
+
 
         .bg-primary-gradient {
             background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));

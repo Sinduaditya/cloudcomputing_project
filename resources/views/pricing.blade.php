@@ -17,7 +17,7 @@
         </div>
         <div class="card-body" style="padding: 12px;">
             <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
+                <div class="col-md-6 p-4 mb-4 mb-md-0 ">
                     <div class="mb-3" style="pad">
                         <label class="form-label fw-bold">Content Type</label>
                         <select id="contentType" class="form-select neo-form-control">
@@ -58,11 +58,11 @@
                         <div class="pt-3 pb-4 text-center flex-grow-1">
                             <h2 class="mb-1 fw-bold">Estimated Cost</h2>
                             <div class="d-flex justify-content-center align-items-baseline mb-4">
-                                <span class="display-1 fw-bold" id="tokenAmount">5</span>
+                                <span class="display-1 fw-bold" id="tokenAmount">100</span>
                                 <span class="h4 ms-2">tokens</span>
                             </div>
                             <p class="mb-1">Approximate USD Price</p>
-                            <p class="h3 fw-bold text-primary-gradient" id="usdPrice">$0.50</p>
+                            <p class="h3 fw-bold text-primary-gradient" id="usdPrice">$1</p>
                             <p class="small text-muted mb-4">Based on standard token package pricing</p>
                             <div class="d-flex flex-column gap-2">
                                 <div class="neo-card p-3" style="border: 2px dashed var(--secondary); background-color: #f8f9fa;">

@@ -131,6 +131,22 @@
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
+                                                
+                                                @if($schedule->status === 'scheduled' || $schedule->status === 'running')
+                                                    <form action="{{ route('schedule.pause', $schedule->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning" data-bs-toggle="tooltip" title="Pause">
+                                                            <i class="fas fa-pause"></i>
+                                                        </button>
+                                                    </form>
+                                                @elseif($schedule->status === 'paused')
+                                                    <form action="{{ route('schedule.resume', $schedule->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" title="Resume">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
