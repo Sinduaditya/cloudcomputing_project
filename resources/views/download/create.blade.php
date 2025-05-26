@@ -129,11 +129,11 @@
                             </div>
                         </div>
 
-                        <div class="form-actions d-flex justify-content-between">
-                            <button type="button" id="checkUrlBtn" class="btn neo-btn btn-secondary">
+                        <div class="form-actions d-flex justify-content-between" style="padding: 12px;">
+                            <button type="button" id="checkUrlBtn" class="btn neo-btn btn-secondary mb-4">
                                 <i class="fas fa-search me-2"></i> Check URL
                             </button>
-                            <button type="submit" class="btn neo-btn">
+                            <button type="submit" class="btn neo-btn mb-4">
                                 <i class="fas fa-download me-2"></i> Start Download
                             </button>
                         </div>

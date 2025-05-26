@@ -55,7 +55,7 @@
         <div class="col-lg-8 mb-4">
             <x-card>
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Downloads by Month (Last 6 Months)</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Downloads by Month (Last 6 Months)</h5>
                 </x-slot>
 
                 @if($downloadsByMonth->count() > 0)
@@ -76,7 +76,7 @@
         <div class="col-lg-4 mb-4">
             <x-card>
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Downloads by Platform</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Downloads by Platform</h5>
                 </x-slot>
 
                 @if($downloadsByPlatform->count() > 0)
@@ -131,7 +131,7 @@
         <div class="col-lg-6 mb-4">
             <x-card>
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Token Usage by Type</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Token Usage by Type</h5>
                 </x-slot>
 
                 @if($tokenUsageByType->count() > 0)
@@ -181,7 +181,7 @@
         <div class="col-lg-6 mb-4">
             <x-card>
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Activity Summary</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Activity Summary</h5>
                 </x-slot>
 
                 <div class="activity-summary">
@@ -217,7 +217,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4 text-center">
+                <div class="mt-4 text-center mb-4 p-4">
                     <a href="{{ route('dashboard.activity') }}" class="neo-btn">
                         <i class="fas fa-history me-2"></i> View Full Activity Log
                     </a>

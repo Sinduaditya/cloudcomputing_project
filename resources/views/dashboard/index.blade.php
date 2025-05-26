@@ -240,7 +240,7 @@
             <!-- Platform Stats -->
             <x-card class="mb-4">
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Downloads by Platform</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Downloads by Platform</h5>
                 </x-slot>
                 @if(count($platformStats) > 0)
                     <div class="platform-stats">
@@ -281,7 +281,7 @@
             <!-- Recent Token Transactions -->
             <x-card>
                 <x-slot name="header">
-                    <h5 class="text-center w-100">Recent Tokens Activity</h5>
+                    <h5 class="text-center w-100" style="padding: 12px;">Recent Tokens Activity</h5>
                 </x-slot>
                 @if($recentTransactions->count() > 0)
                     <div class="token-transactions">

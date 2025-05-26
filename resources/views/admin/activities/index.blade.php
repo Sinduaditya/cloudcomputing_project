@@ -61,7 +61,7 @@
                 <i class="fas fa-filter me-1"></i> Toggle Filters
             </button>
         </div>
-        <div class="collapse show" id="filtersCollapse">
+        <div class="collapse show" id="filtersCollapse" style="padding: 24px;">
             <div class="card-body">
                 <form action="{{ route('admin.activities.index') }}" method="GET" class="row g-3">
                     <div class="col-md-3">

@@ -98,7 +98,7 @@
                         <i class="fas fa-exchange-alt me-2"></i>Adjust User Tokens
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <form action="{{ route('admin.tokens.adjust') }}" method="POST" class="row g-3" id="tokenAdjustForm">
                         @csrf
                         <div class="col-md-6">
@@ -258,7 +258,7 @@
                         <i class="fas fa-cogs me-2"></i>Token Management
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="d-grid gap-2">
                         <a href="{{ route('admin.tokens.transactions') }}" class="neo-btn">
                             <i class="fas fa-exchange-alt me-2"></i>View All Transactions

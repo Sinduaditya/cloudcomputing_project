@@ -28,7 +28,7 @@
                 <i class="fas fa-cog me-2"></i> Application Settings
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <form action="{{ route('admin.system.update-settings') }}" method="POST">
                 @csrf
 
@@ -172,7 +172,7 @@
                 <i class="fas fa-coins me-2"></i> Token Settings
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="alert" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2); background-color: #f8f9fa;">
                 <i class="fas fa-info-circle me-2"></i> Token settings are managed in the
                 <a href="{{ route('admin.tokens.pricing') }}" class="fw-bold">Token Pricing</a> section.
@@ -216,7 +216,7 @@
                 <i class="fas fa-cloud me-2"></i> Cloudinary Integration
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <form action="{{ route('admin.system.update-cloudinary') }}" method="POST">
                 @csrf
 
@@ -280,7 +280,7 @@
                 <i class="fas fa-tasks me-2"></i> Queue Information
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="alert" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2); background-color: #f8f9fa;">
                 <i class="fas fa-info-circle me-2"></i> Queue settings are defined in your application's configuration.
                 Visit the <a href="{{ route('admin.system.maintenance') }}" class="fw-bold">Maintenance</a> page to manage queues.

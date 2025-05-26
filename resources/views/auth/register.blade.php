@@ -9,45 +9,57 @@
         <div class="col-md-6">
             <div class="neo-card">
                 <div class="card-header py-3 text-center bg-light">
-                    <h4 class="mb-0">Create Account</h4>
+                    <h4 class="mb-0 fw-bold">Create Account</h4>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
-                        <x-form-input
-                            name="name"
-                            label="Full Name"
-                            placeholder="Enter your full name"
-                            :value="old('name')"
-                            required
-                            autofocus
-                        />
+                        <div class="mb-4">
+                            <x-form-input
+                                name="name"
+                                label="Full Name"
+                                placeholder="Enter your full name"
+                                :value="old('name')"
+                                class="w-100 form-control-lg"
+                                required
+                                autofocus
+                            />
+                        </div>
 
-                        <x-form-input
-                            name="email"
-                            label="Email Address"
-                            type="email"
-                            placeholder="Enter your email"
-                            :value="old('email')"
-                            required
-                        />
+                        <div class="mb-4">
+                            <x-form-input
+                                name="email"
+                                label="Email Address"
+                                type="email"
+                                placeholder="Enter your email"
+                                :value="old('email')"
+                                class="w-100 form-control-lg"
+                                required
+                            />
+                        </div>
 
-                        <x-form-input
-                            name="password"
-                            label="Password"
-                            type="password"
-                            placeholder="Create a strong password"
-                            required
-                        />
+                        <div class="mb-4">
+                            <x-form-input
+                                name="password"
+                                label="Password"
+                                type="password"
+                                placeholder="Create a strong password"
+                                class="w-100 form-control-lg"
+                                required
+                            />
+                        </div>
 
-                        <x-form-input
-                            name="password_confirmation"
-                            label="Confirm Password"
-                            type="password"
-                            placeholder="Confirm your password"
-                            required
-                        />
+                        <div class="mb-4">
+                            <x-form-input
+                                name="password_confirmation"
+                                label="Confirm Password"
+                                type="password"
+                                placeholder="Confirm your password"
+                                class="w-100 form-control-lg"
+                                required
+                            />
+                        </div>
 
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" name="terms" id="terms" required>

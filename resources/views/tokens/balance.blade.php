@@ -18,9 +18,9 @@
         <div class="col-md-6 mb-4 mb-md-0">
             <div class="neo-card h-100">
                 <div class="card-header d-flex justify-content-between">
-                    <h5 class="mb-0">Balance Overview</h5>
+                    <h5 class="mb-0" style="padding: 12px;">Balance Overview</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="text-center mb-4">
                         <div class="token-balance-circle mb-3" style="
                             width: 150px;
@@ -74,7 +74,7 @@
 
         <div class="col-md-6">
             <div class="neo-card mb-4">
-                <div class="card-header">
+                <div class="card-header" style="padding: 12px;">
                     <h5 class="mb-0">Token Packages</h5>
                 </div>
                 <div class="card-body">
@@ -102,7 +102,7 @@
                                             transform: rotate(5deg);
                                         ">BEST VALUE</div>
                                     @endif
-                                    <div class="text-center">
+                                    <div class="text-center" style="padding: 12px;">
                                         <h3 class="mb-1">{{ $package['amount'] }}</h3>
                                         <p class="text-muted mb-3">tokens</p>
                                         <div class="package-price mb-3">
@@ -122,7 +122,7 @@
 
             <div class="neo-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Transactions</h5>
+                    <h5 class="mb-0" style="padding: 12px;">Recent Transactions</h5>
                     <a href="{{ route('tokens.index') }}" class="btn btn-sm neo-btn">View All</a>
                 </div>
                 <div class="card-body p-0">
@@ -163,9 +163,9 @@
 
     <div class="neo-card">
         <div class="card-header">
-            <h5 class="mb-0">How Tokens Work</h5>
+            <h5 class="mb-0" style="padding: 12px;">How Tokens Work</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="row">
                 <div class="col-md-6 mb-4 mb-md-0">
                     <h6 class="fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i>Token Usage</h6>
