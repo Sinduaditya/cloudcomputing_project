@@ -111,116 +111,37 @@
                                 <label class="form-label fw-bold">Payment Method</label>
                                 <div class="payment-methods">
                                     <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <div class="payment-method-card"
-                                                style="
-                                            border: 3px solid #212529;
-                                            border-radius: 8px;
-                                            padding: 15px;
-                                            text-align: center;
-                                            cursor: pointer;
-                                            {{ $paymentMethod == 'bank_transfer' ? 'background-color: #f8f9fa; box-shadow: 5px 5px 0 var(--primary);' : '' }}
-                                        "
-                                                onclick="selectPaymentMethod('bank_transfer')">
-                                                <div class="payment-icon mb-2">
-                                                    <i class="fas fa-university fa-2x"></i>
-                                                </div>
-                                                <div class="payment-name">
-                                                    <strong>Bank Transfer</strong>
-                                                </div>
-                                                <input type="radio" name="payment_method" value="bank_transfer"
-                                                    id="payment_bank_transfer"
-                                                    {{ $paymentMethod == 'bank_transfer' ? 'checked' : '' }}
-                                                    style="display:none;">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="payment-method-card"
-                                                style="
-                                            border: 3px solid #212529;
-                                            border-radius: 8px;
-                                            padding: 15px;
-                                            text-align: center;
-                                            cursor: pointer;
-                                            {{ $paymentMethod == 'credit_card' ? 'background-color: #f8f9fa; box-shadow: 5px 5px 0 var(--primary);' : '' }}
-                                        "
-                                                onclick="selectPaymentMethod('credit_card')">
-                                                <div class="payment-icon mb-2">
-                                                    <i class="fas fa-credit-card fa-2x"></i>
-                                                </div>
-                                                <div class="payment-name">
-                                                    <strong>Credit Card</strong>
-                                                </div>
-                                                <input type="radio" name="payment_method" value="credit_card"
-                                                    id="payment_credit_card"
-                                                    {{ $paymentMethod == 'credit_card' ? 'checked' : '' }}
-                                                    style="display:none;">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="payment-method-card"
-                                                style="
-                                            border: 3px solid #212529;
-                                            border-radius: 8px;
-                                            padding: 15px;
-                                            text-align: center;
-                                            cursor: pointer;
-                                            {{ $paymentMethod == 'e_wallet' ? 'background-color: #f8f9fa; box-shadow: 5px 5px 0 var(--primary);' : '' }}
-                                        "
-                                                onclick="selectPaymentMethod('e_wallet')">
-                                                <div class="payment-icon mb-2">
-                                                    <i class="fas fa-wallet fa-2x"></i>
-                                                </div>
-                                                <div class="payment-name">
-                                                    <strong>E-Wallet</strong>
-                                                </div>
-                                                <input type="radio" name="payment_method" value="e_wallet"
-                                                    id="payment_e_wallet"
-                                                    {{ $paymentMethod == 'e_wallet' ? 'checked' : '' }}
-                                                    style="display:none;">
-                                            </div>
-                                        </div>
-                                    </div>
+    <div class="col-md-4">
+        <div class="payment-method-card"
+            style="
+                border: 3px solid #212529;
+                border-radius: 8px;
+                padding: 15px;
+                text-align: center;
+                cursor: pointer;
+                {{ $paymentMethod == 'e_wallet' ? 'background-color: #f8f9fa; box-shadow: 5px 5px 0 var(--primary);' : '' }}
+            "
+            onclick="selectPaymentMethod('e_wallet')">
+            <div class="payment-icon mb-2">
+                <i class="fas fa-wallet fa-2x"></i>
+            </div>
+            <div class="payment-name">
+                <strong>E-Wallet</strong>
+            </div>
+            <input type="radio" name="payment_method" value="e_wallet"
+                id="payment_e_wallet"
+                {{ $paymentMethod == 'e_wallet' ? 'checked' : '' }}
+                style="display:none;">
+        </div>
+    </div>
+</div>
+
                                 </div>
                             </div>
 
                             <!-- Payment Method Specific Forms -->
-                            <div id="bank_transfer_form"
-                                class="payment-details-form {{ $paymentMethod == 'bank_transfer' ? '' : 'd-none' }}">
-                                <div class="alert alert-info"
-                                    style="border: 3px solid #212529; border-radius: 8px; box-shadow: 5px 5px 0 rgba(0,0,0,0.2);">
-                                    <i class="fas fa-info-circle me-2"></i> After submitting, you will receive bank transfer
-                                    details.
-                                </div>
+                            <div id="e_wallet_form" class="payment-details-form">
 
-                                <x-form-select name="bank_name" label="Select Bank" :options="[
-                                    'bca' => 'BCA',
-                                    'mandiri' => 'Bank Mandiri',
-                                    'bni' => 'BNI',
-                                    'bri' => 'BRI',
-                                ]"
-                                    placeholder="Select bank" />
-                            </div>
-
-                            <div id="credit_card_form"
-                                class="payment-details-form {{ $paymentMethod == 'credit_card' ? '' : 'd-none' }}">
-                                <x-form-input name="card_number" label="Card Number" placeholder="1234 5678 9012 3456" />
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <x-form-input name="expiry_date" label="Expiry Date" placeholder="MM/YY" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <x-form-input name="cvv" label="CVV" placeholder="123" type="password" />
-                                    </div>
-                                </div>
-
-                                <x-form-input name="card_holder" label="Cardholder Name"
-                                    placeholder="Enter name on card" />
-                            </div>
-
-                            <div id="e_wallet_form"
-                                class="payment-details-form {{ $paymentMethod == 'e_wallet' ? '' : 'd-none' }}">
                                 <x-form-select name="wallet_provider" label="E-Wallet Provider" :options="[
                                     'gopay' => 'GoPay',
                                     'ovo' => 'OVO',
@@ -252,7 +173,7 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    </div>  
                 </div>
             </div>
 
@@ -268,7 +189,7 @@
                                 width: 120px;
                                 height: 120px;
                                 border-radius: 50%;
-                                border: 8px solid #ff4b2b;
+                                border: 8px solid #2B7EC1;
                                 margin: 0 auto;
                                 display: flex;
                                 align-items: center;
@@ -407,7 +328,7 @@
         }
 
         // Add CSS variable for primary color
-        document.documentElement.style.setProperty('--primary', '#ff4b2b');
+        document.documentElement.style.setProperty('--primary');
     });
 </script>
 @endpush
