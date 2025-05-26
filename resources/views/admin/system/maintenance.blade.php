@@ -14,7 +14,7 @@
             <a href="{{ route('admin.system.logs') }}" class="neo-btn btn-secondary">
                 <i class="fas fa-file-alt me-2"></i> System Logs
             </a>
-            <a href="{{ route('admin.system.settings') }}" class="neo-btn">
+            <a href="{{ route('admin.system.settings') }}" class="neo-btn" style="color: #ffffff;">
                 <i class="fas fa-cog me-2"></i> Settings
             </a>
         </div>
@@ -30,7 +30,7 @@
                         {{ $storageStats['total_size'] }}
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span>Cache Size:</span>
                         <span class="badge bg-info" style="border: 1px solid #121212;">{{ $storageStats['cache_size'] }}</span>
@@ -55,7 +55,7 @@
                         {{ number_format($downloadsStats['total']) }} Total
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="card-body"  style="padding: 24px;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span>Completed:</span>
                         <span class="badge bg-success" style="border: 1px solid #121212;">{{ number_format($downloadsStats['completed']) }}</span>
@@ -84,7 +84,7 @@
                         {{ number_format($scheduledStats['total']) }} Total
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span>Scheduled:</span>
                         <span class="badge bg-info" style="border: 1px solid #121212;">{{ number_format($scheduledStats['scheduled']) }}</span>
@@ -117,7 +117,7 @@
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fas fa-broom me-2"></i> Cleanup Tasks</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="list-group-item-neo mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0"><i class="fas fa-trash-alt me-2"></i> Clear Cache</h6>
@@ -188,7 +188,7 @@
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fas fa-cogs me-2"></i> System Tasks</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="list-group-item-neo mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0"><i class="fas fa-sync-alt me-2"></i> Restart Queue Workers</h6>
@@ -257,7 +257,7 @@
                 <div class="card-header bg-danger text-white">
                     <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Danger Zone</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="alert alert-danger" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2);">
                         <i class="fas fa-exclamation-circle me-2"></i> These actions can disrupt service and should only be performed during maintenance windows.
                     </div>
@@ -321,13 +321,8 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
-    }
-
-    .neo-card .card-header.bg-danger {
-        background: linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%);
     }
 
     .neo-btn {
@@ -341,7 +336,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;
@@ -372,9 +366,6 @@
         background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
     }
 
-    .neo-btn.btn-danger {
-        background: linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%);
-    }
 
     .neo-btn.btn-success {
         background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%);

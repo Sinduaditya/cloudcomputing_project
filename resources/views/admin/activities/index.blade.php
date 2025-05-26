@@ -61,7 +61,7 @@
                 <i class="fas fa-filter me-1"></i> Toggle Filters
             </button>
         </div>
-        <div class="collapse show" id="filtersCollapse">
+        <div class="collapse show" id="filtersCollapse" style="padding: 24px;">
             <div class="card-body">
                 <form action="{{ route('admin.activities.index') }}" method="GET" class="row g-3">
                     <div class="col-md-3">
@@ -255,7 +255,7 @@
 <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-labelledby="clearLogsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="border: 3px solid #212529; border-radius: 8px;">
-            <div class="modal-header" style="background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%); border-bottom: 2px solid #212529;">
+            <div class="modal-header" style="background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%); border-bottom: 2px solid #212529;">
                 <h5 class="modal-title" id="clearLogsModalLabel">Clear Activity Logs</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -281,7 +281,7 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="retention_days" id="retentionDays" value="30">
-                    <button type="submit" class="neo-btn btn-danger">
+                    <button type="submit" class="neo-btn btn-danger" style="color: #ffffff;">
                         <i class="fas fa-trash me-1"></i> Clear Logs
                     </button>
                 </form>

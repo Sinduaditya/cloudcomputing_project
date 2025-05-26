@@ -13,7 +13,7 @@
     </div>
 
     <!-- Search and Filters -->
-    <div class="neo-card mb-4">
+    <div class="neo-card mb-4" style="padding: 12px;">
         <div class="card-body">
             <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
                 <div class="col-md-4">

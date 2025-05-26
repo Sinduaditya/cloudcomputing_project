@@ -24,7 +24,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Token Pricing Configuration</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body"  style="padding: 24px;">
                     <form action="{{ route('admin.tokens.update-pricing') }}" method="POST">
                         @csrf
 
@@ -130,7 +130,7 @@
                             </button>
                         </div>
 
-                        <button type="submit" class="neo-btn btn-lg">
+                        <button type="submit" class="neo-btn btn-lg" style="color: #ffffff">
                             <i class="fas fa-save me-2"></i> Save Pricing Settings
                         </button>
                     </form>
@@ -145,7 +145,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Token Price Calculator</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="mb-3">
                         <label class="form-label fw-bold">File Size (MB)</label>
                         <input type="number" id="fileSize" class="neo-form-control" min="0" step="0.1" value="100">
@@ -162,7 +162,7 @@
                         </div>
                     </div>
 
-                    <button type="button" id="calculateBtn" class="neo-btn w-100">
+                    <button type="button" id="calculateBtn" class="neo-btn w-100" style="color: #ffffff">
                         <i class="fas fa-calculator me-2"></i> Calculate
                     </button>
                 </div>
@@ -173,7 +173,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Pricing Preview</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body"  style="padding: 24px;">
                     <p class="text-muted mb-3">This is how pricing will appear to users:</p>
 
                     <div class="pricing-preview p-3" style="border: 2px solid #212529; border-radius: 8px; background-color: #f8f9fa;">
@@ -208,7 +208,7 @@
                 <div class="card-header">
                     <h5 class="mb-0">Pricing Guidelines</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="alert alert-info" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2);">
                         <i class="fas fa-info-circle me-2"></i> Changing token pricing will affect all future downloads and purchases. Existing transactions and user balances will remain unchanged.
                     </div>
@@ -260,7 +260,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -276,7 +275,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

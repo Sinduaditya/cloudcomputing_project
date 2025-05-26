@@ -329,8 +329,8 @@
 <div class="modal fade" id="queueDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="border: 3px solid #212529; border-radius: 8px;">
-            <div class="modal-header" style="background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%); border-bottom: 2px solid #212529;">
-                <h5 class="modal-title">Queue Connection Details</h5>
+            <div class="modal-header" style="background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%); border-bottom: 2px solid #212529;">
+                <h5 class="modal-title" style="color: #ffffff;">Queue Connection Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
