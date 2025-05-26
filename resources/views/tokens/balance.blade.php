@@ -26,7 +26,7 @@
             <a href="{{ route('tokens.requests') }}" class="neo-btn btn-secondary">
                 <i class="fas fa-clock me-2"></i> Purchase Requests
             </a>
-            <a href="{{ route('tokens.purchase') }}" class="neo-btn">
+            <a href="{{ route('tokens.purchase') }}" class="neo-btn" style="color: #ffffff;">
                 <i class="fas fa-plus-circle me-2"></i> Buy Tokens
             </a>
         </div>
@@ -119,12 +119,8 @@
                                 <div class="token-package p-3 position-relative" style="
                                     border: 3px solid #212529;
                                     border-radius: 8px;
-                                    transition: all 0.2s;
                                     height: 100%;
-                                    background-color: {{ $package['best_value'] ? '#fff8e8' : 'white' }};
-                                    cursor: pointer;
-                                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='8px 8px 0 rgba(0,0,0,0.3)'"
-                                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='5px 5px 0 rgba(0,0,0,0.2)'">
+                                    background-color: {{ $package['best_value'] ? '#fff8e8' : 'white' }};">
                                     @if($package['best_value'])
                                         <div class="position-absolute" style="
                                             top: -10px;
@@ -154,11 +150,7 @@
                                                 </span>
                                             @endif
                                             <div class="small text-muted mt-1">{{ $package['description'] }}</div>
-                                        </div>
-                                        <a href="{{ route('tokens.purchase') }}?package={{ $package['id'] }}"
-                                           class="neo-btn btn-sm w-100" style="color: #ffffff">
-                                            <i class="fas fa-shopping-bag me-1"></i>Buy Now
-                                        </a>
+                                        </div>       
                                     </div>
                                 </div>
                             </div>
