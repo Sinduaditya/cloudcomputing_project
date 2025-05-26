@@ -265,17 +265,17 @@
                     <div class="card-body text-center" style="padding: 24px;">
                         <div class="token-balance-circle mb-3"
                             style="
-                        width: 120px;
-                        height: 120px;
-                        border-radius: 50%;
-                        border: 8px solid #ff4b2b;
-                        margin: 0 auto;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
-                        box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-                    ">
+                                width: 120px;
+                                height: 120px;
+                                border-radius: 50%;
+                                border: 8px solid #ff4b2b;
+                                margin: 0 auto;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+                                box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+                            ">
                             <div class="text-white">
                                 <div class="h3 mb-0 fw-bold">{{ $currentBalance }}</div>
                                 <div>Tokens</div>

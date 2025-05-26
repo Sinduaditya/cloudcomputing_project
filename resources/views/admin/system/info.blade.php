@@ -78,7 +78,7 @@
                 {{ $phpInfo['version'] ?? 'Unknown Version' }}
             </span>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -117,7 +117,7 @@
                         <div class="neo-info-item">
                             <span class="info-label">PHP Extensions</span>
                             <span class="info-value">
-                                <button type="button" class="neo-btn btn-sm" data-bs-toggle="modal" data-bs-target="#phpExtensionsModal">
+                                <button type="button" class="neo-btn btn-sm" data-bs-toggle="modal" data-bs-target="#phpExtensionsModal" style="color: white;">
                                     View Extensions
                                 </button>
                             </span>
@@ -138,7 +138,7 @@
                 {{ $laravelInfo['version'] ?? 'Unknown Version' }}
             </span>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -195,7 +195,7 @@
                         <i class="fas fa-server me-2"></i> Server Information
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="mb-3">
                         <div class="neo-info-item">
                             <span class="info-label">Server Software</span>
@@ -242,7 +242,7 @@
                         <i class="fas fa-database me-2"></i> Database Information
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     @if(isset($databaseInfo['error']))
                         <div class="alert alert-danger" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2);">
                             <i class="fas fa-exclamation-triangle me-2"></i> Database Error: {{ $databaseInfo['error'] }}
@@ -355,7 +355,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -371,7 +370,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;
