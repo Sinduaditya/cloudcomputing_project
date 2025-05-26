@@ -104,6 +104,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tokens/balance', [TokenController::class, 'balance'])->name('tokens.balance');
     Route::get('/tokens/purchase', [TokenController::class, 'purchase'])->name('tokens.purchase');
     Route::post('/tokens/process-purchase', [TokenController::class, 'processPurchase'])->name('tokens.process-purchase');
+    Route::get('/tokens/requests', [TokenController::class, 'requests'])->name('tokens.requests');
+
+
+    Route::get('/purchase-requests', [TokenManagementController::class, 'purchaseRequests'])->name('purchase-requests');
+    Route::post('/purchase-requests/{purchaseRequest}/approve', [TokenManagementController::class, 'approvePurchaseRequest'])->name('purchase-requests.approve');
+    Route::post('/purchase-requests/{purchaseRequest}/reject', [TokenManagementController::class, 'rejectPurchaseRequest'])->name('purchase-requests.reject');
 
     // Account settings
     Route::get('/account', [DashboardController::class, 'account'])->name('account');
@@ -158,11 +164,18 @@ Route::middleware(['auth', 'admin'])
         Route::get('/activities/filter', [ActivityController::class, 'filter'])->name('activities.filter');
 
         // Token management
-        Route::get('/tokens', [TokenManagementController::class, 'index'])->name('tokens.index');
-        Route::get('/tokens/transactions', [TokenManagementController::class, 'transactions'])->name('tokens.transactions');
-        Route::post('/tokens/adjust/', [TokenManagementController::class, 'adjustTokens'])->name('tokens.adjust');
-        Route::get('/tokens/pricing', [TokenManagementController::class, 'pricing'])->name('tokens.pricing');
-        Route::post('/tokens/pricing', [TokenManagementController::class, 'updatePricing'])->name('tokens.update-pricing');
+         Route::prefix('tokens')->name('tokens.')->group(function () {
+            Route::get('/', [TokenManagementController::class, 'index'])->name('index');
+            Route::get('/transactions', [TokenManagementController::class, 'transactions'])->name('transactions');
+            Route::post('/adjust', [TokenManagementController::class, 'adjust'])->name('adjust');
+            Route::get('/pricing', [TokenManagementController::class, 'pricing'])->name('pricing');
+            Route::post('/pricing', [TokenManagementController::class, 'updatePricing'])->name('update-pricing');
+
+            // Purchase requests management
+            Route::get('/purchase-requests', [TokenManagementController::class, 'purchaseRequests'])->name('purchase-requests');
+            Route::post('/purchase-requests/{purchaseRequest}/approve', [TokenManagementController::class, 'approvePurchaseRequest'])->name('purchase-requests.approve');
+            Route::post('/purchase-requests/{purchaseRequest}/reject', [TokenManagementController::class, 'rejectPurchaseRequest'])->name('purchase-requests.reject');
+        });
 
         // System management
         Route::get('/system/settings', [SystemController::class, 'settings'])->name('system.settings');

@@ -266,12 +266,51 @@
                         <a href="{{ route('admin.tokens.pricing') }}" class="neo-btn">
                             <i class="fas fa-tags me-2"></i>Token Pricing Settings
                         </a>
-                        {{-- <a href="{{ route('admin.tokens.statistics') }}" class="neo-btn">
-                            <i class="fas fa-chart-bar me-2"></i>Token Statistics
-                        </a> --}}
+                        <a href="{{ route('admin.tokens.purchase-requests') }}" class="neo-btn">
+                            <i class="fas fa-shopping-cart me-2"></i>Purchase Requests
+                            @if(isset($stats['pending_purchase_requests']) && $stats['pending_purchase_requests'] > 0)
+                            <span class="badge bg-danger ms-2">{{ $stats['pending_purchase_requests'] }}</span>
+                            @endif
+                        </a>
                     </div>
                 </div>
             </div>
+
+            <!-- Pending Purchase Requests -->
+            @if(isset($recentPurchaseRequests) && $recentPurchaseRequests->count() > 0)
+            <div class="neo-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>Pending Purchase Requests
+                    </h5>
+                    <a href="{{ route('admin.tokens.purchase-requests') }}" class="neo-btn btn-sm btn-secondary">
+                        <i class="fas fa-list me-1"></i>View All
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        @foreach($recentPurchaseRequests as $request)
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($request->user->name) }}&size=32&background=ff4b2b&color=fff"
+                                        class="rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <div>
+                                        <div class="fw-bold">{{ $request->user->name }}</div>
+                                        <small class="text-muted">{{ $request->package_name }} - {{ number_format($request->token_amount) }} tokens</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">{{ $request->formatted_price }}</div>
+                                    <small class="text-muted">{{ $request->created_at->diffForHumans() }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Current Settings -->
             <div class="neo-card mb-4">

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -86,9 +87,6 @@ class User extends Authenticatable
         return $this->avatar ?: 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
     }
 
-    /**
-     * Find or create user by OAuth provider
-     */
     public static function findOrCreateByOAuth($oauthUser, $provider)
     {
         try {
@@ -120,17 +118,20 @@ class User extends Authenticatable
                         'provider_id' => $providerId,
                         'avatar' => $oauthUser->getAvatar(),
                         'token_balance' => config('app.default_token_balance', 100),
-                        'is_active' => true,
+                        'password' => bcrypt(Str::random(16)), // Random password for OAuth users
+                        // 'password' => bcrypt(str_random(16)), // Random password for OAuth users
                     ]);
 
                     // Record initial token transaction
-                    \App\Models\TokenTransaction::create([
+                    TokenTransaction::create([
                         'user_id' => $user->id,
                         'amount' => config('app.default_token_balance', 100),
                         'balance_after' => config('app.default_token_balance', 100),
                         'type' => 'initial',
-                        'description' => 'Initial token allocation',
+                        'description' => 'Initial token allocation for OAuth registration',
                     ]);
+
+                    Log::info('Created new OAuth user', ['user_id' => $user->id, 'provider' => $provider]);
                 } else {
                     // Update existing user with OAuth info
                     $user->update([
@@ -138,6 +139,8 @@ class User extends Authenticatable
                         'provider_id' => $providerId,
                         'avatar' => $oauthUser->getAvatar(),
                     ]);
+
+                    Log::info('Updated existing user with OAuth info', ['user_id' => $user->id, 'provider' => $provider]);
                 }
             }
 
@@ -145,9 +148,21 @@ class User extends Authenticatable
         } catch (Exception $e) {
             Log::error('Error in findOrCreateByOAuth: ' . $e->getMessage(), [
                 'provider' => $provider,
+                'oauth_user_id' => $oauthUser->getId() ?? 'unknown',
+                'oauth_user_email' => $oauthUser->getEmail() ?? 'unknown',
                 'trace' => $e->getTraceAsString(),
             ]);
-            throw $e; // Re-throw to be handled by the controller
+            throw $e;
         }
+    }
+
+    public function tokenPurchaseRequests()
+    {
+        return $this->hasMany(TokenPurchaseRequest::class);
+    }
+
+    public function pendingTokenRequests()
+    {
+        return $this->hasMany(TokenPurchaseRequest::class)->where('status', 'pending');
     }
 }
