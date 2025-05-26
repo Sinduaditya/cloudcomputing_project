@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <for action="{{ route('schedules.store') }}" method="POST" id="scheduleForm">
+                <form action="{{ route('schedules.store') }}" method="POST" id="scheduleForm">
                     @csrf
                     <div class="options-container p-3" style="border: 2px solid #212529; border-radius: 8px;">
                         <div class="mb-4">
