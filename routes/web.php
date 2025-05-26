@@ -92,6 +92,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/schedules/{schedule}/edit', [ScheduleController::class, 'edit'])->name('schedules.edit');
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
+    Route::post('/schedules/{schedule}/pause', [ScheduleController::class, 'pause'])->name('schedule.pause');
+    Route::post('/schedules/{schedule}/resume', [ScheduleController::class, 'resume'])->name('schedule.resume');
 
     // Media Instances (for media player, sharing, etc.)
     Route::get('/instance/{download}', [InstanceController::class, 'show'])->name('instance.show');

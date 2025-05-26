@@ -305,6 +305,26 @@ class ScheduleController extends Controller
         }
     }
 
+    public function pause($id)
+    {
+        $schedule = ScheduledTask::findOrFail($id);
+        $schedule->status = 'paused';
+        $schedule->save();
+
+        return redirect()->back()->with('success', 'Download paused');
+    }
+
+    public function resume($id)
+    {
+        $schedule = ScheduledTask::findOrFail($id);
+        if ($schedule->status === 'paused') {
+            $schedule->status = 'pending';
+            $schedule->save();
+            return redirect()->back()->with('success', 'Download resumed');
+        }
+        return redirect()->back()->with('error', 'Download not paused');
+    }
+
     /**
      * Get default title based on platform
      */
