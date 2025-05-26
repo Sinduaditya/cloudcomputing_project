@@ -93,11 +93,128 @@ class DashboardController extends Controller
      */
     public function activity()
     {
-        $activities = auth()->user()->activityLogs()
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $user = auth()->user();
+        
+        if ($user->isAdmin()) {
+            $query = \App\Models\ActivityLog::query()
+                ->whereNotIn('action', ['page_view']);
+                
+            if (request('user')) {
+                $query->whereHas('user', function($q) {
+                    $q->where('email', 'like', '%'.request('user').'%')
+                      ->orWhere('name', 'like', '%'.request('user').'%');
+                });
+            }
+        } else {
+            $query = $user->activityLogs()
+                ->whereNotIn('action', ['page_view']);
+        }
 
-        return view('dashboard.activity', compact('activities'));
+        // Filter berdasarkan action
+        if (request('action')) {
+            switch(request('action')) {
+                case 'download':
+                    $query->where('action', 'like', '%download%');
+                    break;
+                case 'schedule':
+                    $query->where('action', 'like', '%schedule%');
+                    break;
+                case 'token':
+                    $query->where('action', 'like', '%token%');
+                    break;
+                case 'admin':
+                    $query->where('action', 'like', '%admin%');
+                    break;
+                case 'failed':
+                    $query->where('action', 'like', '%fail%')
+                          ->orWhere('action', 'like', '%error%');
+                    break;
+                default:
+                    $query->where('action', request('action'));
+            }
+        }
+
+        // Filter berdasarkan resource type
+        if (request('resource_type')) {
+            switch(request('resource_type')) {
+                case 'Download':
+                    $query->where('resource_type', 'Download')
+                          ->orWhere('action', 'like', '%download%');
+                    break;
+                case 'Schedule':
+                    $query->where('resource_type', 'Schedule')
+                          ->orWhere('action', 'like', '%schedule%');
+                    break;
+                case 'TokenTransaction':
+                    $query->where('resource_type', 'TokenTransaction')
+                          ->orWhere('action', 'like', '%token%');
+                    break;
+                default:
+                    $query->where('resource_type', request('resource_type'));
+            }
+        }
+
+        // Filter berdasarkan resource ID
+        if (request('resource_id')) {
+            $query->where('resource_id', request('resource_id'));
+        }
+
+        // Filter berdasarkan IP address (untuk admin)
+        if ($user->isAdmin() && request('ip_address')) {
+            $query->where('ip_address', 'like', '%'.request('ip_address').'%');
+        }
+
+        // Filter berdasarkan tanggal
+        if (request('from_date')) {
+            $query->whereDate('created_at', '>=', request('from_date'));
+        }
+        if (request('to_date')) {
+            $query->whereDate('created_at', '<=', request('to_date'));
+        }
+
+        // Sorting
+        $sort = request('sort', 'created_at_desc');
+        if ($sort === 'created_at_asc') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Stats for admin or user
+        if ($user->isAdmin()) {
+            $stats = [
+                'total' => \App\Models\ActivityLog::whereNotIn('action', ['page_view'])->count(),
+                'today' => \App\Models\ActivityLog::whereDate('created_at', today())
+                    ->whereNotIn('action', ['page_view'])
+                    ->count(),
+                'users' => \App\Models\User::count(),
+                'admin_actions' => \App\Models\ActivityLog::where('action', 'LIKE', '%admin%')->count()
+            ];
+        } else {
+            $stats = [
+                'total' => $user->activityLogs()->count(),
+                'today' => $user->activityLogs()
+                    ->whereDate('created_at', today())
+                    ->whereNotIn('action', ['page_view'])
+                    ->count(),
+                'downloads' => $user->activityLogs()
+                    ->where(function($q) {
+                        $q->where('action', 'like', '%download%')
+                          ->orWhere('resource_type', 'Download');
+                    })
+                    ->count(),
+                'schedules' => $user->activityLogs()
+                    ->where(function($q) {
+                        $q->where('action', 'like', '%schedule%')
+                          ->orWhere('resource_type', 'Schedule');
+                    })
+                    ->count()
+            ];
+        }
+
+        $activities = $query->paginate(20);
+
+        return view('dashboard.activity', compact('activities', 'stats'));
     }
 
     /**

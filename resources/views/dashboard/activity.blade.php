@@ -8,16 +8,19 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Activity Logs</h1>
         <div class="d-flex gap-2">
-            <button type="button" class="neo-btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
-                <i class="fas fa-trash-alt me-2"></i> Clear Logs
-            </button>
-            <a href="{{ route('admin.dashboard') }}" class="neo-btn btn-secondary">
-                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-            </a>
+            @if(auth()->user()->isAdmin())
+                <button type="button" class="neo-btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                    <i class="fas fa-trash-alt me-2"></i> Clear Logs
+                </button>
+                <a href="{{ route('admin.dashboard') }}" class="neo-btn btn-secondary">
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                </a>
+            @endif
         </div>
     </div>
 
     <!-- Statistics -->
+
     <div class="row g-3 mb-4">
         <div class="col-xl-3 col-md-6">
             <x-stats-card
@@ -35,6 +38,7 @@
                 color="info"
             />
         </div>
+        @if(auth()->user()->isAdmin())
         <div class="col-xl-3 col-md-6">
             <x-stats-card
                 value="{{ $stats['users'] ?? 0 }}"
@@ -43,6 +47,8 @@
                 color="success"
             />
         </div>
+        @endif
+        @if(auth()->user()->isAdmin())
         <div class="col-xl-3 col-md-6">
             <x-stats-card
                 value="{{ $stats['admin_actions'] ?? 0 }}"
@@ -51,6 +57,7 @@
                 color="warning"
             />
         </div>
+        @endif
     </div>
 
     <!-- Filter Card -->
@@ -63,7 +70,7 @@
         </div>
         <div class="collapse show" id="filtersCollapse">
             <div class="card-body" style="padding: 12px;">
-                <form action="{{ route('admin.activities.index') }}" method="GET" class="row g-3">
+                <form action="{{ auth()->user()->isAdmin() ? route('admin.activities.index') : route('dashboard.activity') }}" method="GET" class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Action Type</label>
                         <select name="action" class="neo-form-control">
@@ -73,16 +80,21 @@
                             <option value="download" {{ request('action') == 'download' ? 'selected' : '' }}>Download</option>
                             <option value="schedule" {{ request('action') == 'schedule' ? 'selected' : '' }}>Schedule</option>
                             <option value="token" {{ request('action') == 'token' ? 'selected' : '' }}>Token</option>
-                            <option value="admin" {{ request('action') == 'admin' ? 'selected' : '' }}>Admin Actions</option>
+                            @if(auth()->user()->isAdmin())
+                                <option value="admin" {{ request('action') == 'admin' ? 'selected' : '' }}>Admin Actions</option>
+                            @endif
                             <option value="failed" {{ request('action') == 'failed' ? 'selected' : '' }}>Failed Actions</option>
                         </select>
                     </div>
 
+                    @if(auth()->user()->isAdmin())
                     <div class="col-md-3">
                         <label class="form-label fw-bold">User</label>
                         <input type="text" name="user" class="neo-form-control" placeholder="Email or username" value="{{ request('user') }}">
                     </div>
+                    @endif
 
+                    @if(auth()->user()->isAdmin())
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Resource Type</label>
                         <select name="resource_type" class="neo-form-control">
@@ -93,16 +105,21 @@
                             <option value="TokenTransaction" {{ request('resource_type') == 'TokenTransaction' ? 'selected' : '' }}>Token Transaction</option>
                         </select>
                     </div>
+                    @endif
 
+                    @if(auth()->user()->isAdmin())
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Resource ID</label>
                         <input type="text" name="resource_id" class="neo-form-control" placeholder="Resource ID" value="{{ request('resource_id') }}">
                     </div>
+                    @endif
 
+                    @if(auth()->user()->isAdmin())
                     <div class="col-md-3">
                         <label class="form-label fw-bold">IP Address</label>
                         <input type="text" name="ip_address" class="neo-form-control" placeholder="IP Address" value="{{ request('ip_address') }}">
                     </div>
+                    @endif
 
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Date From</label>
@@ -162,7 +179,9 @@
                                 <th>Resource</th>
                                 <th>IP Address</th>
                                 <th>Date & Time</th>
-                                <th style="width: 80px;">Actions</th>
+                                @if(auth()->user()->isAdmin())
+                                    <th style="width: 80px;">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -225,11 +244,13 @@
                                             <small class="text-muted">{{ $activity->created_at->format('H:i:s') }}</small>
                                         </div>
                                     </td>
+                                    @if(auth()->user()->isAdmin())
                                     <td>
                                         <a href="{{ route('admin.activities.show', $activity) }}" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -389,7 +410,7 @@
         });
 
         // Handle retention period selection
-        document.getElementById('retentionPeriod').addEventListener('change', function() {
+        document.getElementById('retentionPeriod')?.addEventListener('change', function() {
             document.getElementById('retentionDays').value = this.value;
         });
     });

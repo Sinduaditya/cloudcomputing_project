@@ -140,9 +140,15 @@
                                             box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
                                         ">BEST VALUE</div>
                                     @endif
-                                    <div class="text-center" style="padding: 12px;">
-                                        <div class="package-icon mb-2">
-                                            <i class="fas fa-coins fa-2x" style="color:rgb(240, 185, 21);"></i>
+                                    <div class="text-center">
+                                        <h3 class="mb-1">{{ $package['amount'] }}</h3>
+                                        <p class="text-muted mb-3">tokens</p>
+                                        <div class="package-price mb-3">
+                                            <h5 class="fw-bold">{{ $package['price'] }}</h5>
+
+                                            @if($package['discount'] > 0)
+                                                <span class="badge bg-success" style="border: 2px solid #212529;">{{ $package['discount'] }}% OFF</span>
+                                            @endif
                                         </div>
                                         <h3 class="mb-1 fw-bold">{{ number_format($package['tokens']) }}</h3>
                                         <p class="text-muted mb-3 small">tokens</p>

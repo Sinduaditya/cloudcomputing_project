@@ -112,31 +112,33 @@ class TokenController extends Controller
 
         $packages = [
             [
-                'id' => 'basic',
-                'amount' => 100,
-                'tokens' => 100,
-                'price' => 10000,
-                'description' => 'Basic package',
+                'id' => 'basic', 
+                'amount' => 50,
+                'tokens' => 50,
+                'price' => '$5.99',
+                'description' => 'Starter',
+
                 'discount' => 0,
                 'best_value' => false,
             ],
             [
-                'id' => 'standard',
-                'amount' => 500,
-                'tokens' => 500,
-                'price' => 45000,
-                'description' => 'Standard package - 10% savings',
-                'discount' => 10,
-                'best_value' => false,
+                'id' => 'standard', 
+                'amount' => 200,
+                'tokens' => 200,
+                'price' => '$15.99',
+                'description' => 'Plus',
+                'discount' => 0,
+                'best_value' => false
             ],
             [
-                'id' => 'premium',
-                'amount' => 1000,
-                'tokens' => 1000,
-                'price' => 80000,
-                'description' => 'Premium package - 20% savings',
-                'discount' => 20,
-                'best_value' => true,
+                'id' => 'premium', 
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => '$29',
+                'description' => 'Pro',
+                'discount' => 0,
+                'best_value' => true
+
             ],
         ];
 
@@ -154,34 +156,31 @@ class TokenController extends Controller
         // Define packages with consistent structure
         $packages = [
             [
-                'id' => 'basic',
-                'amount' => 100,
-                'price' => 10000,
-                'original_price' => 10000,
-                'price_per_token' => 'Rp 100',
-                'description' => 'Perfect for light usage',
+                'id' => 'basic', 
+                'amount' => 50,
+                'tokens' => 50,
+                'price' => '$5.99',
+                'description' => 'Starter',
                 'discount' => 0,
                 'best_value' => false,
             ],
             [
-                'id' => 'standard',
-                'amount' => 500,
-                'price' => 45000,
-                'original_price' => 50000,
-                'price_per_token' => 'Rp 90',
-                'description' => 'Great for regular users',
-                'discount' => 10,
-                'best_value' => false,
+                'id' => 'standard', 
+                'amount' => 200,
+                'tokens' => 200,
+                'price' => '$15.99',
+                'description' => 'Plus',
+                'discount' => 0,
+                'best_value' => false
             ],
             [
-                'id' => 'premium',
-                'amount' => 1000,
-                'price' => 80000,
-                'original_price' => 100000,
-                'price_per_token' => 'Rp 80',
-                'description' => 'Best value for power users',
-                'discount' => 20,
-                'best_value' => true,
+                'id' => 'premium', 
+                'amount' => 500,
+                'tokens' => 500,
+                'price' => '$29',
+                'description' => 'Pro',
+                'discount' => 0,
+                'best_value' => true
             ],
         ];
 
