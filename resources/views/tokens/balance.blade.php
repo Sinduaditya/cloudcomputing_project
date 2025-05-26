@@ -48,13 +48,13 @@
                             width: 150px;
                             height: 150px;
                             border-radius: 50%;
-                            border: 10px solid #ff4b2b;
+                            border: 10px solid #2B7EC1;
                             margin: 0 auto;
                             display: flex;
                             align-items: center;
                             justify-content: center;
                             box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
-                            background: linear-gradient(45deg, #ff4b2b, #ff9a55);
+                            background: linear-gradient(45deg, #2B7EC1, #58A7E6);
                         ">
                             <div class="text-white text-center">
                                 <div class="h2 mb-0 fw-bold">{{ number_format($tokenBalance) }}</div>
@@ -142,7 +142,7 @@
                                     @endif
                                     <div class="text-center" style="padding: 12px;">
                                         <div class="package-icon mb-2">
-                                            <i class="fas fa-coins fa-2x" style="color: #ff4b2b;"></i>
+                                            <i class="fas fa-coins fa-2x" style="color:rgb(240, 185, 21);"></i>
                                         </div>
                                         <h3 class="mb-1 fw-bold">{{ number_format($package['tokens']) }}</h3>
                                         <p class="text-muted mb-3 small">tokens</p>
@@ -156,7 +156,7 @@
                                             <div class="small text-muted mt-1">{{ $package['description'] }}</div>
                                         </div>
                                         <a href="{{ route('tokens.purchase') }}?package={{ $package['id'] }}"
-                                           class="neo-btn btn-sm w-100">
+                                           class="neo-btn btn-sm w-100" style="color: #ffffff">
                                             <i class="fas fa-shopping-bag me-1"></i>Buy Now
                                         </a>
                                     </div>
@@ -181,7 +181,7 @@
                     <h5 class="mb-0" style="padding: 12px;">
                         <i class="fas fa-history me-2"></i>Recent Transactions
                     </h5>
-                    <a href="{{ route('tokens.index') }}" class="btn btn-sm neo-btn">
+                    <a href="{{ route('tokens.index') }}" class="btn btn-sm neo-btn"  style="color: #ffffff;">
                         <i class="fas fa-list me-1"></i>View All
                     </a>
                 </div>
@@ -257,7 +257,7 @@
                             <i class="fas fa-history text-muted fa-3x mb-3"></i>
                             <h6 class="text-muted">No transactions yet</h6>
                             <p class="text-muted small">Your token transaction history will appear here</p>
-                            <a href="{{ route('tokens.purchase') }}" class="neo-btn btn-sm">
+                            <a href="{{ route('tokens.purchase') }}" class="neo-btn btn-sm"  style="color: #ffffff;">
                                 <i class="fas fa-plus me-1"></i>Buy Your First Tokens
                             </a>
                         </div>
@@ -369,7 +369,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
         font-weight: 600;
@@ -386,7 +385,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

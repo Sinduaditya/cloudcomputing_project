@@ -149,7 +149,7 @@
                         </div>
 
                         <div class="col-12 mt-4">
-                            <button type="submit" class="neo-btn">
+                            <button type="submit" class="neo-btn" style="color: #ffffff">
                                 <i class="fas fa-check me-2"></i>Process Token Adjustment
                             </button>
                             <button type="reset" class="neo-btn btn-secondary ms-2">
@@ -260,13 +260,13 @@
                 </div>
                 <div class="card-body" style="padding: 24px;">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.tokens.transactions') }}" class="neo-btn">
+                        <a href="{{ route('admin.tokens.transactions') }}" class="neo-btn" style="color: #ffffff">
                             <i class="fas fa-exchange-alt me-2"></i>View All Transactions
                         </a>
-                        <a href="{{ route('admin.tokens.pricing') }}" class="neo-btn">
+                        <a href="{{ route('admin.tokens.pricing') }}" class="neo-btn" style="color: #ffffff">
                             <i class="fas fa-tags me-2"></i>Token Pricing Settings
                         </a>
-                        <a href="{{ route('admin.tokens.purchase-requests') }}" class="neo-btn">
+                        <a href="{{ route('admin.tokens.purchase-requests') }}" class="neo-btn" style="color: #ffffff">
                             <i class="fas fa-shopping-cart me-2"></i>Purchase Requests
                             @if(isset($stats['pending_purchase_requests']) && $stats['pending_purchase_requests'] > 0)
                             <span class="badge bg-danger ms-2">{{ $stats['pending_purchase_requests'] }}</span>
@@ -280,7 +280,7 @@
             @if(isset($recentPurchaseRequests) && $recentPurchaseRequests->count() > 0)
             <div class="neo-card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
+                    <h5 class="mb-0"    >
                         <i class="fas fa-shopping-cart me-2"></i>Pending Purchase Requests
                     </h5>
                     <a href="{{ route('admin.tokens.purchase-requests') }}" class="neo-btn btn-sm btn-secondary">
@@ -414,7 +414,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
         font-weight: 600;
@@ -431,7 +430,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

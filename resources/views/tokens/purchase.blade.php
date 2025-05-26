@@ -18,10 +18,10 @@
             <div class="col-lg-8">
                 <!-- Packages -->
                 <div class="neo-card mb-4">
-                    <div class="card-header">
+                    <div class="card-header" style="padding: 12px;">
                         <h5 class="mb-0">Select Token Package</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding: 24px;">
                         <div class="row g-4">
                             @foreach ($packages as $package)
                                 <div class="col-md-4 col-sm-6">
@@ -98,10 +98,10 @@
 
                 <!-- Payment Form -->
                 <div class="neo-card mb-4">
-                    <div class="card-header">
+                    <div class="card-header" style="padding: 12px;">
                         <h5 class="mb-0">Payment Details</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding: 24px;">
                         <form action="{{ route('tokens.process-purchase') }}" method="POST" id="paymentForm">
                             @csrf
                             <input type="hidden" name="package_id" id="selected_package_id"
@@ -259,10 +259,10 @@
             <div class="col-lg-4">
                 <!-- Current Balance -->
                 <div class="neo-card mb-4">
-                    <div class="card-header">
+                    <div class="card-header" style="padding: 12px;">
                         <h5 class="mb-0">Current Balance</h5>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body text-center" style="padding: 24px;">
                         <div class="token-balance-circle mb-3"
                             style="
                         width: 120px;
@@ -291,10 +291,10 @@
 
                 <!-- Info -->
                 <div class="neo-card">
-                    <div class="card-header">
+                    <div class="card-header" style="padding: 12px;">
                         <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Information</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding: 24px;">
                         <div class="mb-4">
                             <h6 class="fw-bold">Instant Delivery</h6>
                             <p>Tokens are added to your account immediately after successful payment.</p>

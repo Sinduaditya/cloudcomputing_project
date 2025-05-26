@@ -97,7 +97,7 @@
                         <h6 class="mb-0">Platform Settings</h6>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row" style="padding: 24px;">
                             <div class="col-md-4">
                                 <div class="form-check form-switch ps-0">
                                     <div class="neo-switch">
@@ -157,7 +157,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="neo-btn">
+                    <button type="submit" class="neo-btn" style="color: #ffffff">
                         <i class="fas fa-save me-2"></i> Save Settings
                     </button>
                 </div>
@@ -202,7 +202,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-3">
-                <a href="{{ route('admin.tokens.pricing') }}" class="neo-btn">
+                <a href="{{ route('admin.tokens.pricing') }}" class="neo-btn" style="color: #ffffff">
                     <i class="fas fa-cog me-2"></i> Manage Token Settings
                 </a>
             </div>
@@ -265,7 +265,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="neo-btn">
+                    <button type="submit" class="neo-btn" style="color: #ffffff">
                         <i class="fas fa-save me-2"></i> Save Cloudinary Settings
                     </button>
                 </div>
@@ -306,7 +306,7 @@
                     <div class="neo-info-item mb-3">
                         <span class="info-label">Connection Details</span>
                         <span class="info-value">
-                            <button type="button" class="neo-btn btn-sm" data-bs-toggle="modal" data-bs-target="#queueDetailsModal">
+                            <button type="button" class="neo-btn btn-sm" data-bs-toggle="modal" data-bs-target="#queueDetailsModal" style="color: #ffffff">
                                 View Details
                             </button>
                         </span>
@@ -314,7 +314,7 @@
                     <div class="neo-info-item mb-3">
                         <span class="info-label">Queue Maintenance</span>
                         <span class="info-value">
-                            <a href="{{ route('admin.system.maintenance') }}" class="neo-btn btn-sm">
+                            <a href="{{ route('admin.system.maintenance') }}" class="neo-btn btn-sm" style="color: #ffffff">
                                 Manage Queues
                             </a>
                         </span>
@@ -374,7 +374,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -390,7 +389,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;
@@ -487,13 +485,13 @@
         top: 4px;
         width: 16px;
         height: 16px;
-        background-color: #212529;
+        background-color: #ffffff;
         border-radius: 50%;
         transition: transform 0.15s ease-in-out;
     }
 
     .neo-switch input:checked + label:before {
-        background-color: #ff4b2b;
+        background-color: #2B7EC1;
     }
 
     .neo-switch input:checked + label:after {

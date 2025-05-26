@@ -16,7 +16,7 @@
     <div class="neo-card mb-4">
         <div class="card-body">
             <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
-                <div class="col-md-4" style="padding: 24px;">
+                <div class="col-md-4">
                     <label class="form-label fw-bold">Search</label>
                     <div class="input-group">
                         <input type="text" name="search" class="neo-form-control" placeholder="Search by name or email" value="{{ request('search') }}">

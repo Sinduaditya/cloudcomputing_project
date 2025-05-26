@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Activity Logs</h1>
         <div class="d-flex gap-2">
-            <button type="button" class="neo-btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+            <button type="button" class="neo-btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearLogsModal" style="color: #ffffff;">
                 <i class="fas fa-trash-alt me-2"></i> Clear Logs
             </button>
             <a href="{{ route('admin.dashboard') }}" class="neo-btn btn-secondary">
@@ -57,11 +57,11 @@
     <div class="neo-card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Filter Activity Logs</h5>
-            <button class="neo-btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse" aria-expanded="false" aria-controls="filtersCollapse">
+            <button class="neo-btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse" aria-expanded="false" aria-controls="filtersCollapse" style="color: #ffffff;">
                 <i class="fas fa-filter me-1"></i> Toggle Filters
             </button>
         </div>
-        <div class="collapse show" id="filtersCollapse" style="padding: 24px;">
+        <div class="collapse show" id="filtersCollapse">
             <div class="card-body">
                 <form action="{{ route('admin.activities.index') }}" method="GET" class="row g-3">
                     <div class="col-md-3">
@@ -124,7 +124,7 @@
 
                     <div class="col-md-3 d-flex align-items-end">
                         <div class="d-flex gap-2 w-100">
-                            <button type="submit" class="neo-btn w-100">
+                            <button type="submit" class="neo-btn w-100" style="color: #ffffff;">
                                 <i class="fas fa-search me-2"></i> Apply Filters
                             </button>
                             <a href="{{ route('admin.activities.index') }}" class="neo-btn btn-secondary">
@@ -317,7 +317,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
     }
@@ -333,7 +332,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;
@@ -358,10 +356,6 @@
 
     .neo-btn.btn-secondary {
         background: #f8f9fa;
-    }
-
-    .neo-btn.btn-danger {
-        background: linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%);
     }
 
     .table {

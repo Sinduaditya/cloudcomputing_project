@@ -135,7 +135,7 @@
             <div class="neo-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Activity</h5>
-                    <a href="{{ route('admin.activities.index') }}" class="neo-btn btn-sm">View All</a>
+                    <a href="{{ route('admin.activities.index') }}" class="neo-btn btn-sm" style="color: #ffffff;">View All</a>
                 </div>
                 <div class="card-body p-0">
                     @if(count($recentActivity) > 0)
@@ -200,7 +200,7 @@
             <div class="neo-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">New Users</h5>
-                    <a href="{{ route('admin.users.index') }}" class="neo-btn btn-sm">View All</a>
+                    <a href="{{ route('admin.users.index') }}" class="neo-btn btn-sm" style="color: #ffffff;">View All</a>
                 </div>
                 <div class="card-body p-0">
                     @if(count($newUsers) > 0)

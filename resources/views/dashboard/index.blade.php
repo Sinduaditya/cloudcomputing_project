@@ -183,7 +183,7 @@
                 </x-slot>
 
                 @if($recentActivities->count() > 0)
-                    <div class="activity-timeline">
+                    <div class="activity-timeline" style="padding: 24px">
                         @foreach($recentActivities as $activity)
                             <div class="activity-item d-flex mb-3">
                                 <div class="activity-icon me-3">
