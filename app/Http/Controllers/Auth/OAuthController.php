@@ -23,7 +23,7 @@ class OAuthController extends Controller
         } catch (Exception $e) {
             Log::error("OAuth redirect error: {$e->getMessage()}", [
                 'provider' => $provider,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
             return redirect('/login')->with('error', "Unable to connect to {$provider}: {$e->getMessage()}");
         }
@@ -32,35 +32,49 @@ class OAuthController extends Controller
     /**
      * Handle callback from OAuth provider
      */
+
     public function handleProviderCallback($provider)
     {
         try {
-            Log::info("Handling OAuth callback", ['provider' => $provider]);
+            Log::info('Handling OAuth callback', ['provider' => $provider]);
+
+            // Get user from provider
             $oauthUser = Socialite::driver($provider)->user();
 
-            Log::info("OAuth user retrieved", [
+            if (!$oauthUser) {
+                throw new Exception('Unable to get user from OAuth provider');
+            }
+
+            Log::info('OAuth user retrieved', [
                 'id' => $oauthUser->getId(),
                 'email' => $oauthUser->getEmail(),
                 'name' => $oauthUser->getName(),
-                'provider' => $provider
+                'provider' => $provider,
             ]);
 
             // Find or create user
             $user = User::findOrCreateByOAuth($oauthUser, $provider);
 
+            if (!$user) {
+                throw new Exception('Unable to create or find user');
+            }
+
             // Login user
             Auth::login($user, true);
 
-            Log::info("User logged in via OAuth", ['user_id' => $user->id]);
+            Log::info('User logged in via OAuth', ['user_id' => $user->id]);
 
             // Redirect to dashboard
-            return redirect()->intended('/dashboard');
+            return redirect()
+                ->intended('/dashboard')
+                ->with('success', 'Successfully logged in with ' . ucfirst($provider));
         } catch (Exception $e) {
             Log::error("OAuth callback error: {$e->getMessage()}", [
                 'provider' => $provider,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
-            return redirect('/login')->with('error', "OAuth login with {$provider} failed: {$e->getMessage()}");
+
+            return redirect('/login')->with('error', "OAuth login with {$provider} failed. Please try again or use email/password login.");
         }
     }
 }
