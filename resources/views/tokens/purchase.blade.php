@@ -67,7 +67,7 @@
                                                     Rp {{ number_format($package['original_price'], 0, ',', '.') }}
                                                 </p>
                                             @endif
-                                            <h3 class="fw-bold mb-1">Rp {{ number_format($package['price'], 0, ',', '.') }}
+                                            <h3 class="fw-bold mb-1">{{ $package['price_display'] }}</h3>
                                             </h3>
                                             @if ($package['discount'] > 0)
                                                 <span class="badge bg-success"

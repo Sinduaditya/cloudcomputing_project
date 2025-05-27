@@ -72,6 +72,24 @@ Route::middleware(['auth'])->group(function () {
     // Downloads
     Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
     Route::get('/downloads/create', [DownloadController::class, 'create'])->name('downloads.create');
+
+    // Fix downloads that are stuck in "storing" status
+    Route::get('/downloads/fix-status', function () {
+        $fixed = 0;
+        $downloads = Download::where('status', 'storing')->whereNotNull('storage_url')->get();
+
+        foreach ($downloads as $download) {
+            $download->status = 'completed';
+            $download->completed_at = $download->completed_at ?? now();
+            $download->save();
+            $fixed++;
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Fixed $fixed downloads");
+    })->name('downloads.fix-status');
+    
     Route::post('/downloads', [DownloadController::class, 'store'])
         ->name('downloads.store')
         ->middleware('tokens');
@@ -120,22 +138,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/downloads/file/{id}', [DownloadController::class, 'downloadFile'])->name('downloads.file');
 
-    // Fix downloads that are stuck in "storing" status
-    Route::get('/downloads/fix-status', function () {
-        $fixed = 0;
-        $downloads = Download::where('status', 'storing')->whereNotNull('storage_url')->get();
-
-        foreach ($downloads as $download) {
-            $download->status = 'completed';
-            $download->completed_at = $download->completed_at ?? now();
-            $download->save();
-            $fixed++;
-        }
-
-        return redirect()
-            ->back()
-            ->with('success', "Fixed $fixed downloads");
-    })->name('downloads.fix-status');
+    
 });
 
 // Admin routes
