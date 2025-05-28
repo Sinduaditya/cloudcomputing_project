@@ -8,9 +8,6 @@
        <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="mb-0">Download History</h1>
             <div class="d-flex gap-2">
-                <a href="{{ route('downloads.fix-status') }}" class="neo-btn neo-btn-warning">
-                    <i class="fas fa-tools me-2"></i> Fix Stuck Downloads
-                </a>
                 <a href="{{ route('downloads.create') }}" class="neo-btn">
                     <i class="fas fa-plus-circle me-2"></i> New Download
                 </a>
@@ -18,16 +15,30 @@
         </div>
 
         <!-- Filters -->
-        <div class="neo-card mb-4" style="padding-left: 12px;">
-            <div class="card-body">
+        <div class="neo-card mb-3">
+            <div class="card-body p-3">
                 <form action="{{ route('downloads.index') }}" method="GET" class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Platform</label>
-                        <select name="platform" class="neo-form-control">
+                    <div class="col-md-4 col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-text" style="border: 2px solid #212529; border-right: none;"><i class="fas fa-search"></i></span>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title" class="form-control" style="border: 2px solid #212529; box-shadow: 3px 3px 0 rgba(0,0,0,0.1);">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="status" class="form-select" style="border: 2px solid #212529; box-shadow: 3px 3px 0 rgba(0,0,0,0.1);">
+                            <option value="">All Statuses</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="platform" class="form-select" style="border: 2px solid #212529; box-shadow: 3px 3px 0 rgba(0,0,0,0.1);">
                             <option value="">All Platforms</option>
                             @foreach ($platforms as $platform)
-                                <option value="{{ $platform->platform }}"
-                                    {{ request('platform') == $platform->platform ? 'selected' : '' }}>
+                                <option value="{{ $platform->platform }}" {{ request('platform') == $platform->platform ? 'selected' : '' }}>
                                     @if ($platform->platform == 'youtube')
                                         YouTube ({{ $platform->count }})
                                     @elseif($platform->platform == 'tiktok')
@@ -41,26 +52,10 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Status</label>
-                        <select name="status" class="neo-form-control">
-                            <option value="">All Statuses</option>
-                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed
-                            </option>
-                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing
-                            </option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
-                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <div class="w-100">
-                            <button type="submit" class="neo-btn w-100">
-                                <i class="fas fa-filter me-2"></i> Filter Results
-                            </button>
-                        </div>
+                    <div class="col-md-2 col-lg-1">
+                        <button type="submit" class="neo-btn w-100" style="border: 2px solid #212529; box-shadow: 3px 3px 0 rgba(0,0,0,0.2); padding: 0.375rem 0.75rem;">
+                            Filter
+                        </button>
                     </div>
                 </form>
             </div>
@@ -214,22 +209,55 @@
             </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <x-stats-card value="{{ $downloads->where('status', 'completed')->count() }}" label="Completed Downloads"
-                    icon="fas fa-check-circle" color="success" />
+        <!-- Stats Cards -->
+        @if(isset($downloads) && $downloads->count() > 0)
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="neo-card h-100 hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Completed
+                            </h5>
+                            <h2 class="text-success mb-0">{{ $downloads->where('status', 'completed')->count() }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="neo-card h-100 hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-spinner text-warning me-2"></i>
+                                In Progress
+                            </h5>
+                            <h2 class="text-warning mb-0">{{ $downloads->whereIn('status', ['pending', 'processing', 'downloading', 'uploading'])->count() }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="neo-card h-100 hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                                Failed
+                            </h5>
+                            <h2 class="text-danger mb-0">{{ $downloads->where('status', 'failed')->count() }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="neo-card h-100 hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-cloud-download-alt text-info me-2"></i>
+                                Total
+                            </h5>
+                            <h2 class="text-info mb-0">{{ $downloads->count() }}</h2>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <x-stats-card
-                    value="{{ $downloads->whereIn('status', ['pending', 'processing', 'downloading', 'uploading'])->count() }}"
-                    label="In Progress" icon="fas fa-spinner" color="warning" />
-            </div>
-            <div class="col-md-4">
-                <x-stats-card value="{{ $downloads->where('status', 'failed')->count() }}" label="Failed Downloads"
-                    icon="fas fa-exclamation-circle" color="danger" />
-            </div>
-        </div>
+        @endif
     </div>
 @endsection
 

@@ -285,10 +285,74 @@ class AdminController extends Controller
         }
     }
 
-    public function schedules()
+   public function schedules()
+{
+    // Build query with filters
+    $query = \App\Models\ScheduledTask::query();
+
+    // Apply filters
+    if (request('status')) {
+        $query->where('status', request('status'));
+    }
+
+    if (request('platform')) {
+        $query->where('platform', request('platform'));
+    }
+
+    if (request('format')) {
+        $query->where('format', 'like', request('format') . '%');
+    }
+
+    if (request('user')) {
+        $userQuery = request('user');
+        $query->whereHas('user', function($q) use ($userQuery) {
+            $q->where('name', 'like', "%{$userQuery}%")
+              ->orWhere('email', 'like', "%{$userQuery}%");
+        });
+    }
+
+    if (request('from_date')) {
+        $query->where('scheduled_for', '>=', request('from_date'));
+    }
+
+    if (request('to_date')) {
+        $query->where('scheduled_for', '<=', request('to_date'));
+    }
+
+    // Apply sorting
+    $sort = request('sort', 'scheduled_for_asc');
+    switch ($sort) {
+        case 'scheduled_for_desc':
+            $query->orderBy('scheduled_for', 'desc');
+            break;
+        case 'created_at_desc':
+            $query->orderBy('created_at', 'desc');
+            break;
+        case 'created_at_asc':
+            $query->orderBy('created_at', 'asc');
+            break;
+        default:
+            $query->orderBy('scheduled_for', 'asc');
+    }
+
+    // Gather statistics
+    $stats = [
+        'total' => \App\Models\ScheduledTask::count(),
+        'pending' => \App\Models\ScheduledTask::where('status', 'scheduled')->count(),
+        'processing' => \App\Models\ScheduledTask::where('status', 'processing')->count(),
+        'completed' => \App\Models\ScheduledTask::where('status', 'completed')->count(),
+    ];
+
+    // Paginate results
+    $schedules = $query->with('user')->paginate(15);
+
+    return view('admin.schedules.index', compact('schedules', 'stats'));
+}
+
+   public function showSchedule($id)
     {
-        $schedules = \App\Models\ScheduledTask::orderBy('scheduled_for', 'desc')->get();
-        return view('admin.schedules', compact('schedules'));
+        $schedule = \App\Models\ScheduledTask::with('user')->findOrFail($id);
+        return view('admin.schedules.show', compact('schedule'));
     }
 
     public function downloads()
@@ -297,6 +361,12 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return view('admin.downloads', compact('downloads'));
+        return view('admin.downloads.index', compact('downloads'));
+    }
+
+    public function showDownload($id)
+    {
+        $download = \App\Models\Download::with('user')->findOrFail($id);
+        return view('admin.downloads.show', compact('download'));
     }
 }

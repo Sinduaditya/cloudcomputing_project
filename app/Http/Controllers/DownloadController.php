@@ -19,10 +19,8 @@ class DownloadController extends Controller
     protected $downloadService;
     protected $tokenService;
 
-    public function __construct(
-        DownloadService $downloadService,
-        TokenService $tokenService
-    ) {
+    public function __construct(DownloadService $downloadService, TokenService $tokenService)
+    {
         $this->downloadService = $downloadService;
         $this->tokenService = $tokenService;
         $this->middleware('auth');
@@ -50,10 +48,7 @@ class DownloadController extends Controller
         $downloads = $query->orderBy('created_at', 'desc')->paginate(10);
 
         // Get platform stats for filter dropdown
-        $platforms = auth()->user()->downloads()
-            ->selectRaw('platform, count(*) as count')
-            ->groupBy('platform')
-            ->get();
+        $platforms = auth()->user()->downloads()->selectRaw('platform, count(*) as count')->groupBy('platform')->get();
 
         return view('download.history', compact('downloads', 'platforms'));
     }
@@ -80,7 +75,7 @@ class DownloadController extends Controller
                 'url' => $request->url,
                 'format' => $request->format,
                 'quality' => $request->quality,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             $user = auth()->user();
@@ -104,12 +99,7 @@ class DownloadController extends Controller
             }
 
             // Calculate token cost
-            $tokenCost = $this->downloadService->calculateTokenCost(
-                $metadata['platform'],
-                $metadata['duration'] ?? 30,
-                $format,
-                $quality
-            );
+            $tokenCost = $this->downloadService->calculateTokenCost($metadata['platform'], $metadata['duration'] ?? 30, $format, $quality);
 
             // Create download record
             $download = Download::create([
@@ -135,26 +125,18 @@ class DownloadController extends Controller
                     'platform' => $metadata['platform'],
                     'format' => $format,
                     'quality' => $quality,
-                    'token_cost' => $tokenCost
+                    'token_cost' => $tokenCost,
                 ]),
-                'ip_address' => $request->ip()
+                'ip_address' => $request->ip(),
             ]);
 
             // Deduct tokens from user's balance
-            $this->tokenService->deductTokens(
-                $user,
-                $tokenCost,
-                'download_cost',
-                'Download: ' . ($metadata['title'] ?? 'Video'),
-                $download->id
-            );
+            $this->tokenService->deductTokens($user, $tokenCost, 'download_cost', 'Download: ' . ($metadata['title'] ?? 'Video'), $download->id);
 
             // Dispatch job to process download in background
             ProcessDownloadJob::dispatch($download)->onQueue('downloads');
 
-            return redirect()->route('downloads.show', $download->id)
-                ->with('success', 'Download sedang diproses. Anda akan menerima notifikasi ketika selesai.');
-
+            return redirect()->route('downloads.show', $download->id)->with('success', 'Download sedang diproses. Anda akan menerima notifikasi ketika selesai.');
         } catch (Exception $e) {
             Log::error('Unhandled exception in download controller', [
                 'error' => $e->getMessage(),
@@ -236,7 +218,6 @@ class DownloadController extends Controller
             }
 
             return response()->json(['error' => 'File not found'], 404);
-
         } catch (Exception $e) {
             Log::error('Error generating download URL', [
                 'download_id' => $download->id,
@@ -312,8 +293,7 @@ class DownloadController extends Controller
         // Dispatch job to process download
         ProcessDownloadJob::dispatch($download);
 
-        return redirect()->route('downloads.show', $download->id)
-            ->with('success', 'Download sedang diproses ulang.');
+        return redirect()->route('downloads.show', $download->id)->with('success', 'Download sedang diproses ulang.');
     }
 
     /**
@@ -331,12 +311,7 @@ class DownloadController extends Controller
         $download->save();
 
         // Refund tokens
-        $this->tokenService->refundTokens(
-            auth()->user(),
-            $download->token_cost,
-            'Refund for cancelled download: ' . $download->title,
-            $download->id
-        );
+        $this->tokenService->refundTokens(auth()->user(), $download->token_cost, 'Refund for cancelled download: ' . $download->title, $download->id);
 
         // Log cancellation
         ActivityLog::create([
@@ -347,7 +322,72 @@ class DownloadController extends Controller
             'ip_address' => request()->ip(),
         ]);
 
-        return redirect()->route('downloads.index')
-            ->with('success', 'Download dibatalkan dan token dikembalikan.');
+        return redirect()->route('downloads.index')->with('success', 'Download dibatalkan dan token dikembalikan.');
+    }
+
+    public function checkUrl(Request $request)
+    {
+        $request->validate([
+            'url' => 'required|url',
+        ]);
+
+        try {
+            $url = $request->input('url');
+
+            Log::info('Checking URL', ['url' => $url]);
+
+            // Use download service to analyze URL
+            $metadata = $this->downloadService->analyze($url);
+
+            // Calculate estimated token cost
+            $tokenCost = $this->downloadService->calculateTokenCost(
+                $metadata['platform'] ?? 'unknown',
+                $metadata['duration'] ?? 60, // default 1 minute
+                'mp4', // default format
+                '720p', // default quality
+            );
+
+            return response()->json([
+                'success' => true,
+                'title' => $metadata['title'] ?? 'Unknown Title',
+                'platform' => ucfirst($metadata['platform'] ?? 'Unknown'),
+                'duration' => $this->formatDuration($metadata['duration'] ?? 0),
+                'thumbnail' => $metadata['thumbnail'] ?? null,
+                'estimated_tokens' => $tokenCost . ' tokens',
+                'raw_duration' => $metadata['duration'] ?? 0,
+                'file_size' => $metadata['file_size'] ?? 'Unknown',
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error checking URL', [
+                'url' => $request->input('url'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Unable to process this URL. Please check if the URL is valid and the video is publicly accessible.',
+                ],
+                422,
+            );
+        }
+    }
+
+    /**
+     * Format duration from seconds to human readable format
+     */
+    private function formatDuration($seconds)
+    {
+        if ($seconds < 60) {
+            return $seconds . 's';
+        } elseif ($seconds < 3600) {
+            return floor($seconds / 60) . 'm ' . $seconds % 60 . 's';
+        } else {
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds % 3600) / 60);
+            $secs = $seconds % 60;
+            return $hours . 'h ' . $minutes . 'm ' . $secs . 's';
+        }
     }
 }

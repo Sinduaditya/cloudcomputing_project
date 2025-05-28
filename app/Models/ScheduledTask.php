@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,11 +20,15 @@ class ScheduledTask extends Model
         'scheduled_for',
         'status',
         'download_id',
-        'error_message'
+        'error_message',
+        'completed_at',
+        'failed_at'
     ];
 
     protected $casts = [
         'scheduled_for' => 'datetime',
+        'completed_at' => 'datetime',
+        'failed_at' => 'datetime',
     ];
 
     const STATUS_SCHEDULED = 'scheduled';
@@ -31,6 +36,8 @@ class ScheduledTask extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
     const STATUS_CANCELLED = 'cancelled';
+
+    // ...existing code...
 
     /**
      * Get the platform based on URL if not explicitly set
@@ -141,5 +148,21 @@ class ScheduledTask extends Model
     {
         return $query->where('status', self::STATUS_SCHEDULED)
                      ->where('scheduled_for', '<=', now());
+    }
+
+    /**
+     * Get formatted completion time
+     */
+    public function getCompletedTimeAttribute()
+    {
+        return $this->completed_at ? $this->completed_at->format('d M Y H:i') : null;
+    }
+
+    /**
+     * Get formatted failure time
+     */
+    public function getFailedTimeAttribute()
+    {
+        return $this->failed_at ? $this->failed_at->format('d M Y H:i') : null;
     }
 }
