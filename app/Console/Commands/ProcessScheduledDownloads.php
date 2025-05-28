@@ -2,83 +2,54 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessScheduledDownloadJob;
 use App\Models\ScheduledTask;
+use App\Jobs\ProcessScheduledDownloadJob;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ProcessScheduledDownloads extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'downloads:process-scheduled';
+    protected $description = 'Process scheduled downloads that are due';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Process all scheduled downloads that are due';
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
-        $this->info('Looking for due scheduled tasks...');
+        $now = Carbon::now();
 
-        // Find tasks that are scheduled and due
-        $dueTasks = ScheduledTask::where('status', 'scheduled')
-            ->where('scheduled_for', '<=', now())
+        // Find all scheduled tasks that are due (past their scheduled time)
+        $dueTasks = ScheduledTask::where('status', ScheduledTask::STATUS_SCHEDULED)
+            ->where('scheduled_for', '<=', $now)
             ->get();
 
-        $count = $dueTasks->count();
-
-        if ($count === 0) {
-            $this->info('No scheduled tasks due for processing.');
-            return 0;
-        }
-
-        $this->info("Found {$count} scheduled tasks to process.");
+        $this->info("Found {$dueTasks->count()} scheduled downloads due for processing");
 
         foreach ($dueTasks as $task) {
             try {
-                $this->info("Processing task #{$task->id} for URL: {$task->url}");
+                $this->info("Processing scheduled task ID: {$task->id} - {$task->url}");
 
-                // Update status to processing
+                // Update status to prevent duplicate processing
                 $task->status = 'processing';
                 $task->save();
 
-                // Dispatch job to process the task
-                ProcessScheduledDownloadJob::dispatch($task);
+                // Dispatch the job
+                ProcessScheduledDownloadJob::dispatch($task)->onQueue('scheduled');
 
-                Log::info("Dispatched job for scheduled task", [
+                Log::info("Dispatched scheduled download job", [
                     'task_id' => $task->id,
-                    'user_id' => $task->user_id,
+                    'scheduled_for' => $task->scheduled_for,
                     'url' => $task->url
                 ]);
+
             } catch (\Exception $e) {
-                $this->error("Error dispatching task #{$task->id}: {$e->getMessage()}");
-
-                // Mark task as failed
-                $task->status = 'failed';
-                $task->error_message = "Error dispatching job: {$e->getMessage()}";
-                $task->save();
-
-                Log::error("Error dispatching scheduled task job", [
+                $this->error("Failed to process task {$task->id}: " . $e->getMessage());
+                Log::error("Failed to dispatch scheduled download job", [
                     'task_id' => $task->id,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
+                    'error' => $e->getMessage()
                 ]);
             }
         }
 
-        $this->info('Finished processing scheduled tasks.');
-        return 0;
+        $this->info('Scheduled downloads processing completed');
     }
 }

@@ -156,6 +156,8 @@
     @stack('styles')
 </head>
 <body>
+    @include('layouts.loader')
+
     <div id="app">
         @include('layouts.navigation')
 
@@ -187,6 +189,9 @@
 
     <!-- Custom JS -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        NeoLoader.show();
+    </script>
 
     @stack('scripts')
 </body>
