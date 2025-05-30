@@ -50,7 +50,7 @@
             <i class="fas fa-filter me-2"></i> Filter Downloads
         </h5>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="padding: 24px;">
         <form action="{{ route('admin.downloads.index') }}" method="GET" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label fw-bold">Status</label>

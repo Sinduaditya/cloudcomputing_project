@@ -8,12 +8,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="mb-0">New Download</h1>
-                    <div>
+                    <h1 class="mb-2">New Download</h1>
                         <a href="{{ route('downloads.index') }}" class="neo-btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i> Back to Downloads
                         </a>
-                    </div>
                 </div>
 
                 <x-card>

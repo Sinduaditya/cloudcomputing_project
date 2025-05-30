@@ -7,11 +7,9 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="mb-0">Purchase Tokens</h1>
-            <div>
                 <a href="{{ route('tokens.balance') }}" class="neo-btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i> Back to Balance
                 </a>
-            </div>
         </div>
 
         <div class="row">
