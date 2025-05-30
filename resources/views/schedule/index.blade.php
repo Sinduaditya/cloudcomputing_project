@@ -7,11 +7,9 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Scheduled Downloads</h1>
-        <div>
             <a href="{{ route('schedules.create') }}" class="neo-btn">
                 <i class="fas fa-plus-circle me-2"></i> Schedule New
             </a>
-        </div>
     </div>
 
     <!-- Filters and Search -->

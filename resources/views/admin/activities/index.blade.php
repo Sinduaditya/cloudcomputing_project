@@ -237,8 +237,15 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="d-flex justify-content-center mt-4 mb-3">
-                    {{ $activities->appends(request()->query())->links() }}
+                <div class="pagination-container py-3 px-3">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                        <div class="pagination-info mb-2 mb-md-0">
+                            Showing {{ $activities->firstItem() ?? 0 }} to {{ $activities->lastItem() ?? 0 }} of {{ $activities->total() }} entries
+                        </div>
+                        <div class="pagination-links">
+                            {{ $activities->appends(request()->query())->onEachSide(1)->links('pagination::bootstrap-4') }}
+                        </div>
+                    </div>
                 </div>
             @else
                 <x-empty-state

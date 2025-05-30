@@ -26,7 +26,7 @@
             <a href="{{ route('tokens.balance') }}" class="neo-btn btn-secondary">
                 <i class="fas fa-coins me-2"></i> Token Balance
             </a>
-            <a href="{{ route('tokens.purchase') }}" class="neo-btn">
+            <a href="{{ route('tokens.purchase') }}" class="neo-btn" style="color: #ffffff;">
                 <i class="fas fa-plus-circle me-2"></i> Buy Tokens
             </a>
         </div>
@@ -36,10 +36,10 @@
     <div class="neo-card mb-4">
         <div class="card-header">
             <h5 class="mb-0">
-                <i class="fas fa-filter me-2"></i>Filter Transactions
+                <i class="text-center w-100 mb-0"></i>Filter Transactions
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <form action="{{ route('tokens.index') }}" method="GET" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label fw-bold">Date Range</label>
@@ -74,7 +74,7 @@
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
                     <div class="d-grid">
-                        <button type="submit" class="neo-btn">
+                        <button type="submit" class="neo-btn" style="color: #ffffff;">
                             <i class="fas fa-filter me-2"></i> Apply
                         </button>
                     </div>
@@ -254,11 +254,11 @@
 
                     <div class="mt-4">
                         @if(request()->hasAny(['type', 'date_from', 'date_to', 'amount_type']))
-                            <a href="{{ route('tokens.index') }}" class="neo-btn me-2">
+                            <a href="{{ route('tokens.index') }}" class="neo-btn me-2" >
                                 <i class="fas fa-times me-2"></i> Clear Filters
                             </a>
                         @endif
-                        <a href="{{ route('tokens.purchase') }}" class="neo-btn">
+                        <a href="{{ route('tokens.purchase') }}" class="neo-btn" style="color: #ffffff;">
                             <i class="fas fa-shopping-cart me-2"></i> Buy Tokens
                         </a>
                     </div>
@@ -275,7 +275,7 @@
                 <i class="fas fa-chart-pie me-2"></i>Transaction Summary
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding: 24px;">
             <div class="row">
                 <div class="col-md-6">
                     <h6 class="fw-bold mb-3">Transaction Breakdown</h6>
@@ -313,10 +313,10 @@
                 <div class="col-md-6">
                     <h6 class="fw-bold mb-3">Quick Actions</h6>
                     <div class="d-grid gap-2">
-                        <a href="{{ route('tokens.balance') }}" class="neo-btn btn-sm">
+                        <a href="{{ route('tokens.balance') }}" class="neo-btn btn-sm" style="color: #ffffff;">
                             <i class="fas fa-wallet me-2"></i>View Token Balance
                         </a>
-                        <a href="{{ route('tokens.purchase') }}" class="neo-btn btn-sm">
+                        <a href="{{ route('tokens.purchase') }}" class="neo-btn btn-sm" style="color: #ffffff;">
                             <i class="fas fa-plus-circle me-2"></i>Buy More Tokens
                         </a>
                         <a href="{{ route('tokens.requests') }}" class="neo-btn btn-sm btn-secondary">
@@ -346,7 +346,6 @@
     }
 
     .neo-card .card-header {
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         border-bottom: 2px solid #212529;
         padding: 1rem;
         font-weight: 600;
@@ -379,7 +378,6 @@
         line-height: 1.5;
         border: 2px solid #212529;
         border-radius: 0.375rem;
-        background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
         box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
         transition: transform 0.1s, box-shadow 0.1s;
         cursor: pointer;

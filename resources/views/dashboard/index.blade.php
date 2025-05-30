@@ -4,14 +4,15 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">My Dashboard</h1>
-        <div>
+   <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <h1 class="mb-2">My Dashboard</h1>
             <a href="{{ route('downloads.create') }}" class="neo-btn">
                 <i class="fas fa-plus-circle me-2"></i> New Download
             </a>
-        </div>
     </div>
+
+
+
 
     <!-- Stats Overview -->
     <div class="row mb-4">

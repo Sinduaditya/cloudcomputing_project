@@ -7,11 +7,9 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Statistics & Analytics</h1>
-        <div>
-            <a href="{{ route('dashboard') }}" class="neo-btn btn-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
-            </a>
-        </div>
+        <a href="{{ route('dashboard') }}" class="neo-btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
     </div>
 
     <!-- Overview Stats -->

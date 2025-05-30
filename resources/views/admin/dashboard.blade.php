@@ -255,13 +255,13 @@
                 <div class="card-header">
                     <h5 class="mb-0">Downloads by Platform</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 24px;">
                     <div class="chart-container" style="position: relative; height:230px;">
                         <canvas id="platformChart"></canvas>
                     </div>
 
                     <div class="platform-stats mt-4">
-                        <div class="row" style="padding: 24px;">
+                        <div class="row">
                             <div class="col-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div style="width:14px; height:14px; background-color:#ff4b2b; border-radius:4px; margin-right:8px; border: 1px solid #212529;"></div>
