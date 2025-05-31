@@ -10,6 +10,7 @@ use App\Models\ScheduledTask;
 use App\Models\TokenTransaction;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -215,6 +216,47 @@ class DashboardController extends Controller
         $activities = $query->paginate(20);
 
         return view('dashboard.activity', compact('activities', 'stats'));
+    }
+
+    public function exportPdff()
+    {
+        $user = auth()->user();
+        
+        $query = $user->activityLogs()
+            ->whereNotIn('action', ['page_view']);
+
+        // Filter berdasarkan tanggal
+        if (request('from_date')) {
+            $query->whereDate('created_at', '>=', request('from_date'));
+        }
+        if (request('to_date')) {
+            $query->whereDate('created_at', '<=', request('to_date'));
+        }
+
+        // Sorting
+        $sort = request('sort', 'created_at_desc');
+        if ($sort === 'created_at_asc') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $activities = $query->get();
+
+        // Data untuk PDF
+        $exportData = [
+            'user' => $user,
+            'activities' => $activities,
+            'from_date' => request('from_date'),
+            'to_date' => request('to_date'),
+            'total_activities' => $activities->count(),
+            'generated_at' => now()
+        ];
+
+        $pdf = Pdf::loadView('dashboard.activity_pdf', $exportData);
+        
+        $filename = 'activity_log_' . $user->id . '_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        return $pdf->download($filename);
     }
 
     /**
