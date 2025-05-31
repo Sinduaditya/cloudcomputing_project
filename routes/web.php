@@ -11,6 +11,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\InstanceController;
+use App\Http\Controllers\ExportController;
 
 // Admin Controllers
 use App\Http\Controllers\AdminController;
@@ -66,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/activity', [DashboardController::class, 'activity'])->name('dashboard.activity');
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
+    
+    Route::get('/export-pdf', [DashboardController::class, 'exportPdff'])->name('dashboard.export-pdf');
 
     Route::post('/schedules/bulk-delete', [\App\Http\Controllers\ScheduleController::class, 'bulkDelete'])->name('schedules.bulk-delete');
 
@@ -148,6 +151,8 @@ Route::middleware(['auth', 'admin'])
     ->group(function () {
         // Admin dashboard
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+         // TAMBAHAN: Export PDF untuk admin
+         Route::get('/activities/export-pdf', [ActivityController::class, 'exportPdf'])->name('activities.export-pdf');
 
         // User management
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -167,6 +172,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
         Route::delete('/activities/clear', [ActivityController::class, 'clear'])->name('activities.clear');
         Route::get('/activities/filter', [ActivityController::class, 'filter'])->name('activities.filter');
+
 
         // Token management
          Route::prefix('tokens')->name('tokens.')->group(function () {

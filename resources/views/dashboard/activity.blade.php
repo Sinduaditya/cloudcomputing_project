@@ -15,6 +15,10 @@
                 <a href="{{ route('admin.dashboard') }}" class="neo-btn btn-secondary">
                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                 </a>
+            @else
+                <button type="button" class="neo-btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportPdfModal">
+                    <i class="fas fa-file-pdf me-2"></i> Export PDF
+                </button>
             @endif
         </div>
     </div>
@@ -279,6 +283,52 @@
     </div>
 </div>
 
+<!-- Export PDF Modal -->
+<div class="modal fade" id="exportPdfModal" tabindex="-1" aria-labelledby="exportPdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border: 3px solid #212529; border-radius: 8px;">
+            <div class="modal-header" style="background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%); border-bottom: 2px solid #212529;">
+                <h5 class="modal-title" id="exportPdfModalLabel" style="color: #ffffff;">Export Activity Logs to PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/export-pdf" method="GET">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Date Range (Optional)</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">From Date</label>
+                                <input type="date" name="from_date" class="neo-form-control" value="{{ request('from_date') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">To Date</label>
+                                <input type="date" name="to_date" class="neo-form-control" value="{{ request('to_date') }}">
+                            </div>
+                        </div>
+                        <small class="text-muted">Leave empty to export all activity logs</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sort Order</label>
+                        <select name="sort" class="neo-form-control">
+                            <option value="created_at_desc" {{ request('sort', 'created_at_desc') == 'created_at_desc' ? 'selected' : '' }}>Newest First</option>
+                            <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>Oldest First</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info" style="border: 2px solid #212529; border-radius: 8px; box-shadow: 3px 3px 0 rgba(0,0,0,0.2);">
+                        <i class="fas fa-info-circle me-2"></i> The PDF will contain all your activity logs within the selected date range.
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 2px solid #212529;">
+                    <button type="button" class="neo-btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="neo-btn btn-primary">
+                        <i class="fas fa-download me-1"></i> Generate & Download PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Clear Logs Modal -->
 <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-labelledby="clearLogsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -419,6 +469,48 @@
         // Handle retention period selection
         document.getElementById('retentionPeriod')?.addEventListener('change', function() {
             document.getElementById('retentionDays').value = this.value;
+        });
+        
+        // Handle export PDF modal dan proses download
+        document.getElementById('exportPdfModal')?.addEventListener('show.bs.modal', function () {
+            // Copy date filters from main form to export modal
+            const mainFromDate = document.querySelector('input[name="from_date"]');
+            const mainToDate = document.querySelector('input[name="to_date"]');
+            const mainSort = document.querySelector('select[name="sort"]');
+
+            const modalFromDate = document.querySelector('#exportPdfModal input[name="from_date"]');
+            const modalToDate = document.querySelector('#exportPdfModal input[name="to_date"]');
+            const modalSort = document.querySelector('#exportPdfModal select[name="sort"]');
+
+            if (mainFromDate && modalFromDate) {
+                modalFromDate.value = mainFromDate.value;
+            }
+            if (mainToDate && modalToDate) {
+                modalToDate.value = mainToDate.value;
+            }
+            if (mainSort && modalSort) {
+                modalSort.value = mainSort.value;
+            }
+        });
+        
+        document.querySelector('#exportPdfModal form')?.addEventListener('submit', function(e) {
+            const form = this;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Generating PDF...';
+
+            // Reset button setelah delay singkat (form akan redirect/download)
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('exportPdfModal'));
+                modal.hide();
+            }, 1500); 
         });
     });
 </script>

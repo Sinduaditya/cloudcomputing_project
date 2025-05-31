@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ActivityController extends Controller
 {
@@ -301,4 +302,49 @@ class ActivityController extends Controller
             'activityByIp'
         ));
     }
+
+    public function exportPdf()
+    {
+        $query = ActivityLog::with('user')
+            ->whereNotIn('action', ['page_view']);
+    
+        // Filter berdasarkan tanggal
+        if (request('from_date')) {
+            $query->whereDate('created_at', '>=', request('from_date'));
+        }
+        if (request('to_date')) {
+            $query->whereDate('created_at', '<=', request('to_date'));
+        }
+    
+        // Sorting
+        $sort = request('sort', 'created_at_desc');
+        if ($sort === 'created_at_asc') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+    
+        $activities = $query->get();
+    
+        $admin = auth()->user();
+    
+        // Data untuk PDF
+        $exportData = [
+            'admin' => $admin, // BARU: Info admin yang export
+            'activities' => $activities,
+            'from_date' => request('from_date'),
+            'to_date' => request('to_date'),
+            'total_activities' => $activities->count(),
+            'generated_at' => now()
+        ];
+    
+        $pdf = Pdf::loadView('admin.activities.adminactivity_pdf', $exportData);
+
+        $filename = 'admin_activity_export_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+
+
+        return $pdf->download($filename);
+    }
+
+
 }
