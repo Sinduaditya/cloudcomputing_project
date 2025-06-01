@@ -95,99 +95,161 @@
             <p class="lead col-lg-8 mx-auto">The talented people behind CloudComputing</p>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="neo-card h-100">
-                    <div style="height: 8px; background: linear-gradient(90deg, #ff9a9e, #fad0c4);"></div>
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="CEO" class="img-fluid">
-                        </div>
-                        <h5 class="fw-bold mb-1">Alex Johnson</h5>
-                        <p class="text-muted mb-3">CEO & Founder</p>
-                        <p class="small mb-3">Former cloud architect with 15+ years of experience in AWS and Azure infrastructures.</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="neo-card h-100">
-                    <div style="height: 8px; background: linear-gradient(90deg, #a1c4fd, #c2e9fb);"></div>
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="CTO" class="img-fluid">
-                        </div>
-                        <h5 class="fw-bold mb-1">Sarah Chen</h5>
-                        <p class="text-muted mb-3">CTO</p>
-                        <p class="small mb-3">Full-stack developer with a passion for building scalable, user-friendly systems.</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-github"></i>
-                            </a>
+        <div class="d-flex justify-content-center">
+            <div class="row g-4 justify-content-center" style="max-width: 1200px;">
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #ff9a9e, #fad0c4);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="CEO" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Alex Johnson</h5>
+                            <p class="text-muted mb-3">CEO & Founder</p>
+                            <p class="small mb-3">Former cloud architect with 15+ years of experience in AWS and Azure infrastructures.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="neo-card h-100">
-                    <div style="height: 8px; background: linear-gradient(90deg, #fccb90, #d57eeb);"></div>
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
-                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Lead Developer" class="img-fluid">
-                        </div>
-                        <h5 class="fw-bold mb-1">David Rodriguez</h5>
-                        <p class="text-muted mb-3">Lead Developer</p>
-                        <p class="small mb-3">Backend specialist with expertise in distributed systems and microservices.</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-github"></i>
-                            </a>
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #a1c4fd, #c2e9fb);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="CTO" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Sarah Chen</h5>
+                            <p class="text-muted mb-3">CTO</p>
+                            <p class="small mb-3">Full-stack developer with a passion for building scalable, user-friendly systems.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="neo-card h-100">
-                    <div style="height: 8px; background: linear-gradient(90deg, #84fab0, #8fd3f4);"></div>
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
-                            <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="UX Designer" class="img-fluid">
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #fccb90, #d57eeb);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="{{ asset('images/team/hafiz.jpg') }}" alt="Muhamad Hafiz Saputra" alt="Lead Developer" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Muhamad Hafiz Saputra</h5>
+                            <p class="text-muted mb-3">Scaling instance</p>
+                            <p class="small mb-3">It always seems impossible until it's done.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
                         </div>
-                        <h5 class="fw-bold mb-1">Emma Wilson</h5>
-                        <p class="text-muted mb-3">UX Designer</p>
-                        <p class="small mb-3">Creating intuitive user experiences with a focus on accessibility and usability.</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
-                                <i class="fab fa-dribbble"></i>
-                            </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #84fab0, #8fd3f4);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="UX Designer" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Emma Wilson</h5>
+                            <p class="text-muted mb-3">UX Designer</p>
+                            <p class="small mb-3">Creating intuitive user experiences with a focus on accessibility and usability.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-dribbble"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 5th Team Member -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #f7971e, #ffd200);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="DevOps Engineer" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Michael Lee</h5>
+                            <p class="text-muted mb-3">DevOps Engineer</p>
+                            <p class="small mb-3">Automation enthusiast ensuring smooth deployments and infrastructure reliability.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 6th Team Member -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #43cea2, #185a9d);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="QA Engineer" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">Linda Park</h5>
+                            <p class="text-muted mb-3">QA Engineer</p>
+                            <p class="small mb-3">Quality advocate dedicated to delivering bug-free and reliable software.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 7th Team Member -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="neo-card h-100">
+                        <div style="height: 8px; background: linear-gradient(90deg, #fd6e6a, #ffc371);"></div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3 mx-auto overflow-hidden" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--secondary); box-shadow: 4px 4px 0 var(--shadow-color);">
+                                <img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Product Manager" class="img-fluid">
+                            </div>
+                            <h5 class="fw-bold mb-1">James Smith</h5>
+                            <p class="text-muted mb-3">Product Manager</p>
+                            <p class="small mb-3">Bridging business and technology to deliver user-focused solutions.</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm" style="border: 2px solid var(--secondary); border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
