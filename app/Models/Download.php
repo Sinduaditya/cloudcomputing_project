@@ -19,12 +19,17 @@ class Download extends Model
         'quality',
         'duration',
         'file_path',
+        'storage_path',
         'storage_url',
         'file_size',
         'token_cost',
         'status',
         'error_message',
-        'completed_at'
+        'completed_at',
+        // Add Cloudinary fields
+        'cloudinary_public_id',
+        'cloudinary_url',
+        'storage_provider', // 'local' or 'cloudinary'
     ];
 
     protected $casts = [
@@ -42,6 +47,30 @@ class Download extends Model
     const STATUS_FAILED = 'failed';
     const STATUS_CANCELLED = 'cancelled';
     const STATUS_PAUSED = 'paused';
+
+    // ... existing methods ...
+
+    /**
+     * Check if file is stored in Cloudinary
+     */
+    public function isStoredInCloudinary()
+    {
+        return $this->storage_provider === 'cloudinary' &&
+               !empty($this->cloudinary_public_id) &&
+               !empty($this->cloudinary_url);
+    }
+
+    /**
+     * Get the best available download URL
+     */
+    public function getDownloadUrlAttribute()
+    {
+        if ($this->isStoredInCloudinary()) {
+            return $this->cloudinary_url;
+        }
+
+        return $this->storage_url;
+    }
 
     /**
      * Get the user that owns the download

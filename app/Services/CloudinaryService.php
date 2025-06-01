@@ -12,85 +12,167 @@ class CloudinaryService
 {
     protected $cloudinary;
 
-    /**
-     * Create a new service instance.
-     */
     public function __construct()
     {
-        // Configure Cloudinary from environment variables or config
-        // Expects CLOUDINARY_URL in your .env file
+        Configuration::instance([
+            'cloud' => [
+                'cloud_name' => config('cloudinary.cloud_name'),
+                'api_key' => config('cloudinary.api_key'),
+                'api_secret' => config('cloudinary.api_secret'),
+            ],
+            'url' => [
+                'secure' => true,
+            ],
+        ]);
+
         $this->cloudinary = new Cloudinary();
     }
 
     /**
-     * Upload a file to Cloudinary
+     * Upload file to Cloudinary
      */
     public function uploadFile($filePath, array $options = [])
     {
         try {
-            Log::info('Uploading file to Cloudinary', [
-                'file' => $filePath,
-                'options' => $options
-            ]);
+            $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+            $resourceType = $this->getResourceType($extension);
 
-            if (!file_exists($filePath)) {
-                throw new Exception("File not found: {$filePath}");
-            }
-
-            // Default options
             $defaultOptions = [
-                'resource_type' => 'auto',
+                'resource_type' => $resourceType,
+                'folder' => config('cloudinary.uploads.folder', 'downloads'),
+                'use_filename' => true,
                 'unique_filename' => true,
-                'overwrite' => true
+                'overwrite' => false,
             ];
 
-            // Merge with custom options
+            if ($resourceType === 'video') {
+                $defaultOptions = array_merge($defaultOptions, [
+                    'quality' => 'auto',
+                    'format' => 'mp4',
+                    'video_codec' => 'h264',
+                ]);
+            }
+
             $uploadOptions = array_merge($defaultOptions, $options);
 
-            // Upload to Cloudinary
-            $result = $this->cloudinary->uploadApi()->upload($filePath, $uploadOptions);
-
-            Log::info('Cloudinary upload successful', [
-                'public_id' => $result['public_id'],
-                'url' => $result['secure_url']
+            Log::info('Uploading to Cloudinary', [
+                'file_path' => $filePath,
+                'options' => $uploadOptions
             ]);
 
-            return $result;
+            $result = $this->cloudinary->uploadApi()->upload($filePath, $uploadOptions);
+
+            return [
+                'success' => true,
+                'public_id' => $result['public_id'],
+                'secure_url' => $result['secure_url'],
+                'url' => $result['url'],
+                'bytes' => $result['bytes'],
+                'format' => $result['format'],
+                'resource_type' => $result['resource_type'],
+            ];
+
         } catch (Exception $e) {
             Log::error('Cloudinary upload failed', [
                 'error' => $e->getMessage(),
-                'file' => $filePath
+                'file_path' => $filePath
             ]);
-            throw $e;
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
 
     /**
-     * Delete a file from Cloudinary
+     * Delete file from Cloudinary
      */
     public function deleteFile($publicId, $resourceType = 'video')
     {
         try {
-            Log::info('Deleting file from Cloudinary', [
-                'public_id' => $publicId,
-                'resource_type' => $resourceType
-            ]);
-
             $result = $this->cloudinary->uploadApi()->destroy($publicId, [
                 'resource_type' => $resourceType
             ]);
 
-            Log::info('Cloudinary delete successful', [
-                'result' => $result
-            ]);
+            return [
+                'success' => true,
+                'result' => $result['result']
+            ];
 
-            return $result;
         } catch (Exception $e) {
             Log::error('Cloudinary delete failed', [
                 'error' => $e->getMessage(),
                 'public_id' => $publicId
             ]);
-            throw $e;
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Get signed URL with expiry
+     */
+    public function getSignedUrl($publicId, $resourceType = 'video', $expiresIn = 3600)
+    {
+        try {
+            $options = [
+                'resource_type' => $resourceType,
+                'expires_at' => time() + $expiresIn,
+                'type' => 'authenticated'
+            ];
+
+            return $this->cloudinary->image($publicId)
+                ->addTransformation($options)
+                ->toUrl();
+
+        } catch (Exception $e) {
+            Log::error('Failed to generate signed URL', [
+                'error' => $e->getMessage(),
+                'public_id' => $publicId
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Get video thumbnail
+     */
+    public function getVideoThumbnail($publicId)
+    {
+        try {
+            return $this->cloudinary->video($publicId)
+                ->resize(\Cloudinary\Transformation\Resize::thumbnail()->width(300)->height(200))
+                ->format('jpg')
+                ->toUrl();
+
+        } catch (Exception $e) {
+            Log::error('Failed to generate thumbnail', [
+                'error' => $e->getMessage(),
+                'public_id' => $publicId
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Determine resource type based on file extension
+     */
+    protected function getResourceType($extension)
+    {
+        $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv', '3gp'];
+        $audioExtensions = ['mp3', 'wav', 'flac', 'aac', 'm4a', 'ogg'];
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+
+        if (in_array($extension, $videoExtensions) || in_array($extension, $audioExtensions)) {
+            return 'video'; // Cloudinary treats audio as video resource type
+        } elseif (in_array($extension, $imageExtensions)) {
+            return 'image';
+        } else {
+            return 'raw';
         }
     }
 }

@@ -1,7 +1,3 @@
-// This file is part of the Activity Log Report for the Dashboard
-// Template for generating a PDF report of user activities
-// views/dashboard/activity_pdf.blade.php
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,100 +7,102 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
-            line-height: 1.4;
+            line-height: 1.5;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
-        
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #2B7EC1;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2B7EC1;
         }
-        
+
         .header h1 {
             color: #2B7EC1;
-            font-size: 24px;
-            margin: 0 0 10px 0;
+            font-size: 22px;
+            margin: 0 0 8px 0;
             font-weight: bold;
         }
-        
+
         .header .subtitle {
             color: #666;
-            font-size: 14px;
-            margin: 5px 0;
+            font-size: 12px;
+            margin: 4px 0;
         }
-        
+
         .info-section {
             background: #f8f9fa;
-            padding: 15px;
-            border: 2px solid #212529;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
         }
-        
+
         .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+            overflow: hidden;
         }
-        
-        .info-row:last-child {
-            margin-bottom: 0;
+
+        .info-row:after {
+            content: "";
+            display: table;
+            clear: both;
         }
-        
+
         .info-label {
+            float: left;
+            width: 40%;
             font-weight: bold;
             color: #2B7EC1;
         }
-        
+
         .info-value {
+            float: right;
+            width: 60%;
+            text-align: right;
             color: #333;
         }
-        
+
         .activities-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            border: 2px solid #212529;
+            margin-top: 15px;
+            border: 1px solid #ddd;
         }
-        
+
         .activities-table th {
-            background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%);
+            background-color: #2B7EC1;
             color: white;
-            padding: 12px 8px;
+            padding: 8px 6px;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #212529;
+            border: 1px solid #ddd;
             font-size: 11px;
         }
-        
+
         .activities-table td {
-            padding: 10px 8px;
+            padding: 8px 6px;
             border: 1px solid #ddd;
             vertical-align: top;
             font-size: 10px;
         }
-        
+
         .activities-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f9f9f9;
         }
-        
-        .activities-table tbody tr:hover {
-            background-color: #e9ecef;
-        }
-        
+
         .action-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
             font-weight: bold;
             color: white;
             display: inline-block;
         }
-        
+
         .action-login { background-color: #28a745; }
         .action-register { background-color: #007bff; }
         .action-download { background-color: #17a2b8; }
@@ -112,80 +110,75 @@
         .action-admin { background-color: #6f42c1; }
         .action-fail { background-color: #dc3545; }
         .action-default { background-color: #6c757d; }
-        
+
         .resource-badge {
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: bold;
             color: white;
             display: inline-block;
         }
-        
+
         .resource-user { background-color: #007bff; }
         .resource-download { background-color: #17a2b8; }
         .resource-schedule { background-color: #ffc107; color: #212529; }
         .resource-token { background-color: #28a745; }
         .resource-default { background-color: #6c757d; }
-        
+
         .user-info {
             font-size: 10px;
         }
-        
+
         .user-name {
             font-weight: bold;
             color: #333;
         }
-        
+
         .user-email {
             color: #666;
             font-style: italic;
         }
-        
+
         .ip-address {
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
             background-color: #f1f3f4;
-            padding: 2px 4px;
+            padding: 2px 3px;
             border-radius: 3px;
-            font-size: 9px;
+            font-size: 10px;
         }
-        
+
         .datetime {
-            font-size: 9px;
+            font-size: 10px;
         }
-        
+
         .datetime-date {
             font-weight: bold;
             color: #333;
         }
-        
+
         .datetime-time {
             color: #666;
         }
-        
+
         .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 2px solid #dee2e6;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
             text-align: center;
             font-size: 10px;
             color: #666;
         }
-        
+
         .no-activities {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 15px;
             color: #666;
             font-style: italic;
         }
-        
+
         .page-break {
             page-break-before: always;
-        }
-        
-        @media print {
-            body { margin: 0; }
-            .no-print { display: none; }
         }
     </style>
 </head>
@@ -205,8 +198,8 @@
             <span class="info-label">Date Range:</span>
             <span class="info-value">
                 @if($from_date || $to_date)
-                    {{ $from_date ? \Carbon\Carbon::parse($from_date)->format('M d, Y') : 'Beginning' }} 
-                    to 
+                    {{ $from_date ? \Carbon\Carbon::parse($from_date)->format('M d, Y') : 'Beginning' }}
+                    to
                     {{ $to_date ? \Carbon\Carbon::parse($to_date)->format('M d, Y') : 'Present' }}
                 @else
                     All time
@@ -223,12 +216,12 @@
         <table class="activities-table">
             <thead>
                 <tr>
-                    <th style="width: 8%;">#</th>
-                    <th style="width: 22%;">User</th>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 25%;">User</th>
                     <th style="width: 18%;">Action</th>
-                    <th style="width: 15%;">Resource</th>
+                    <th style="width: 17%;">Resource</th>
                     <th style="width: 15%;">IP Address</th>
-                    <th style="width: 22%;">Date & Time</th>
+                    <th style="width: 20%;">Date & Time</th>
                 </tr>
             </thead>
             <tbody>
