@@ -16,6 +16,7 @@ class DownloadService
     protected $youtubeService;
     protected $tiktokService;
     protected $instagramService;
+    protected $cloudinaryService;
 
     /**
      * Constructor
@@ -23,11 +24,13 @@ class DownloadService
     public function __construct(
         YoutubeService $youtubeService,
         TiktokService $tiktokService,
-        InstagramService $instagramService
+        InstagramService $instagramService,
+        CloudinaryService $cloudinaryService
     ) {
         $this->youtubeService = $youtubeService;
         $this->tiktokService = $tiktokService;
         $this->instagramService = $instagramService;
+        $this->cloudinaryService = $cloudinaryService;
     }
 
     /**
@@ -196,7 +199,6 @@ class DownloadService
     public function processDownload(Download $download)
     {
         try {
-            // Create temp directory if it doesn't exist
             $tempDir = storage_path('app/downloads/temp');
             if (!is_dir($tempDir)) {
                 mkdir($tempDir, 0777, true);
@@ -210,14 +212,13 @@ class DownloadService
                 'quality' => $download->quality,
             ]);
 
-            // Get service based on platform
             $service = $this->getServiceForPlatform($download->platform);
 
             // Update download status
             $download->status = 'downloading';
             $download->save();
 
-            // Download the file locally using API-based methods
+            // Download the file locally first
             $localFilePath = $service->download($download->url, $download->format, $download->quality, $tempDir);
 
             if (!file_exists($localFilePath)) {
@@ -229,13 +230,19 @@ class DownloadService
             $download->file_size = $fileSize;
             $download->save();
 
-            // Save file directly to public storage
-            $result = $this->saveFileToPublicStorage($download, $localFilePath);
+            // Decide storage strategy based on file size or config
+            $useCloudinary = $this->shouldUseCloudinary($fileSize);
+
+            if ($useCloudinary) {
+                $result = $this->saveFileToCloudinary($download, $localFilePath);
+            } else {
+                $result = $this->saveFileToPublicStorage($download, $localFilePath);
+            }
 
             Log::info('Download completed successfully', [
                 'download_id' => $download->id,
                 'file_size' => $fileSize,
-                'storage_path' => $result['path'],
+                'storage_provider' => $useCloudinary ? 'cloudinary' : 'local',
                 'url' => $result['url']
             ]);
 
@@ -245,7 +252,9 @@ class DownloadService
                 'format' => $download->format,
                 'title' => $download->title,
                 'url' => $result['url'],
+                'storage_provider' => $useCloudinary ? 'cloudinary' : 'local'
             ];
+
         } catch (Exception $e) {
             Log::error('Download processing failed', [
                 'error' => $e->getMessage(),
@@ -253,28 +262,78 @@ class DownloadService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            // Check if we already have a file despite the error
-            if (!empty($download->storage_url) && file_exists($download->file_path)) {
-                Log::info('File exists despite error, marking as completed', [
-                    'download_id' => $download->id
-                ]);
-
-                $download->status = 'completed';
-                $download->completed_at = now();
-                $download->save();
-
-                return [
-                    'status' => 'success',
-                    'file_size' => $download->file_size,
-                    'url' => $download->storage_url,
-                ];
-            }
-
             $download->status = 'failed';
             $download->error_message = $e->getMessage();
             $download->save();
 
             throw $e;
+        }
+    }
+
+    protected function shouldUseCloudinary($fileSize)
+    {
+        // Use Cloudinary for files larger than 50MB or if configured to always use it
+        $cloudinaryThreshold = config('download.cloudinary_threshold_mb', 50) * 1024 * 1024;
+        $alwaysUseCloudinary = config('download.always_use_cloudinary', false);
+
+        return $alwaysUseCloudinary || $fileSize > $cloudinaryThreshold;
+    }
+
+     protected function saveFileToCloudinary(Download $download, $tempFilePath)
+    {
+        try {
+            Log::info('Uploading to Cloudinary', [
+                'download_id' => $download->id,
+                'tempFilePath' => $tempFilePath,
+            ]);
+
+            // Update status to uploading
+            $download->status = 'uploading';
+            $download->save();
+
+            // Upload to Cloudinary
+            $uploadResult = $this->cloudinaryService->uploadFile($tempFilePath, [
+                'public_id' => "download_{$download->id}_{$download->user_id}",
+                'tags' => ['download', "user_{$download->user_id}", $download->platform]
+            ]);
+
+            if (!$uploadResult['success']) {
+                throw new Exception("Cloudinary upload failed: " . $uploadResult['error']);
+            }
+
+            // Update download record
+            $download->update([
+                'status' => 'completed',
+                'cloudinary_public_id' => $uploadResult['public_id'],
+                'cloudinary_url' => $uploadResult['secure_url'],
+                'storage_url' => $uploadResult['secure_url'],
+                'storage_provider' => 'cloudinary',
+                'completed_at' => now()
+            ]);
+
+            // Delete local temp file
+            @unlink($tempFilePath);
+
+            Log::info('File uploaded to Cloudinary successfully', [
+                'download_id' => $download->id,
+                'cloudinary_url' => $uploadResult['secure_url'],
+                'file_size' => $uploadResult['bytes']
+            ]);
+
+            return [
+                'url' => $uploadResult['secure_url'],
+                'provider' => 'cloudinary'
+            ];
+
+        } catch (Exception $e) {
+            Log::error('Error uploading to Cloudinary', [
+                'download_id' => $download->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Fallback to local storage
+            Log::info('Falling back to local storage', ['download_id' => $download->id]);
+            return $this->saveFileToPublicStorage($download, $tempFilePath);
         }
     }
 

@@ -11,14 +11,8 @@ use Symfony\Component\Process\Process;
 
 class InstagramService
 {
-    /**
-     * Path to yt-dlp executable (kept for compatibility)
-     */
     protected $ytdlpPath;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->ytdlpPath = config('download.ytdlp_path');
@@ -27,97 +21,68 @@ class InstagramService
 
     /**
      * Get metadata for an Instagram post
-     *
-     * @param string $url
-     * @return array
      */
     public function getMetadata($url)
     {
         try {
-            // Extract Instagram shortcode from URL
             $shortcode = $this->extractInstagramShortcode($url);
             if (!$shortcode) {
                 throw new Exception('Could not extract Instagram shortcode from URL');
             }
 
-            // Try to get metadata from Instagram's Public API first
-            $igUrl = "https://www.instagram.com/p/{$shortcode}/?__a=1&__d=1";
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept' => 'application/json'
-            ])->get($igUrl);
+            $metadata = $this->getMetadataFromMultipleSources($url, $shortcode);
 
-            if ($response->successful() && isset($response['items'][0])) {
-                $item = $response['items'][0];
-
-                return [
-                    'id' => $shortcode,
-                    'title' => isset($item['caption']['text']) ? substr($item['caption']['text'], 0, 50) . '...' : 'Instagram Post',
-                    'thumbnail' => $item['image_versions2']['candidates'][0]['url'] ?? null,
-                    'duration' => isset($item['video_duration']) ? $item['video_duration'] : 0,
-                    'uploader' => $item['user']['username'] ?? 'Unknown',
-                    'view_count' => $item['view_count'] ?? 0,
-                    'like_count' => $item['like_count'] ?? 0,
-                    'token_cost' => 8, // Base token cost for Instagram videos
-                ];
-            }
-
-            // If that fails, try scraping the page
-            return $this->scrapeMetadata($url, $shortcode);
+            return [
+                'success' => true,
+                'id' => $shortcode,
+                'title' => $metadata['title'] ?? 'Instagram Post',
+                'thumbnail' => $metadata['thumbnail'] ?? null,
+                'duration' => $metadata['duration'] ?? 0,
+                'uploader' => $metadata['uploader'] ?? 'Instagram User',
+                'view_count' => $metadata['view_count'] ?? 0,
+                'like_count' => $metadata['like_count'] ?? 0,
+                'token_cost' => 8,
+                'platform' => 'instagram'
+            ];
         } catch (Exception $e) {
             Log::error('Error getting Instagram metadata', [
                 'url' => $url,
                 'error' => $e->getMessage(),
             ]);
 
-            // Return default metadata
             return [
-                'id' => $this->extractInstagramShortcode($url) ?? md5($url),
-                'title' => 'Instagram Post',
-                'thumbnail' => null,
-                'duration' => 0,
-                'uploader' => 'Instagram User',
-                'view_count' => 0,
-                'like_count' => 0,
-                'token_cost' => 8,
+                'success' => false,
+                'error' => $e->getMessage()
             ];
         }
     }
 
     /**
-     * Download an Instagram post using alternative methods
-     *
-     * @param string $url
-     * @param string $format (mp4/mp3)
-     * @param string $quality (ignored for Instagram)
-     * @param string $outputDir
-     * @return string Path to downloaded file
+     * Download Instagram post using multiple fallback methods
      */
     public function download($url, $format, $quality, $outputDir)
     {
         try {
             Log::info('Starting Instagram download', ['url' => $url, 'format' => $format]);
 
-            // Pastikan direktori output ada
             if (!file_exists($outputDir)) {
                 mkdir($outputDir, 0777, true);
             }
 
-            // Buat nama file yang unik
             $shortcode = $this->extractInstagramShortcode($url) ?? md5($url);
             $filename = 'instagram_' . time() . '_' . $shortcode . '.' . ($format === 'mp3' ? 'mp3' : 'mp4');
             $outputPath = $outputDir . '/' . $filename;
 
-            // Coba beberapa metode download
+            // Multiple download methods in order of reliability
             $methods = [
-                'downloadWithSnapInsta',     // Tambahkan metode baru
-                'downloadWithStoriesDown',   // Tambahkan metode baru
-                'downloadWithInstagramSave', // Tambahkan metode baru
-                'downloadWithInstagramApi',
+                'downloadWithSnapInsta',
+                'downloadWithStoriesIG',
+                'downloadWithInstagramSaver',
                 'downloadWithInstaDownloader',
+                'downloadWithYtDlp',
+                'downloadWithIGram',
                 'downloadWithSaveFrom',
-                'downloadWithIgram',
-                'createFallbackVideo'
+                'createFallbackFile'
             ];
 
             foreach ($methods as $method) {
@@ -126,24 +91,31 @@ class InstagramService
 
                     $result = $this->$method($url, $format, $outputPath);
 
-                    if ($result && file_exists($outputPath) && filesize($outputPath) > 10000) {
+                    if ($result && file_exists($outputPath) && filesize($outputPath) > 50000) {
                         Log::info("Successfully downloaded Instagram post using $method", [
                             'output_path' => $outputPath,
                             'file_size' => filesize($outputPath)
                         ]);
 
-                        // Jika format yang diminta adalah mp3 tapi kita dapat mp4, konversi
-                        if ($format === 'mp3' && pathinfo($outputPath, PATHINFO_EXTENSION) === 'mp4') {
-                            return $this->convertVideoToAudio($outputPath);
+                        // Convert to MP3 if needed
+                        if ($format === 'mp3' && pathinfo($outputPath, PATHINFO_EXTENSION) !== 'mp3') {
+                            $convertedPath = $this->convertToMp3($outputPath);
+                            if ($convertedPath) {
+                                $outputPath = $convertedPath;
+                            }
                         }
 
-                        return $outputPath;
+                        return [
+                            'success' => true,
+                            'file_path' => $outputPath,
+                            'file_size' => filesize($outputPath),
+                            'title' => $this->extractTitleFromFilename($outputPath)
+                        ];
                     }
 
                     Log::warning("Method $method failed or produced invalid file");
                 } catch (Exception $e) {
                     Log::warning("Error using $method: " . $e->getMessage());
-                    // Continue to next method
                 }
             }
 
@@ -151,193 +123,23 @@ class InstagramService
         } catch (Exception $e) {
             Log::error('Error downloading Instagram post', [
                 'url' => $url,
-                'format' => $format,
                 'error' => $e->getMessage(),
             ]);
 
-            throw $e;
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
 
     /**
-     * Download using Instagram API approach
-     */
-    private function downloadWithInstagramApi($url, $format, $outputPath)
-    {
-        try {
-            $shortcode = $this->extractInstagramShortcode($url);
-            if (!$shortcode) {
-                return false;
-            }
-
-            // Try to access Instagram's public API
-            $igUrl = "https://www.instagram.com/p/{$shortcode}/?__a=1&__d=1";
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept' => 'application/json'
-            ])->get($igUrl);
-
-            if (!$response->successful() || !isset($response['items'][0])) {
-                return false;
-            }
-
-            $item = $response['items'][0];
-
-            // Get video URL
-            $videoUrl = null;
-
-            if (isset($item['video_versions'][0]['url'])) {
-                $videoUrl = $item['video_versions'][0]['url'];
-            } elseif (isset($item['carousel_media'])) {
-                // For carousel posts, find the first video
-                foreach ($item['carousel_media'] as $media) {
-                    if (isset($media['video_versions'][0]['url'])) {
-                        $videoUrl = $media['video_versions'][0]['url'];
-                        break;
-                    }
-                }
-            }
-
-            if (!$videoUrl) {
-                return false;
-            }
-
-            // Download the file
-            return $this->downloadFileFromUrl($videoUrl, $outputPath);
-        } catch (Exception $e) {
-            Log::error('Error with Instagram API', ['error' => $e->getMessage()]);
-            return false;
-        }
-    }
-
-    /**
-     * Download using InstaDownloader.co
-     */
-    private function downloadWithInstaDownloader($url, $format, $outputPath)
-    {
-        try {
-            // Submit to instadownloader.co
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer' => 'https://instadownloader.co/'
-            ])->asForm()->post('https://instadownloader.co/script.php', [
-                'url' => $url
-            ]);
-
-            if (!$response->successful()) {
-                return false;
-            }
-
-            $data = $response->json();
-
-            if (!isset($data['video']) || empty($data['video'])) {
-                return false;
-            }
-
-            // Find the best quality video
-            $videoUrl = $data['video'][0] ?? null;
-
-            if (!$videoUrl) {
-                return false;
-            }
-
-            // Download the file
-            return $this->downloadFileFromUrl($videoUrl, $outputPath);
-        } catch (Exception $e) {
-            Log::error('Error with InstaDownloader', ['error' => $e->getMessage()]);
-            return false;
-        }
-    }
-
-    /**
-     * Download using SaveFrom.net
-     */
-    private function downloadWithSaveFrom($url, $format, $outputPath)
-    {
-        try {
-            $apiUrl = 'https://api.savefrom.net/api/convert';
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Content-Type' => 'application/json'
-            ])->post($apiUrl, [
-                'url' => $url
-            ]);
-
-            if (!$response->successful()) {
-                return false;
-            }
-
-            $data = $response->json();
-
-            if (isset($data['url'])) {
-                return $this->downloadFileFromUrl($data['url'], $outputPath);
-            }
-
-            if (isset($data['media']) && !empty($data['media'])) {
-                foreach ($data['media'] as $media) {
-                    if (isset($media['url'])) {
-                        return $this->downloadFileFromUrl($media['url'], $outputPath);
-                    }
-                }
-            }
-
-            return false;
-        } catch (Exception $e) {
-            Log::error('Error with SaveFrom', ['error' => $e->getMessage()]);
-            return false;
-        }
-    }
-
-    /**
-     * Download using IGram.io
-     */
-    private function downloadWithIgram($url, $format, $outputPath)
-    {
-        try {
-            // Submit to igram.io
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer' => 'https://igram.io/'
-            ])->asForm()->post('https://igram.io/api/ig/dl', [
-                'url' => $url
-            ]);
-
-            if (!$response->successful()) {
-                return false;
-            }
-
-            $data = $response->json();
-
-            if (!isset($data['data']) || !isset($data['data']['medias'])) {
-                return false;
-            }
-
-            // Find video URL
-            foreach ($data['data']['medias'] as $media) {
-                if (isset($media['src']) && isset($media['type']) && $media['type'] === 'video') {
-                    return $this->downloadFileFromUrl($media['src'], $outputPath);
-                }
-            }
-
-            return false;
-        } catch (Exception $e) {
-            Log::error('Error with IGram', ['error' => $e->getMessage()]);
-            return false;
-        }
-    }
-
-    /**
-     * Download with SnapInsta
-     *
-     * @param string $url
-     * @param string $format
-     * @param string $outputPath
-     * @return bool
+     * Download with SnapInsta - Most reliable
      */
     private function downloadWithSnapInsta($url, $format, $outputPath)
     {
         try {
-            // Get the main page to extract token
+            // Get token from main page
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             ])->get('https://snapinsta.app/');
@@ -373,22 +175,20 @@ class InstagramService
             $responseHtml = $response->body();
 
             // Extract download links
-            preg_match_all('/<a href="([^"]+)" class="abutton" target="_blank">.*?<\/a>/', $responseHtml, $matches);
+            preg_match_all('/<a[^>]+href="([^"]+)"[^>]*class="[^"]*abutton[^"]*"[^>]*>.*?Download.*?<\/a>/is', $responseHtml, $matches);
 
             if (empty($matches[1])) {
                 return false;
             }
 
-            // Get first download link
-            $downloadUrl = $matches[1][0];
-
-            // Follow redirect to get final URL
-            $headers = get_headers($downloadUrl, 1);
-            if (isset($headers['Location'])) {
-                $downloadUrl = is_array($headers['Location']) ? end($headers['Location']) : $headers['Location'];
+            // Try each download link
+            foreach ($matches[1] as $downloadUrl) {
+                if ($this->downloadFileFromUrl($downloadUrl, $outputPath)) {
+                    return true;
+                }
             }
 
-            return $this->downloadFileFromUrl($downloadUrl, $outputPath);
+            return false;
         } catch (Exception $e) {
             Log::error('Error with SnapInsta', ['error' => $e->getMessage()]);
             return false;
@@ -396,43 +196,18 @@ class InstagramService
     }
 
     /**
-     * Download with StoriesDown
-     *
-     * @param string $url
-     * @param string $format
-     * @param string $outputPath
-     * @return bool
+     * Download with Stories.IG
      */
-    private function downloadWithStoriesDown($url, $format, $outputPath)
+    private function downloadWithStoriesIG($url, $format, $outputPath)
     {
         try {
-            // Get the main page first
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            ])->get('https://stories-down.com/');
+            $apiUrl = "https://stories.igd.workers.dev/api/instagram";
 
-            if (!$response->successful()) {
-                return false;
-            }
-
-            // Extract token
-            $html = $response->body();
-            preg_match('/csrf-token" content="([^"]+)"/', $html, $tokenMatches);
-
-            if (empty($tokenMatches[1])) {
-                return false;
-            }
-
-            $token = $tokenMatches[1];
-
-            // Submit the request
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'X-CSRF-TOKEN' => $token,
-                'X-Requested-With' => 'XMLHttpRequest',
-                'Referer' => 'https://stories-down.com/'
-            ])->post('https://stories-down.com/process', [
-                'link' => $url
+                'Content-Type' => 'application/json'
+            ])->post($apiUrl, [
+                'url' => $url
             ]);
 
             if (!$response->successful()) {
@@ -441,45 +216,74 @@ class InstagramService
 
             $data = $response->json();
 
-            // Find video URL
-            if (isset($data['medias']) && is_array($data['medias'])) {
-                foreach ($data['medias'] as $media) {
-                    if (isset($media['type']) && $media['type'] === 'video' && isset($media['src'])) {
-                        return $this->downloadFileFromUrl($media['src'], $outputPath);
+            if (isset($data['media']) && is_array($data['media'])) {
+                foreach ($data['media'] as $media) {
+                    if (isset($media['url']) && isset($media['type'])) {
+                        if ($media['type'] === 'video' || strpos($media['url'], '.mp4') !== false) {
+                            return $this->downloadFileFromUrl($media['url'], $outputPath);
+                        }
                     }
                 }
             }
 
             return false;
         } catch (Exception $e) {
-            Log::error('Error with StoriesDown', ['error' => $e->getMessage()]);
+            Log::error('Error with StoriesIG', ['error' => $e->getMessage()]);
             return false;
         }
     }
 
     /**
-     * Download with InstagramSave
-     *
-     * @param string $url
-     * @param string $format
-     * @param string $outputPath
-     * @return bool
+     * Download with InstagramSaver
      */
-    private function downloadWithInstagramSave($url, $format, $outputPath)
+    private function downloadWithInstagramSaver($url, $format, $outputPath)
     {
         try {
-            // Extract shortcode
-            $shortcode = $this->extractInstagramShortcode($url);
-            if (!$shortcode) {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer' => 'https://instagramsaver.net/'
+            ])->asForm()->post('https://instagramsaver.net/download.php', [
+                'url' => $url
+            ]);
+
+            if (!$response->successful()) {
                 return false;
             }
 
-            // Submit API request
-            $apiUrl = "https://instagram-save.com/api/media/{$shortcode}";
+            $responseHtml = $response->body();
+
+            // Extract download links
+            preg_match_all('/<a[^>]+href="([^"]+)"[^>]*class="[^"]*btn[^"]*"[^>]*>.*?Download.*?<\/a>/is', $responseHtml, $matches);
+
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $downloadUrl) {
+                    if (strpos($downloadUrl, 'http') === 0) {
+                        if ($this->downloadFileFromUrl($downloadUrl, $outputPath)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        } catch (Exception $e) {
+            Log::error('Error with InstagramSaver', ['error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * Download with InstaDownloader
+     */
+    private function downloadWithInstaDownloader($url, $format, $outputPath)
+    {
+        try {
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer' => 'https://instagram-save.com/'
-            ])->get($apiUrl);
+                'Referer' => 'https://instadownloader.co/'
+            ])->asForm()->post('https://instadownloader.co/script.php', [
+                'url' => $url
+            ]);
 
             if (!$response->successful()) {
                 return false;
@@ -487,109 +291,214 @@ class InstagramService
 
             $data = $response->json();
 
-            // Find video URL
-            if (isset($data['sources']) && is_array($data['sources'])) {
-                foreach ($data['sources'] as $source) {
-                    if (isset($source['src']) && isset($source['type']) && strpos($source['type'], 'video') !== false) {
-                        return $this->downloadFileFromUrl($source['src'], $outputPath);
+            if (isset($data['video']) && is_array($data['video'])) {
+                foreach ($data['video'] as $videoUrl) {
+                    if ($this->downloadFileFromUrl($videoUrl, $outputPath)) {
+                        return true;
                     }
                 }
             }
 
-            // Check for alternatives
-            if (isset($data['data']['downloadUrl'])) {
-                return $this->downloadFileFromUrl($data['data']['downloadUrl'], $outputPath);
+            if (isset($data['image']) && is_array($data['image'])) {
+                foreach ($data['image'] as $imageUrl) {
+                    if ($this->downloadFileFromUrl($imageUrl, $outputPath)) {
+                        return true;
+                    }
+                }
             }
 
             return false;
         } catch (Exception $e) {
-            Log::error('Error with InstagramSave', ['error' => $e->getMessage()]);
+            Log::error('Error with InstaDownloader', ['error' => $e->getMessage()]);
             return false;
         }
     }
 
     /**
-     * Create a fallback video file if all download methods fail
+     * Download with yt-dlp if available
      */
-    private function createFallbackVideo($url, $format, $outputPath)
+    private function downloadWithYtDlp($url, $format, $outputPath)
     {
         try {
-            Log::info('Creating fallback video/audio file', ['output_path' => $outputPath]);
+            if (!$this->ytdlpPath || !file_exists($this->ytdlpPath)) {
+                return false;
+            }
 
-            // Check if we have a sample file to use
+            $formatSelector = $format === 'mp3' ? 'bestaudio/best' : 'best';
+
+            $command = [
+                $this->ytdlpPath,
+                '--no-warnings',
+                '--format', $formatSelector,
+                '--output', $outputPath,
+                $url
+            ];
+
+            if ($format === 'mp3') {
+                $command[] = '--extract-audio';
+                $command[] = '--audio-format';
+                $command[] = 'mp3';
+            }
+
+            $process = new Process($command);
+            $process->setTimeout(300);
+            $process->run();
+
+            return $process->isSuccessful() && file_exists($outputPath);
+        } catch (Exception $e) {
+            Log::error('Error with yt-dlp', ['error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * Download with IGram
+     */
+    private function downloadWithIGram($url, $format, $outputPath)
+    {
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer' => 'https://igram.world/'
+            ])->asForm()->post('https://igram.world/api/ig/dl', [
+                'url' => $url
+            ]);
+
+            if (!$response->successful()) {
+                return false;
+            }
+
+            $data = $response->json();
+
+            if (isset($data['data']['medias']) && is_array($data['data']['medias'])) {
+                foreach ($data['data']['medias'] as $media) {
+                    if (isset($media['src']) && isset($media['type'])) {
+                        if ($media['type'] === 'video' || strpos($media['src'], '.mp4') !== false) {
+                            return $this->downloadFileFromUrl($media['src'], $outputPath);
+                        }
+                    }
+                }
+            }
+
+            return false;
+        } catch (Exception $e) {
+            Log::error('Error with IGram', ['error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * Download with SaveFrom
+     */
+    private function downloadWithSaveFrom($url, $format, $outputPath)
+    {
+        try {
+            $apiUrl = 'https://worker.sf-tools.com/savefrom';
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Content-Type' => 'application/json'
+            ])->post($apiUrl, [
+                'url' => $url
+            ]);
+
+            if (!$response->successful()) {
+                return false;
+            }
+
+            $data = $response->json();
+
+            if (isset($data['url']) && is_array($data['url'])) {
+                foreach ($data['url'] as $item) {
+                    if (isset($item['url'])) {
+                        if ($this->downloadFileFromUrl($item['url'], $outputPath)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        } catch (Exception $e) {
+            Log::error('Error with SaveFrom', ['error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * Create fallback file when all methods fail
+     */
+    private function createFallbackFile($url, $format, $outputPath)
+    {
+        try {
+            Log::info('Creating fallback file', ['output_path' => $outputPath]);
+
+            // Check for sample files
             $samplePath = public_path('sample/' . ($format === 'mp3' ? 'sample.mp3' : 'sample.mp4'));
 
             if (file_exists($samplePath)) {
-                // Copy the sample file
                 copy($samplePath, $outputPath);
                 return true;
             }
 
-            // Create a simple MP4 with text overlay using FFmpeg if available
-            $ffmpegPath = 'ffmpeg'; // Assume ffmpeg is in PATH
+            // Create placeholder content
+            $content = $format === 'mp3' ?
+                "This is a placeholder MP3 file for Instagram post: {$url}" :
+                "This is a placeholder MP4 file for Instagram post: {$url}";
 
-            if (file_exists(storage_path('app/bin/ffmpeg.exe'))) {
-                $ffmpegPath = storage_path('app/bin/ffmpeg.exe');
-            }
-
-            // Check if FFmpeg is available
-            $testProcess = new Process([$ffmpegPath, '-version']);
-            $testProcess->run();
-
-            if ($testProcess->isSuccessful()) {
-                // Create blank video with text
-                $process = new Process([
-                    $ffmpegPath,
-                    '-f', 'lavfi',
-                    '-i', 'color=c=black:s=1280x720:d=10',
-                    '-vf', "drawtext=text='Could not download Instagram post':fontcolor=white:fontsize=36:x=(w-text_w)/2:y=(h-text_h)/2",
-                    '-c:v', 'libx264',
-                    '-t', '10',
-                    $outputPath
-                ]);
-                $process->run();
-
-                if ($process->isSuccessful() && file_exists($outputPath)) {
-                    return true;
-                }
-            }
-
-            // If FFmpeg fails or is not available, create a simple text file with appropriate extension
-            file_put_contents($outputPath, 'This is a placeholder file because the Instagram post could not be downloaded.');
+            file_put_contents($outputPath, $content);
             return file_exists($outputPath);
         } catch (Exception $e) {
-            Log::error('Error creating fallback video', [
-                'error' => $e->getMessage()
-            ]);
-
-            // Last resort - create empty file
-            file_put_contents($outputPath, 'Error: ' . $e->getMessage());
-            return file_exists($outputPath);
+            Log::error('Error creating fallback file', ['error' => $e->getMessage()]);
+            return false;
         }
     }
 
-    /**
-     * Helper function to convert video to audio (MP3)
-     */
-    private function convertVideoToAudio($videoPath)
+    // Helper methods
+    private function getMetadataFromMultipleSources($url, $shortcode)
     {
-        $audioPath = pathinfo($videoPath, PATHINFO_DIRNAME) . '/' .
-                   pathinfo($videoPath, PATHINFO_FILENAME) . '.mp3';
+        // Try different methods to get metadata
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            ])->get($url);
 
-        // Try to use FFmpeg for conversion
-        $ffmpegPath = 'ffmpeg'; // Assume ffmpeg is in PATH
+            if ($response->successful()) {
+                $html = $response->body();
 
-        if (file_exists(storage_path('app/bin/ffmpeg.exe'))) {
-            $ffmpegPath = storage_path('app/bin/ffmpeg.exe');
+                // Extract meta tags
+                preg_match('/<meta property="og:title" content="([^"]+)"/', $html, $titleMatches);
+                preg_match('/<meta property="og:image" content="([^"]+)"/', $html, $imageMatches);
+                preg_match('/<meta property="og:description" content="([^"]+)"/', $html, $descMatches);
+
+                return [
+                    'title' => $titleMatches[1] ?? 'Instagram Post',
+                    'thumbnail' => $imageMatches[1] ?? null,
+                    'uploader' => 'Instagram User',
+                    'duration' => 0
+                ];
+            }
+        } catch (Exception $e) {
+            Log::warning('Metadata extraction failed', ['error' => $e->getMessage()]);
         }
 
-        try {
-            // Check if FFmpeg is available
-            $testProcess = new Process([$ffmpegPath, '-version']);
-            $testProcess->run();
+        return [
+            'title' => 'Instagram Post',
+            'thumbnail' => null,
+            'uploader' => 'Instagram User',
+            'duration' => 0
+        ];
+    }
 
-            if ($testProcess->isSuccessful()) {
-                // Convert video to audio
+    private function convertToMp3($videoPath)
+    {
+        try {
+            $audioPath = pathinfo($videoPath, PATHINFO_DIRNAME) . '/' .
+                       pathinfo($videoPath, PATHINFO_FILENAME) . '.mp3';
+
+            // Try using FFmpeg if available
+            $ffmpegPath = $this->findFFmpegPath();
+
+            if ($ffmpegPath) {
                 $process = new Process([
                     $ffmpegPath,
                     '-i', $videoPath,
@@ -604,107 +513,68 @@ class InstagramService
                 $process->run();
 
                 if ($process->isSuccessful() && file_exists($audioPath)) {
-                    // Delete original video file
                     @unlink($videoPath);
                     return $audioPath;
                 }
             }
 
-            // If FFmpeg fails, just change extension (not ideal but works as fallback)
+            // Fallback: just rename the file
             copy($videoPath, $audioPath);
             @unlink($videoPath);
             return $audioPath;
         } catch (Exception $e) {
-            Log::error('Error converting video to audio', [
-                'error' => $e->getMessage()
-            ]);
-
-            // Just return the video path if conversion fails
+            Log::error('Error converting to MP3', ['error' => $e->getMessage()]);
             return $videoPath;
         }
     }
 
-    /**
-     * Helper function to download a file from URL
-     */
+    private function findFFmpegPath()
+    {
+        $possiblePaths = [
+            'ffmpeg',
+            '/usr/bin/ffmpeg',
+            '/usr/local/bin/ffmpeg',
+            storage_path('app/bin/ffmpeg.exe'),
+            'C:\ffmpeg\bin\ffmpeg.exe'
+        ];
+
+        foreach ($possiblePaths as $path) {
+            try {
+                $process = new Process([$path, '-version']);
+                $process->run();
+                if ($process->isSuccessful()) {
+                    return $path;
+                }
+            } catch (Exception $e) {
+                continue;
+            }
+        }
+
+        return null;
+    }
+
     private function downloadFileFromUrl($url, $outputPath)
     {
         try {
             Log::info('Downloading file from URL', ['url' => substr($url, 0, 100) . '...']);
 
-            // Use cURL for better control
-            $ch = curl_init($url);
+            // Follow redirects and handle cookies
+            $response = Http::timeout(300)
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept' => '*/*',
+                    'Accept-Language' => 'en-US,en;q=0.9',
+                    'Referer' => 'https://www.instagram.com/'
+                ])
+                ->get($url);
 
-            // Set up comprehensive cURL options
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_MAXREDIRS => 10,           // Allow up to 10 redirects
-                CURLOPT_CONNECTTIMEOUT => 30,      // Connection timeout
-                CURLOPT_TIMEOUT => 300,            // Overall timeout
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_ENCODING => '',            // Accept all encodings
-                CURLOPT_COOKIESESSION => true,     // Start new cookie session
-                CURLOPT_COOKIEFILE => '',          // Use cookie jar
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                CURLOPT_HTTPHEADER => [
-                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                    'Accept-Language: en-US,en;q=0.5',
-                    'Connection: keep-alive',
-                    'Upgrade-Insecure-Requests: 1',
-                    'Cache-Control: max-age=0'
-                ],
-                CURLOPT_VERBOSE => false,
-            ]);
-
-            // Try up to 3 times
-            $maxRetries = 3;
-            $data = null;
-            $httpCode = 0;
-
-            for ($retry = 0; $retry < $maxRetries; $retry++) {
-                $data = curl_exec($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                if ($httpCode == 200 && $data) {
-                    break;
-                }
-
-                // Wait a bit before retry
-                if ($retry < $maxRetries - 1) {
-                    sleep(2);
-                }
-            }
-
-            $error = curl_error($ch);
-            curl_close($ch);
-
-            if ($httpCode != 200 || !$data) {
-                Log::warning('Failed to download file', [
-                    'http_code' => $httpCode,
-                    'error' => $error,
-                    'data_length' => strlen($data ?? '')
-                ]);
+            if (!$response->successful()) {
                 return false;
             }
 
-            // Save the file
-            $result = file_put_contents($outputPath, $data);
+            $result = file_put_contents($outputPath, $response->body());
 
-            if ($result === false) {
-                Log::warning('Failed to write file to disk', [
-                    'output_path' => $outputPath
-                ]);
-                return false;
-            }
-
-            // Verify file is valid
-            if (filesize($outputPath) < 1000) {
-                Log::warning('Downloaded file is too small', [
-                    'size' => filesize($outputPath),
-                    'path' => $outputPath
-                ]);
+            if ($result === false || filesize($outputPath) < 10000) {
                 return false;
             }
 
@@ -715,73 +585,29 @@ class InstagramService
 
             return true;
         } catch (Exception $e) {
-            Log::error('Error downloading file from URL', [
-                'error' => $e->getMessage()
-            ]);
+            Log::error('Error downloading file from URL', ['error' => $e->getMessage()]);
             return false;
         }
     }
 
-    /**
-     * Helper function to extract Instagram shortcode from URL
-     */
     private function extractInstagramShortcode($url)
     {
-        $pattern = '/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/i';
-        if (preg_match($pattern, $url, $matches)) {
-            return $matches[1];
+        $patterns = [
+            '/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/',
+            '/instagram\.com\/stories\/[^\/]+\/([A-Za-z0-9_-]+)/'
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1];
+            }
         }
+
         return null;
     }
 
-    /**
-     * Scrape metadata from Instagram page
-     */
-    private function scrapeMetadata($url, $shortcode)
+    private function extractTitleFromFilename($outputPath)
     {
-        try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            ])->get($url);
-
-            if (!$response->successful()) {
-                throw new Exception('Could not fetch Instagram page');
-            }
-
-            $html = $response->body();
-
-            // Try to extract meta tags
-            preg_match('/<meta property="og:title" content="([^"]+)"/', $html, $titleMatches);
-            preg_match('/<meta property="og:image" content="([^"]+)"/', $html, $imageMatches);
-
-            $title = $titleMatches[1] ?? 'Instagram Post';
-            $thumbnail = $imageMatches[1] ?? null;
-
-            return [
-                'id' => $shortcode,
-                'title' => $title,
-                'thumbnail' => $thumbnail,
-                'duration' => 0,
-                'uploader' => 'Instagram User',
-                'view_count' => 0,
-                'like_count' => 0,
-                'token_cost' => 8,
-            ];
-        } catch (Exception $e) {
-            Log::error('Error scraping Instagram metadata', [
-                'error' => $e->getMessage()
-            ]);
-
-            return [
-                'id' => $shortcode,
-                'title' => 'Instagram Post',
-                'thumbnail' => null,
-                'duration' => 0,
-                'uploader' => 'Instagram User',
-                'view_count' => 0,
-                'like_count' => 0,
-                'token_cost' => 8,
-            ];
-        }
+        return pathinfo($outputPath, PATHINFO_FILENAME);
     }
 }

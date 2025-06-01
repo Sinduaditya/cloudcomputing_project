@@ -1,6 +1,3 @@
-//views/admin/activities/adminactivity_pdf.blade.php
-// PDF template for Admin Activity Log Report
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,101 +6,90 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.3;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
-        
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #2B7EC1;
-        }
-        
-        .header h1 {
-            color: #2B7EC1;
-            font-size: 24px;
-            margin: 0 0 10px 0;
-            font-weight: bold;
-        }
-        
-        .header .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin: 5px 0;
-        }
-        
-        .info-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border: 2px solid #212529;
-            border-radius: 8px;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4a86e8;
         }
-        
+
+        .header h1 {
+            color: #4a86e8;
+            font-size: 20px;
+            margin: 0 0 8px 0;
+        }
+
+        .header .subtitle {
+            font-size: 12px;
+            margin: 3px 0;
+        }
+
+        .info-section {
+            background: #f5f5f5;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: table;
+            width: 100%;
+        }
+
         .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            display: table-row;
         }
-        
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-        
+
         .info-label {
+            display: table-cell;
             font-weight: bold;
-            color: #2B7EC1;
+            padding: 4px 10px 4px 0;
+            width: 25%;
         }
-        
+
         .info-value {
-            color: #333;
+            display: table-cell;
+            padding: 4px 0;
         }
-        
+
         .activities-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            border: 2px solid #212529;
+            font-size: 9px;
         }
-        
+
         .activities-table th {
-            background: linear-gradient(90deg, #2B7EC1 0%, #58A7E6 100%);
+            background: #4a86e8;
             color: white;
-            padding: 12px 8px;
+            padding: 6px 4px;
             text-align: left;
-            font-weight: bold;
-            border: 1px solid #212529;
-            font-size: 11px;
+            border: 1px solid #ddd;
         }
-        
+
         .activities-table td {
-            padding: 10px 8px;
+            padding: 5px 4px;
             border: 1px solid #ddd;
             vertical-align: top;
-            font-size: 10px;
         }
-        
+
         .activities-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f9f9f9;
         }
-        
-        .activities-table tbody tr:hover {
-            background-color: #e9ecef;
-        }
-        
+
         .action-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: bold;
             color: white;
             display: inline-block;
         }
-        
+
         .action-login { background-color: #28a745; }
         .action-register { background-color: #007bff; }
         .action-download { background-color: #17a2b8; }
@@ -111,80 +97,60 @@
         .action-admin { background-color: #6f42c1; }
         .action-fail { background-color: #dc3545; }
         .action-default { background-color: #6c757d; }
-        
+
         .resource-badge {
-            padding: 2px 6px;
-            border-radius: 8px;
+            padding: 2px 4px;
+            border-radius: 3px;
             font-size: 8px;
             font-weight: bold;
             color: white;
-            display: inline-block;
         }
-        
+
         .resource-user { background-color: #007bff; }
         .resource-download { background-color: #17a2b8; }
         .resource-schedule { background-color: #ffc107; color: #212529; }
         .resource-token { background-color: #28a745; }
         .resource-default { background-color: #6c757d; }
-        
+
         .user-info {
-            font-size: 10px;
-        }
-        
-        .user-name {
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .user-email {
-            color: #666;
-            font-style: italic;
-        }
-        
-        .ip-address {
-            font-family: 'Courier New', monospace;
-            background-color: #f1f3f4;
-            padding: 2px 4px;
-            border-radius: 3px;
             font-size: 9px;
         }
-        
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-email {
+            color: #666;
+        }
+
+        .ip-address {
+            font-family: monospace;
+            font-size: 9px;
+        }
+
         .datetime {
             font-size: 9px;
         }
-        
+
         .datetime-date {
             font-weight: bold;
-            color: #333;
         }
-        
-        .datetime-time {
-            color: #666;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 2px solid #dee2e6;
-            text-align: center;
-            font-size: 10px;
-            color: #666;
-        }
-        
+
         .no-activities {
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px;
             color: #666;
             font-style: italic;
         }
-        
-        .page-break {
-            page-break-before: always;
-        }
-        
-        @media print {
-            body { margin: 0; }
-            .no-print { display: none; }
+
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 9px;
+            color: #666;
         }
     </style>
 </head>
@@ -209,8 +175,8 @@
             <span class="info-label">Date Range:</span>
             <span class="info-value">
                 @if($from_date || $to_date)
-                    {{ $from_date ? \Carbon\Carbon::parse($from_date)->format('M d, Y') : 'Beginning' }} 
-                    to 
+                    {{ $from_date ? \Carbon\Carbon::parse($from_date)->format('M d, Y') : 'Beginning' }}
+                    to
                     {{ $to_date ? \Carbon\Carbon::parse($to_date)->format('M d, Y') : 'Present' }}
                 @else
                     All time
@@ -231,12 +197,12 @@
         <table class="activities-table">
             <thead>
                 <tr>
-                    <th style="width: 8%;">#</th>
-                    <th style="width: 22%;">User</th>
-                    <th style="width: 18%;">Action</th>
-                    <th style="width: 15%;">Resource</th>
-                    <th style="width: 15%;">IP Address</th>
-                    <th style="width: 22%;">Date & Time</th>
+                    <th width="5%">#</th>
+                    <th width="24%">User</th>
+                    <th width="18%">Action</th>
+                    <th width="16%">Resource</th>
+                    <th width="15%">IP Address</th>
+                    <th width="22%">Date & Time</th>
                 </tr>
             </thead>
             <tbody>
@@ -297,8 +263,8 @@
                         </td>
                         <td>
                             <div class="datetime">
-                                <div class="datetime-date">{{ $activity->created_at->format('M d, Y') }}</div>
-                                <div class="datetime-time">{{ $activity->created_at->format('H:i:s') }}</div>
+                                <span class="datetime-date">{{ $activity->created_at->format('M d, Y') }}</span>
+                                <span class="datetime-time">{{ $activity->created_at->format('H:i:s') }}</span>
                             </div>
                         </td>
                     </tr>
@@ -318,4 +284,3 @@
     </div>
 </body>
 </html>
-

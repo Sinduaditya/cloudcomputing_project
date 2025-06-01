@@ -46,4 +46,9 @@ return [
         'tikapi' => env('TIKAPI_KEY', ''),
         'rapidapi' => env('RAPIDAPI_KEY', ''),
     ],
+
+    'cloudinary_threshold_mb' => env('CLOUDINARY_THRESHOLD_MB', 50),
+    'always_use_cloudinary' => env('ALWAYS_USE_CLOUDINARY', false),
+    'mb_per_token' => env('TOKEN_MB_RATIO', 10),
+    'min_tokens' => env('TOKEN_MIN_BALANCE', 1),
 ];
